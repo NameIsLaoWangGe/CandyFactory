@@ -1,15 +1,21 @@
 import Candy from "./Candy";
 
 export default class MainSceneControl extends Laya.Script {
+    /** @prop {name:candy, tips:"糖果", type:Prefab}*/
+    public candy: Laya.Prefab;
+    /** @prop {name:candyParent, tips:"糖果父节点", type:Node}*/
+    public candyParent: Laya.Sprite;
+
     /** @prop {name:bucket, tips:"盒子", type:Prefab}*/
     public bucket: Laya.Prefab;
     /** @prop {name:bucketParent, tips:"盒子父节点", type:Node}*/
     public bucketParent: Laya.Sprite;
 
-    /** @prop {name:candy, tips:"糖果", type:Prefab}*/
-    public candy: Laya.Prefab;
-    /** @prop {name:candyParent, tips:"糖果父节点", type:Node}*/
-    public candyParent: Laya.Sprite;
+    /** @prop {name:enemy, tips:"敌人", type:Prefab}*/
+    public enemy: Laya.Prefab;
+    /** @prop {name:enemyParent, tips:"敌人父节点", type:Prefab}*/
+    public enemyParent: Laya.Prefab;
+
 
     /** @prop {name:background, tips:"背景图", type:Node}*/
     public background: Laya.Sprite;
@@ -19,6 +25,8 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
     public scoreLabel: Laya.Label;
 
+    /**敌人出现开关，这个开关每次开启后，立马会被关闭，因为每次只出现一个敌人*/
+    private enemyAppear: boolean;
     /**糖果产生的时间间隔*/
     private candy_interval: number;
     /**当前时间记录*/
@@ -38,6 +46,7 @@ export default class MainSceneControl extends Laya.Script {
 
     /**场景初始化*/
     initSecne(): void {
+        this.enemyAppear = false;
         this.candy_interval = 500;
         this.creatTime = Date.now();
         this.creatOnOff = true;
@@ -104,6 +113,11 @@ export default class MainSceneControl extends Laya.Script {
         candy.rotation = 0;
     }
 
+    /**出现敌人*/
+    careatEnemy() {
+        let enemy = Laya.Pool.getItemByCreateFun('enemy', this.candy.create, this.candy) as Laya.Sprite;
+    }
+
     onUpdate(): void {
         if (this.creatOnOff) {
             let nowTime = Date.now();
@@ -111,6 +125,10 @@ export default class MainSceneControl extends Laya.Script {
                 this.creatTime = nowTime;
                 this.productionCandy();
             }
+        }
+        if (this.enemyAppear) {
+            console.log('出现一个敌人');
+            this.enemyAppear = false;
         }
     }
 

@@ -81,10 +81,10 @@
         {
             "x":15,
             "type":"ProgressBar",
-            "searchKey":"ProgressBar",
-            "props":{"y":-36,"x":3,"width":194,"skin":"candy/血条.png","sizeGrid":"0,35,0,18","presetID":6,"preset":"laya/pages/prefab/bucket.prefab","height":36},
+            "searchKey":"ProgressBar,health",
+            "props":{"y":-36,"x":3,"width":194,"skin":"candy/血条.png","sizeGrid":"0,16,0,11","presetID":6,"preset":"laya/pages/prefab/bucket.prefab","name":"health","height":36},
             "nodeParent":6,
-            "label":"ProgressBar(bucket)",
+            "label":"health",
             "isDirectory":false,
             "isAniNode":true,
             "hasChild":false,

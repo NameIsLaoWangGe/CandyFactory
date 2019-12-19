@@ -9,6 +9,10 @@ export default class Bucket extends Laya.Script {
     private nameAndIndex: Array<string>;
     /**糖果父节点*/
     private candyParent: Laya.Sprite;
+    /**血量*/
+    private health: Laya.ProgressBar;
+    /**敌人出现开关，这个开关每次开启后，立马会被关闭，因为每次只出现一个敌人*/
+    private enemyAppear: boolean;
 
     constructor() { super(); }
 
@@ -19,8 +23,12 @@ export default class Bucket extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
-        this.nameAndIndex = this.selfScene.getComponent(MainSceneControl).nameAndIndex;
-        this.candyParent = this.selfScene.getComponent(MainSceneControl).candyParent;
+        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);
+        this.nameAndIndex = mainSceneControl.nameAndIndex;
+        this.candyParent = mainSceneControl.candyParent;
+        this.enemyAppear = mainSceneControl.enemyAppear;
+        this.health = this.self.getChildByName('health') as Laya.ProgressBar;
+        this.health.value = 1;
         this.bucketClink();
     }
     /**桶点击事件*/
@@ -33,6 +41,7 @@ export default class Bucket extends Laya.Script {
     /**按下,给予目标位置，糖果走向目标位置;
      * 并且分数增加*/
     down(event): void {
+        this.enemyAppear = true;
         this.self.scale(0.9, 0.9);
         // 如果感应区有糖果,找到第一个进入感应区的糖果的唯一名称
         if (this.nameAndIndex[0]) {
