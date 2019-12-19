@@ -5,8 +5,8 @@ export default class Bucket extends Laya.Script {
     private self: Laya.Sprite;
     /**所属场景*/
     private selfScene: Laya.Scene;
-    /**糖果到碰到感应装置时，名字和索引值按顺序装进这个数组*/
-    private nameAndIndex: Array<Array<any>>;
+    /**糖果到碰到感应装置时，名字装进这个数组*/
+    private nameAndIndex: Array<string>;
     /**糖果父节点*/
     private candyParent: Laya.Sprite;
 
@@ -30,45 +30,19 @@ export default class Bucket extends Laya.Script {
         this.self.on(Laya.Event.MOUSE_UP, this, this.up);
         this.self.on(Laya.Event.MOUSE_OUT, this, this.out);
     }
-    /**按下,判断第一个进入感应糖果的颜色;
-     * 如果和桶的颜色配对，那么这个糖果会进入相应的桶里面
+    /**按下,给予目标位置，糖果走向目标位置;
      * 并且分数增加*/
     down(event): void {
         this.self.scale(0.9, 0.9);
-        // 如果感应区有糖果,找到第一个进入感应区的糖果名称和唯一索引值
+        // 如果感应区有糖果,找到第一个进入感应区的糖果的唯一名称
         if (this.nameAndIndex[0]) {
-            // 名称和索引
-            let candyName = this.nameAndIndex[this.nameAndIndex.length - 1][0];
-            let index = this.nameAndIndex[this.nameAndIndex.length - 1][1];
-
-            for (let i = 0; i < this.candyParent._children.length - 1; i++) {
-                let CandyScript = (this.candyParent._children[i] as Laya.Sprite).getComponent(Candy);
-                let selfIndex = CandyScript.selfIndex;
-                console.log(selfIndex);
-                if (selfIndex === index) {
-                    // 把目标位置传给他
-                    CandyScript.targetBucket = this.self;
-                }
+            let candyName = this.nameAndIndex[this.nameAndIndex.length - 1];
+            let candy = this.candyParent.getChildByName(candyName);
+            let CandyScript = candy.getComponent(Candy);
+            // 给予目标地点,非空说明点击过了
+            if (CandyScript.targetBucket === null) {
+                CandyScript.targetBucket = this.self;
             }
-            // let presentCandy = this.candyParent.getChildByName(candyName) as Laya.Sprite;
-            // let CandyScript = presentCandy.getComponent(Candy);
-            // CandyScript.targetBucket = this.self;
-            // // 名称配对
-            // let pairName = this.self.name + candyName;
-            // let matching_01 = 'redBucket' + 'redCandy';
-            // let matching_02 = 'yellowBucket' + 'yellowCandy';
-            // if (pairName === matching_01 || pairName === matching_02) {
-            //     for (let i = 0; i < this.candyParent._children.length - 1; i++) {
-            //         let CandyScript = (this.candyParent._children[i] as Laya.Sprite).getComponent(Candy);
-            //         let selfIndex = CandyScript.selfIndex;
-            //         CandyScript.targetBucket = this.self;
-            //         if (selfIndex === index) {
-            //             // 把目标位置传给他
-            //         } else {
-
-            //         }
-            //     }
-            // }
         } else {
             console.log('糖果不在感应区，或者点错了');
         }

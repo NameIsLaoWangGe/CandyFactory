@@ -8,14 +8,16 @@ export default class Candy extends Laya.Script {
     private selfScene: Laya.Scene;
     /**在父节点上面的索引值*/
     private selfIndex: number;
-    /**糖果到碰到感应装置时，名字和索引值按顺序装进这个数组*/
-    private nameAndIndex: Array<Array<any>>;
+    /**糖果到碰到感应装置时，名字装进这个数组*/
+    private nameAndIndex: Array<string>;
     /**对应桶的目标*/
     private targetBucket: Laya.Sprite;
     /**糖果运行的速度*/
     private speed: number;
     /**是否可以选择目标*/
     private selectTarget: boolean;
+    /**得分显示*/
+    public scoreLabel: Laya.Label;
 
     constructor() { super(); }
     onEnable(): void {
@@ -26,7 +28,9 @@ export default class Candy extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
-        this.nameAndIndex = this.selfScene.getComponent(MainSceneControl).nameAndIndex;
+        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);
+        this.nameAndIndex = mainSceneControl.nameAndIndex;
+        this.scoreLabel = mainSceneControl.scoreLabel;
         this.targetBucket = null;
         this.rig = this.self.getComponent(Laya.RigidBody) as Laya.RigidBody;
         this.rig.linearVelocity = { x: 0, y: 0.1 };//此处y值必须不等于0才能正常检测碰撞，并不知道为何
@@ -35,13 +39,23 @@ export default class Candy extends Laya.Script {
     }
 
     onTriggerEnter(other: any, self: any, contact: any): void {
-        let otherName = other.owner.name;
+        let otherName: string = other.owner.name;
         // 初次碰撞把名称和唯一的索引值放进数组
         if (otherName === 'induction') {
-            let arr: Array<any> = [self.owner.name, this.selfIndex];
-            this.nameAndIndex.push(arr);
+            let name = self.owner.name;
+            this.nameAndIndex.push(name);
         } else if (otherName === 'redBucket' || otherName === 'yellowBucket') {
             this.self.removeSelf();
+            let color = self.owner.name.substring(0, 11);
+            // 名称配对
+            let pairName = color + otherName;
+            let matching_01 = 'yellowCandy' + 'yellowBucket';
+            let matching_02 = 'redCandy___' + 'redBucket';
+            if (pairName === matching_01 || pairName === matching_02) {
+                this.scoreLabel.text = (Number(this.scoreLabel.text) + 100).toString();
+            } else {
+              
+            }
         }
     }
 
@@ -53,7 +67,7 @@ export default class Candy extends Laya.Script {
         // 碰撞结束删掉
         if (otherName === 'induction') {
             for (let i = 0; i < this.nameAndIndex.length; i++) {
-                if (this.nameAndIndex[i][0] === self.owner.name) {
+                if (this.nameAndIndex[i] === self.owner.name) {
                     this.nameAndIndex.splice(i, 1);
                 }
             }

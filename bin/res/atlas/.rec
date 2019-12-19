@@ -1,11 +1,14 @@
 D .
 D candy
 P 309B48E9 感应区域.png
+P 96B0F69D 敌人.png
 R C84BAC03 流水台.png
 R 29CAE12C 流水台中间线.png
 P A495915F 红色桶.png
 P 5F9DD46B 红色糖果.png
 R 2D77ED2D 背景图.png
+P F16C659C 血条$bar.png
+P D9D38D87 血条.png
 P F07FF819 黄色桶.png
 P 4F0405D8 黄色糖果.png
 D comp
