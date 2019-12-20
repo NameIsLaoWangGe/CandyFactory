@@ -1,1 +1,0 @@
-{"type":"Sprite","props":{"y":0,"x":0,"width":180,"presetID":1,"name":"enemy","isPresetRoot":true,"height":200},"compId":22,"child":[{"type":"Sprite","props":{"y":0,"x":0,"texture":"candy/敌人.png","presetID":2,"name":"pic"},"compId":23}],"loadList":["candy/敌人.png"],"loadList3D":[]}
