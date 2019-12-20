@@ -7,18 +7,19 @@ export default class Candy extends Laya.Script {
     /**所属场景*/
     private selfScene: Laya.Scene;
     /**糖果到碰到感应装置时，名字装进这个数组*/
-    private nameAndIndex: Array<string>;
+    private nameArr: Array<string>;
     /**糖果运行的速度*/
     private speed: number;
 
-    /**是否可以选择目标*/
-    private selectTarget: boolean;
     /**怪物攻击对象*/
     private targetRole: Laya.Sprite;
+    /**主角的父节点*/
+    private roleParent: Laya.Sprite;
 
     /**得分显示*/
     public scoreLabel: Laya.Label;
-
+    /**游戏结束标志*/
+    private GameOver: boolean;
     constructor() { super(); }
     onEnable(): void {
         this.initProperty();
@@ -28,14 +29,14 @@ export default class Candy extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
-        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);
-        this.nameAndIndex = mainSceneControl.nameAndIndex;
+        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
+        this.roleParent = mainSceneControl.roleParent;
+        this.nameArr = mainSceneControl.nameArr;
         this.scoreLabel = mainSceneControl.scoreLabel;
         this.targetRole = null;
         this.rig = this.self.getComponent(Laya.RigidBody) as Laya.RigidBody;
         this.rig.linearVelocity = { x: 0, y: 0.1 };//此处y值必须不等于0才能正常检测碰撞，并不知道为何
         this.speed = 6;
-        this.selectTarget = true;
     }
 
     onTriggerEnter(other: any, self: any, contact: any): void {
@@ -43,7 +44,7 @@ export default class Candy extends Laya.Script {
         // 初次碰撞把名称和唯一的索引值放进数组
         if (otherName === 'induction') {
             let name = self.owner.name;
-            this.nameAndIndex.push(name);
+            this.nameArr.push(name);
         } else if (otherName === 'yellowRole' || otherName === 'redRole') {
             this.self.removeSelf();
             let color = self.owner.name.substring(0, 11);
@@ -55,11 +56,12 @@ export default class Candy extends Laya.Script {
                 this.scoreLabel.text = (Number(this.scoreLabel.text) + 100).toString();
             } else {
                 // 吃错了就会出现一个敌人，敌人会攻击这个目标
-                let mainSceneControl = this.selfScene.getComponent(MainSceneControl);
+                let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
                 mainSceneControl.enemyAppear = true;
                 // 这个目标位置
-                mainSceneControl.enemyMove_P = this.targetRole;
-
+                if (this.targetRole.name !== null) {
+                    mainSceneControl.tagRoleName = this.targetRole.name;
+                }
             }
         }
     }
@@ -71,19 +73,25 @@ export default class Candy extends Laya.Script {
         let otherName = other.owner.name;
         // 碰撞结束删掉
         if (otherName === 'induction') {
-            for (let i = 0; i < this.nameAndIndex.length; i++) {
-                if (this.nameAndIndex[i] === self.owner.name) {
-                    this.nameAndIndex.splice(i, 1);
+            for (let i = 0; i < this.nameArr.length; i++) {
+                if (this.nameArr[i] === self.owner.name) {
+                    this.nameArr.splice(i, 1);
                 }
             }
         }
     }
 
     onUpdate(): void {
+        // 主角全部死亡时停止移动
+        if (this.roleParent._children.length === 0) {
+            this.rig.linearVelocity = { x: 0, y: 0 }
+            return;
+        }
         // 超出范围消失
         if (this.self.y > Laya.stage.height + 100 || this.self.y < 0 - 100 || this.self.x > 750 + this.self.width + 50 || this.self.x < -this.self.width) {
             this.self.removeSelf();
         }
+
         // 判断去向
         if (this.targetRole === null) {
             this.self.y += this.speed;

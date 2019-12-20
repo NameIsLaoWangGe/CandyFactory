@@ -6,7 +6,7 @@
     "searchKey":"Scene",
     "props":{"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":42,
+    "maxID":43,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -35,14 +35,13 @@
             "props":{"y":0,"x":0,"name":"assembly"},
             "nodeParent":2,
             "label":"assembly",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":18,
             "child":[
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,assembly",
                     "props":{"y":-59,"x":370,"width":372,"texture":"candy/流水台.png","pivotX":186,"name":"assembly","height":978},
@@ -57,7 +56,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,induction",
                     "props":{"y":471,"x":385,"width":305,"texture":"candy/感应区域.png","pivotX":153,"name":"induction","height":170},
@@ -70,7 +68,6 @@
                     "compId":15,
                     "child":[
                         {
-                            "x":45,
                             "type":"BoxCollider",
                             "switchAble":true,
                             "searchKey":"BoxCollider",
@@ -86,7 +83,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"RigidBody",
                             "switchAble":true,
                             "searchKey":"RigidBody",
@@ -110,7 +106,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"scoreLabel":"@node:21","enemyParent":"@node:23","enemy":"@Prefab:prefab/enemy.prefab","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"scoreLabel":"@node:21","roleParent":"@node:12","enemyParent":"@node:23","enemy":"@Prefab:prefab/enemy.prefab","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -123,10 +119,39 @@
         {
             "x":15,
             "type":"Sprite",
-            "searchKey":"Sprite,bucketParent",
-            "props":{"name":"bucketParent"},
+            "searchKey":"Sprite,candyParent",
+            "props":{"name":"candyParent"},
             "nodeParent":2,
-            "label":"bucketParent",
+            "label":"candyParent",
+            "isOpen":true,
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":13,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite,enemyParent",
+            "props":{"y":0,"x":0,"name":"enemyParent"},
+            "nodeParent":2,
+            "label":"enemyParent",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":23,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite,roleParent,roleParent",
+            "props":{"y":0,"x":0,"var":"roleParent","name":"roleParent"},
+            "nodeParent":2,
+            "label":"roleParent",
             "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
@@ -137,7 +162,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,role_01,role_01",
-                    "props":{"y":881,"x":474,"width":170,"var":"role_01","name":"role_01","height":190},
+                    "props":{"y":976,"x":559,"width":170,"var":"role_01","pivotY":95,"pivotX":85,"name":"role_01","height":190},
                     "nodeParent":12,
                     "label":"role_01",
                     "isOpen":true,
@@ -226,7 +251,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,role_02,role_02",
-                    "props":{"y":881,"x":122,"width":170,"var":"role_02","name":"role_02","height":190},
+                    "props":{"y":976,"x":207,"width":170,"var":"role_02","pivotY":95,"pivotX":85,"name":"role_02","height":190},
                     "nodeParent":12,
                     "label":"role_02",
                     "isOpen":true,
@@ -317,35 +342,6 @@
         {
             "x":15,
             "type":"Sprite",
-            "searchKey":"Sprite,candyParent",
-            "props":{"name":"candyParent"},
-            "nodeParent":2,
-            "label":"candyParent",
-            "isOpen":true,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":13,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Sprite",
-            "searchKey":"Sprite,enemyParent",
-            "props":{"y":0,"x":0,"name":"enemyParent"},
-            "nodeParent":2,
-            "label":"enemyParent",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":23,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Sprite",
             "searchKey":"Sprite,score",
             "props":{"name":"score"},
             "nodeParent":2,
@@ -370,6 +366,20 @@
                     "child":[
                         ]
                 }]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite",
+            "props":{"y":485,"x":497,"texture":"candy/红色桶.png"},
+            "nodeParent":2,
+            "label":"Sprite",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":42,
+            "child":[
+                ]
         }],
     "animations":[
         {

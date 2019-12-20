@@ -6,11 +6,11 @@ export default class Role extends Laya.Script {
     /**所属场景*/
     private selfScene: Laya.Scene;
     /**糖果到碰到感应装置时，名字装进这个数组*/
-    private nameAndIndex: Array<string>;
+    private nameArr: Array<string>;
     /**糖果父节点*/
     private candyParent: Laya.Sprite;
-    /**血量*/
-    private health: Laya.ProgressBar;
+    /**自己的血量*/
+    private selfHealth: Laya.ProgressBar;
 
     constructor() { super(); }
 
@@ -21,14 +21,14 @@ export default class Role extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
-        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);
-        this.nameAndIndex = mainSceneControl.nameAndIndex;
+        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
+        this.nameArr = mainSceneControl.nameArr;
         this.candyParent = mainSceneControl.candyParent;
-        this.health = this.self.getChildByName('health') as Laya.ProgressBar;
-        this.health.value = 1;
+        this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
+        this.selfHealth.value = 1;
         this.bucketClink();
     }
-    /**桶点击事件*/
+    /**主角的点击事件*/
     bucketClink(): void {
         this.self.on(Laya.Event.MOUSE_DOWN, this, this.down);
         this.self.on(Laya.Event.MOUSE_MOVE, this, this.move);
@@ -40,8 +40,8 @@ export default class Role extends Laya.Script {
     down(event): void {
         this.self.scale(0.9, 0.9);
         // 如果感应区有糖果,找到第一个进入感应区的糖果的唯一名称
-        if (this.nameAndIndex[0]) {
-            let candyName = this.nameAndIndex[this.nameAndIndex.length - 1];
+        if (this.nameArr[0]) {
+            let candyName = this.nameArr[this.nameArr.length - 1];
             let candy = this.candyParent.getChildByName(candyName);
             let CandyScript = candy.getComponent(Candy);
             // 给予目标地点,非空说明点击过了
@@ -64,6 +64,11 @@ export default class Role extends Laya.Script {
         this.self.scale(1, 1);
     }
 
+    onUpdate(): void {
+        if (this.selfHealth.value <= 0) {
+            this.self.removeSelf();
+        }
+    }
     onDisable(): void {
     }
 }

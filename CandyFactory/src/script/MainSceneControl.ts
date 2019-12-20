@@ -1,15 +1,11 @@
-import Candy from "./Candy";
-
 export default class MainSceneControl extends Laya.Script {
     /** @prop {name:candy, tips:"糖果", type:Prefab}*/
     public candy: Laya.Prefab;
     /** @prop {name:candyParent, tips:"糖果父节点", type:Node}*/
     public candyParent: Laya.Sprite;
 
-    // /** @prop {name:bucket, tips:"盒子", type:Prefab}*/
-    // public bucket: Laya.Prefab;
-    // /** @prop {name:bucketParent, tips:"第一个", type:Node}*/
-    // public bucketParent: Laya.Sprite;
+    /** @prop {name:roleParent, tips:"角色父节点", type:Node}*/
+    public roleParent: Laya.Sprite;
 
     /** @prop {name:enemy, tips:"敌人", type:Prefab}*/
     public enemy: Laya.Prefab;
@@ -29,10 +25,12 @@ export default class MainSceneControl extends Laya.Script {
     private role_01: Laya.Sprite;
     private role_02: Laya.Sprite;
 
-    /**敌人出现开关，这个开关每次开启后，立马会被关闭，因为每次只出现一个敌人*/
+    /**敌人出现开关，这个开关每次开启后，一次性，赋一次值只能产生一个敌人*/
     private enemyAppear: boolean;
-    /**怪物攻击对象,也是上个吃糖果对象*/
-    private targetRole: Laya.Sprite;
+    /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
+    private tagRoleName: string;
+    /**敌人产生的个数计数器*/
+    private enemyCount: number;
 
     /**糖果产生的时间间隔*/
     private candy_interval: number;
@@ -41,9 +39,11 @@ export default class MainSceneControl extends Laya.Script {
     /**生产开关*/
     private creatOnOff: boolean;
     /**糖果到碰到感应装置时，名字装进这个数组*/
-    private nameAndIndex: Array<string>;
+    private nameArr: Array<string>;
     /**生成糖果个数计数器*/
     private candyCount: number;
+    /**游戏结束标志*/
+    public GameOver: boolean;
 
     constructor() { super(); }
 
@@ -54,15 +54,18 @@ export default class MainSceneControl extends Laya.Script {
     /**场景初始化*/
     initSecne(): void {
         this.enemyAppear = false;
-        this.targetRole = null;
+        this.tagRoleName = null;
+        this.enemyCount = 0;
 
         this.candy_interval = 500;
         this.creatTime = Date.now();
         this.creatOnOff = true;
         Laya.MouseManager.multiTouchEnabled = true;
-        this.nameAndIndex = [];
+        this.nameArr = [];
         this.candyCount = 0;
         this.scoreLabel.text = '0';
+
+        this.GameOver = false;
         this.protagonistInit();
     }
 
@@ -119,12 +122,30 @@ export default class MainSceneControl extends Laya.Script {
 
     /**出现敌人*/
     careatEnemy() {
-        let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
-        this.enemyParent.addChild(enemy);
-        enemy.pos(0, 0);
+        this.enemyCount++;
+        if (this.tagRoleName !== null) {
+            let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
+            this.enemyParent.addChild(enemy);
+            // 现出来的显示在前面
+            enemy.zOrder = -this.enemyCount;
+            enemy.pivotX = enemy.width / 2;
+            enemy.pivotY = enemy.height / 2;
+
+            let tagRole = this.roleParent.getChildByName(this.tagRoleName) as Laya.Sprite;
+            if (tagRole.x < Laya.stage.width / 2 && tagRole.x > 0) {
+                enemy.pos(-50, 300);
+            } else if (tagRole.x >= Laya.stage.width / 2 && tagRole.x < Laya.stage.width) {
+                enemy.pos(800, 300);
+            }
+        }
     }
 
     onUpdate(): void {
+        // 主角全部死亡时停止移动
+        if (this.roleParent._children.length === 0) {
+            return;
+        }
+
         if (this.creatOnOff) {
             let nowTime = Date.now();
             if (nowTime - this.creatTime > this.candy_interval) {
@@ -133,10 +154,9 @@ export default class MainSceneControl extends Laya.Script {
             }
         }
         if (this.enemyAppear) {
-            console.log('出现一个敌人');
-            this.enemyAppear = false;
-            this.targetRole = null;
             this.careatEnemy();
+            this.enemyAppear = false;
+            this.tagRoleName = null;
         }
     }
 
