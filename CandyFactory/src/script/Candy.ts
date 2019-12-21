@@ -41,15 +41,30 @@ export default class Candy extends Laya.Script {
 
     onTriggerEnter(other: any, self: any, contact: any): void {
         let otherName: string = other.owner.name;
-        // 初次碰撞把名称和唯一的索引值放进数组
+        // 糖果名称
+        let name = self.owner.name;
+        let candyType = name.substring(0, 11);
+        // 初次碰撞把唯一的名称放进数组
         if (otherName === 'induction') {
-            let name = self.owner.name;
             this.nameArr.push(name);
         } else if (otherName === 'yellowRole' || otherName === 'redRole') {
             this.self.removeSelf();
-            let color = self.owner.name.substring(0, 11);
+            // 加血道具,如果满血则加1000分
+            if (candyType === 'addBlood___') {
+                let tagHealth = this.targetRole.getChildByName('health') as Laya.ProgressBar;
+                if (tagHealth.value >= 1) {
+                    this.scoreLabel.text = (Number(this.scoreLabel.text) + 1000).toString();
+                } else {
+                    tagHealth.value += 0.2;
+                    if (tagHealth.value >= 1) {
+                        tagHealth.value = 1;
+                    }
+                }
+                return;
+            }
+            // 普通糖果
             // 名称配对
-            let pairName = color + otherName;
+            let pairName = candyType + otherName;
             let matching_01 = 'yellowCandy' + 'yellowRole';
             let matching_02 = 'redCandy___' + 'redRole';
             if (pairName === matching_01 || pairName === matching_02) {
@@ -87,6 +102,7 @@ export default class Candy extends Laya.Script {
             this.rig.linearVelocity = { x: 0, y: 0 }
             return;
         }
+
         // 超出范围消失
         if (this.self.y > Laya.stage.height + 100 || this.self.y < 0 - 100 || this.self.x > 750 + this.self.width + 50 || this.self.x < -this.self.width) {
             this.self.removeSelf();
@@ -96,13 +112,18 @@ export default class Candy extends Laya.Script {
         if (this.targetRole === null) {
             this.self.y += this.speed;
         } else {
-            // x,y分别相减是两点连线向量
-            let point = new Laya.Point(this.targetRole.x - this.self.x, this.targetRole.y - this.self.y);
-            // 归一化，向量长度为1。
-            point.normalize();
-            //向量相加
-            this.self.x += point.x * this.speed * 15 / 8;
-            this.self.y += point.y * this.speed * 15 / 8;
+            // 如果this.targetRole从父节点移除了，那么糖果直接下落
+            if (this.targetRole.parent === null) {
+                this.self.y += 3;
+            } else {
+                // x,y分别相减是两点连线向量
+                let point = new Laya.Point(this.targetRole.x - this.self.x, this.targetRole.y - this.self.y);
+                // 归一化，向量长度为1。
+                point.normalize();
+                //向量相加
+                this.self.x += point.x * this.speed * 15 / 8;
+                this.self.y += point.y * this.speed * 15 / 8;
+            }
         }
     }
 

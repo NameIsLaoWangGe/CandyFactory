@@ -107,6 +107,10 @@ export default class Enemy extends Laya.Script {
     onUpdate(): void {
         // 主角全部死亡时停止移动
         if (this.roleParent._children.length === 0) {
+            this.self.off(Laya.Event.MOUSE_DOWN, this, this.down);
+            this.self.off(Laya.Event.MOUSE_MOVE, this, this.move);
+            this.self.off(Laya.Event.MOUSE_UP, this, this.up);
+            this.self.off(Laya.Event.MOUSE_OUT, this, this.out);
             return;
         }
         // 血量低于0死亡
@@ -137,7 +141,7 @@ export default class Enemy extends Laya.Script {
                             this.tagRole = this.roleParent._children[0];
                             let tagHealth = this.roleParent._children[0].getChildByName('health');
                             this.tagHealth = tagHealth;
-                        } 
+                        }
                     }
                 }
                 console.log('发动一次攻击');
