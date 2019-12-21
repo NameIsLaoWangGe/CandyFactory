@@ -48,6 +48,10 @@ export default class Candy extends Laya.Script {
         if (otherName === 'induction') {
             this.nameArr.push(name);
         } else if (otherName === 'yellowRole' || otherName === 'redRole') {
+            // 如果没有目标对象则停止
+            if (this.targetRole === null) {
+                return;
+            }
             this.self.removeSelf();
             // 加血道具,如果满血则加1000分
             if (candyType === 'addBlood___') {
@@ -62,8 +66,8 @@ export default class Candy extends Laya.Script {
                 }
                 return;
             }
+            
             // 普通糖果
-            // 名称配对
             let pairName = candyType + otherName;
             let matching_01 = 'yellowCandy' + 'yellowRole';
             let matching_02 = 'redCandy___' + 'redRole';

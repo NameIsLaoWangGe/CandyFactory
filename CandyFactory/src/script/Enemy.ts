@@ -20,6 +20,9 @@ export default class Enemy extends Laya.Script {
     /**攻击对象血量*/
     private tagHealth: Laya.ProgressBar;
 
+    /**对话框*/
+    private speakBox: Laya.Prefab;
+
     /**攻击时间间隔*/
     private attackTnterval: number;
     /**当前时间，用于对比时间间隔*/
@@ -48,6 +51,8 @@ export default class Enemy extends Laya.Script {
         this.attackTnterval = 1000;
         this.recordTime = Date.now();
 
+        this.speakBox = mainSceneControl.speakBox;
+
         this.bucketClink();
     }
 
@@ -63,8 +68,13 @@ export default class Enemy extends Laya.Script {
      * 当然吃到的糖果也会有另外的增益
      * 杀敌暂时不增加分数分数增加*/
     down(event): void {
-        this.self.scale(0.95, 0.95);
-        this.selfHealth.value -= 0.2;
+        // 主角全部死亡时停止移动
+        if (this.roleParent._children.length === 0) {
+            return;
+        } else {
+            this.self.scale(0.95, 0.95);
+            this.selfHealth.value -= 0.2;
+        }
     }
     /**移动*/
     move(event): void {
@@ -105,14 +115,7 @@ export default class Enemy extends Laya.Script {
     }
 
     onUpdate(): void {
-        // 主角全部死亡时停止移动
-        if (this.roleParent._children.length === 0) {
-            this.self.off(Laya.Event.MOUSE_DOWN, this, this.down);
-            this.self.off(Laya.Event.MOUSE_MOVE, this, this.move);
-            this.self.off(Laya.Event.MOUSE_UP, this, this.up);
-            this.self.off(Laya.Event.MOUSE_OUT, this, this.out);
-            return;
-        }
+
         // 血量低于0死亡
         if (this.selfHealth.value <= 0) {
             this.self.removeSelf();

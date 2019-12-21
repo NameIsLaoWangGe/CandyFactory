@@ -43,6 +43,9 @@ export default class Role extends Laya.Script {
         if (this.nameArr[0]) {
             let candyName = this.nameArr[this.nameArr.length - 1];
             let candy = this.candyParent.getChildByName(candyName);
+            if (!candy) {
+                return;
+            }
             let CandyScript = candy.getComponent(Candy);
             // 给予目标地点,非空说明点击过了
             if (CandyScript.targetRole === null) {

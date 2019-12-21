@@ -18,6 +18,9 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:assembly, tips:流水线, type:Node}*/
     public assembly: Laya.Sprite;
 
+    /** @prop {name:speakBox, tips:"对话框", type:Prefab}*/
+    public speakBox: Laya.Prefab;
+
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
     public scoreLabel: Laya.Label;
 
@@ -148,6 +151,8 @@ export default class MainSceneControl extends Laya.Script {
     onUpdate(): void {
         // 主角全部死亡时停止移动
         if (this.roleParent._children.length === 0) {
+            this.roleParent.addChild(this.role_01);
+            this.roleParent.addChild(this.role_02);
             return;
         }
 
