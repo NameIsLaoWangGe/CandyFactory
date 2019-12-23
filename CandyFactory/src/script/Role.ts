@@ -43,7 +43,7 @@ export default class Role extends Laya.Script {
         // 目前点击主角的时候关闭对话框，以免扰乱视线,但是只关闭自己的对话框。
         if (this.self.name === 'role_01') {
             this.mainSceneControl.role_01speak.alpha = 0;
-        }else{
+        } else {
             this.mainSceneControl.role_02speak.alpha = 0;
         }
         this.self.scale(0.9, 0.9);
@@ -55,7 +55,7 @@ export default class Role extends Laya.Script {
                 return;
             }
             let CandyScript = candy.getComponent(Candy);
-            // 给予目标地点,非空说明点击过了
+            // 给予目标地点,非空说明点击过了,让场景和这个糖果都知道
             if (CandyScript.targetRole === null) {
                 CandyScript.targetRole = this.self;
             }

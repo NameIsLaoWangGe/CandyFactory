@@ -1,20 +1,23 @@
 D .
 D candy
-P 5D571477 加血.png
+P 5D571477 加血糖果.png
 P 7510FB77 复活糖果.png
 P 05F75E52 对话框.png
+P E53A10BF 帮手.png
 P 309B48E9 感应区域.png
 P 70BACA27 护盾糖果.png
-P 96B0F69D 敌人.png
+P 9D9CE0FC 敌人.png
 R C84BAC03 流水台.png
 R 29CAE12C 流水台中间线.png
-P A495915F 红色桶.png
+P CAB0CC02 紫色桶.png
+P BE46424B 红色桶.png
 P 5F9DD46B 红色糖果.png
 R 2D77ED2D 背景图.png
 P F16C659C 血条$bar.png
 P 8C1B9206 血条.png
-P F07FF819 黄色桶.png
+P 4AA67AF3 黄色桶.png
 P 4F0405D8 黄色糖果.png
+P 77E32D53 黑色糖果.png
 D comp
 P 316AD948 btn_close.png
 P 5B258D17 button.png

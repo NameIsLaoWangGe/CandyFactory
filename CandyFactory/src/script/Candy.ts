@@ -16,6 +16,8 @@ export default class Candy extends Laya.Script {
 
     /**怪物攻击对象*/
     private targetRole: Laya.Sprite;
+    private friend: Laya.Sprite;
+    private friHealth: Laya.ProgressBar;
     /**主角的父节点*/
     private roleParent: Laya.Sprite;
 
@@ -32,10 +34,14 @@ export default class Candy extends Laya.Script {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
+
         this.roleParent = this.mainSceneControl.roleParent;
+        this.friend = this.mainSceneControl.friend;
+        this.friHealth = this.friend.getChildByName('health') as Laya.ProgressBar;
+        this.targetRole = null;
+
         this.nameArr = this.mainSceneControl.nameArr;
         this.scoreLabel = this.mainSceneControl.scoreLabel;
-        this.targetRole = null;
         this.rig = this.self.getComponent(Laya.RigidBody) as Laya.RigidBody;
         this.rig.linearVelocity = { x: 0, y: 0.1 };//此处y值必须不等于0才能正常检测碰撞，并不知道为何
         this.speed = 6;
@@ -50,12 +56,12 @@ export default class Candy extends Laya.Script {
         if (otherName === 'induction') {
             this.nameArr.push(name);
         } else if (otherName === 'yellowRole' || otherName === 'redRole') {
+            this.self.removeSelf();
             // 防止报错
             if (this.targetRole === null) {
                 return;
             }
-            this.self.removeSelf();
-            // 加血道具,如果满血则加1000分
+            // 加血糖果,如果满血则加1000分
             if (candyType === 'addBlood___') {
                 let tagHealth = this.targetRole.getChildByName('health') as Laya.ProgressBar;
                 if (tagHealth.value >= 1) {
@@ -69,7 +75,14 @@ export default class Candy extends Laya.Script {
                 return;
             }
 
-            // 普通糖果
+            // 黑色糖果也出现一个敌人,这个敌人如果是左边，就直接攻击主角，如果在右边优先攻击助手
+            // 但是要判断当前点击的主角是哪边,只有右边才能攻击friend
+            if (candyType === 'blackCandy_') {
+                this.enemyTarget();
+                return;
+            }
+
+            // 普通糖果无任何特殊事件
             let pairName = candyType + otherName;
             let matching_01 = 'yellowCandy' + 'yellowRole';
             let matching_02 = 'redCandy___' + 'redRole';
@@ -80,13 +93,27 @@ export default class Candy extends Laya.Script {
                     this.mainSceneControl.rescueNum++;
                 }
             } else {
-                // 吃错了就会出现一个敌人，敌人会攻击这个目标
+                this.enemyTarget();
+            }
+        }
+    }
+
+    /**敌人攻击目标确定规则
+     * 如果点击的是左边的主角，那么直接去左边
+     * 如果点击的是右边的主角，那么先判断助手死了没有
+     * */
+    enemyTarget() {
+        this.mainSceneControl.enemyAppear = true;
+        if (this.targetRole.name === 'role_01') {
+            this.mainSceneControl.tagRole = this.targetRole;
+        } else if (this.targetRole.name === 'role_02') {
+            // 助手死亡则寻找右边目标，右边目标必定没死，否则游戏结束了
+            if (this.friHealth.value >= 0) {
                 let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
-                mainSceneControl.enemyAppear = true;
-                // 这个目标位置
-                if (this.targetRole.name !== null) {
-                    mainSceneControl.tagRoleName = this.targetRole.name;
-                }
+                this.mainSceneControl.enemyAppear = true;
+                this.mainSceneControl.tagRole = this.mainSceneControl.friend;
+            } else {
+                // 目标不变
             }
         }
     }

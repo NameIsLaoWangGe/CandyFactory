@@ -16,8 +16,6 @@ export default class Enemy extends Laya.Script {
     /**主角的父节点*/
     private roleParent: Laya.Sprite;
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
-    private tagRoleName: string;
-    /**怪物攻击对象,也是上个吃糖果对象*/
     private tagRole: Laya.Sprite;
     /**攻击对象血量*/
     private tagHealth: Laya.ProgressBar;
@@ -46,8 +44,7 @@ export default class Enemy extends Laya.Script {
         this.selfScene = this.owner.scene as Laya.Scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
         this.roleParent = this.mainSceneControl.roleParent;
-        this.tagRoleName = this.mainSceneControl.tagRoleName;
-        this.tagRole = this.roleParent.getChildByName(this.tagRoleName) as Laya.Sprite;
+        this.tagRole = this.mainSceneControl.tagRole;
         this.tagHealth = this.tagRole.getChildByName('health') as Laya.ProgressBar;
 
         this.attackTnterval = 1000;
@@ -144,17 +141,21 @@ export default class Enemy extends Laya.Script {
                 if (this.tagHealth.value > 0) {
                     this.tagHealth.value -= 0.1;
                 } else {
-                    // 如果这个对象死了，并且旁边的主角还在，那么把旁边的主角赋值给这个tagRole；
-                    if (this.tagRole.parent === null) {
-                        (this.tagRole.getChildByName('state') as Laya.Label).text = 'die';
-                        if (this.roleParent._children[0]) {
-                            this.tagRole = this.roleParent._children[0];
-                            let tagHealth = this.roleParent._children[0].getChildByName('health');
-                            this.tagHealth = tagHealth;
+                    // 判断这个目标是不是助手,如果是助手，那么右边主角一定在
+                    // 否则如果两个主角都死了，游戏就结束了
+                    if (this.tagRole.name === 'friend') {
+                        this.tagRole = this.roleParent.getChildByName('role_02') as Laya.Sprite;
+                    } else {
+                        // 如果这个对象死了，并且旁边的主角还在，那么把旁边的主角赋值给这个tagRole；
+                        if (this.tagRole === null) {
+                            if (this.roleParent._children[0]) {
+                                this.tagRole = this.roleParent._children[0];
+                                let tagHealth = this.roleParent._children[0].getChildByName('health');
+                                this.tagHealth = tagHealth;
+                            }
                         }
                     }
                 }
-                console.log('发动一次攻击');
             }
         } else {
             this.enemyMove();
