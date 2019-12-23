@@ -6,6 +6,9 @@ export default class Candy extends Laya.Script {
     private rig: Laya.RigidBody;
     /**所属场景*/
     private selfScene: Laya.Scene;
+    /**场景脚本组件*/
+    private mainSceneControl;
+
     /**糖果到碰到感应装置时，名字装进这个数组*/
     private nameArr: Array<string>;
     /**糖果运行的速度*/
@@ -18,8 +21,7 @@ export default class Candy extends Laya.Script {
 
     /**得分显示*/
     public scoreLabel: Laya.Label;
-    /**游戏结束标志*/
-    private GameOver: boolean;
+
     constructor() { super(); }
     onEnable(): void {
         this.initProperty();
@@ -29,10 +31,10 @@ export default class Candy extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
-        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
-        this.roleParent = mainSceneControl.roleParent;
-        this.nameArr = mainSceneControl.nameArr;
-        this.scoreLabel = mainSceneControl.scoreLabel;
+        this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
+        this.roleParent = this.mainSceneControl.roleParent;
+        this.nameArr = this.mainSceneControl.nameArr;
+        this.scoreLabel = this.mainSceneControl.scoreLabel;
         this.targetRole = null;
         this.rig = this.self.getComponent(Laya.RigidBody) as Laya.RigidBody;
         this.rig.linearVelocity = { x: 0, y: 0.1 };//此处y值必须不等于0才能正常检测碰撞，并不知道为何
@@ -48,7 +50,7 @@ export default class Candy extends Laya.Script {
         if (otherName === 'induction') {
             this.nameArr.push(name);
         } else if (otherName === 'yellowRole' || otherName === 'redRole') {
-            // 如果没有目标对象则停止
+            // 防止报错
             if (this.targetRole === null) {
                 return;
             }
@@ -66,13 +68,17 @@ export default class Candy extends Laya.Script {
                 }
                 return;
             }
-            
+
             // 普通糖果
             let pairName = candyType + otherName;
             let matching_01 = 'yellowCandy' + 'yellowRole';
             let matching_02 = 'redCandy___' + 'redRole';
             if (pairName === matching_01 || pairName === matching_02) {
                 this.scoreLabel.text = (Number(this.scoreLabel.text) + 100).toString();
+                // 复活，还剩一个主角的时候才有复活选项
+                if (this.roleParent._children.length === 1) {
+                    this.mainSceneControl.rescueNum++;
+                }
             } else {
                 // 吃错了就会出现一个敌人，敌人会攻击这个目标
                 let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
@@ -86,6 +92,7 @@ export default class Candy extends Laya.Script {
     }
 
     onTriggerStay(other: any, self: any, contact: any): void {
+
     }
 
     onTriggerExit(other: any, self: any, contact: any): void {

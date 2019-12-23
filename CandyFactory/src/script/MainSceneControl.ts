@@ -6,18 +6,21 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:roleParent, tips:"角色父节点", type:Node}*/
     public roleParent: Laya.Sprite;
+    /** @prop {name:friend, tips:"帮手", type:Node}*/
+    public friend: Laya.Sprite;
 
     /** @prop {name:enemy, tips:"敌人", type:Prefab}*/
     public enemy: Laya.Prefab;
     /** @prop {name:enemyParent, tips:"敌人父节点", type:Node}*/
     public enemyParent: Laya.Sprite;
 
-
     /** @prop {name:background, tips:"背景图", type:Node}*/
     public background: Laya.Sprite;
     /** @prop {name:assembly, tips:流水线, type:Node}*/
     public assembly: Laya.Sprite;
 
+    /** @prop {name:speakBoxParent, tips:"对话框父节点", type:Node}*/
+    public speakBoxParent: Laya.Sprite;
     /** @prop {name:speakBox, tips:"对话框", type:Prefab}*/
     public speakBox: Laya.Prefab;
 
@@ -27,6 +30,9 @@ export default class MainSceneControl extends Laya.Script {
     /**两个主角*/
     private role_01: Laya.Sprite;
     private role_02: Laya.Sprite;
+    /**两个主角的对话框*/
+    private role_01speak: Laya.Sprite;
+    private role_02speak: Laya.Sprite;
 
     /**敌人出现开关，这个开关每次开启后，一次性，赋一次值只能产生一个敌人*/
     private enemyAppear: boolean;
@@ -45,8 +51,12 @@ export default class MainSceneControl extends Laya.Script {
     private nameArr: Array<string>;
     /**生成糖果个数计数器*/
     private candyCount: number;
-    /**游戏结束标志*/
-    public GameOver: boolean;
+
+    /**主角2是否死亡*/
+    private roledie_02: boolean;
+
+    /**复活所需吃糖果的数量*/
+    private rescueNum: number;
 
     constructor() { super(); }
 
@@ -68,8 +78,10 @@ export default class MainSceneControl extends Laya.Script {
         this.candyCount = 0;
         this.scoreLabel.text = '0';
 
-        this.GameOver = false;
+        this.rescueNum = 0;
+
         this.protagonistInit();
+        this.roelSpeakBoxs();
     }
 
     /**主角初始化，成对出现在两个固定位置，每次初始化后的位置可能会调换*/
@@ -78,6 +90,7 @@ export default class MainSceneControl extends Laya.Script {
         this.role_02 = this.owner.scene.role_02;
         let pic_01 = (this.role_01.getChildByName('pic') as Laya.Sprite);
         let pic_02 = (this.role_02.getChildByName('pic') as Laya.Sprite);
+
         // 随机更换皮肤
         let imageUrl_01: string = 'candy/红色桶.png';
         let imageUrl_02: string = 'candy/黄色桶.png';
@@ -96,13 +109,35 @@ export default class MainSceneControl extends Laya.Script {
         }
     }
 
+    /**两个主角对话框的初始化*/
+    roelSpeakBoxs(): void {
+        for (let i = 0; i < 2; i++) {
+            let speakBox = Laya.Pool.getItemByCreateFun('speakBox', this.speakBox.create, this.speakBox) as Laya.Sprite;
+            this.speakBoxParent.addChild(speakBox);
+            if (i === 0) {
+                speakBox.pos(this.role_01.x, this.role_01.y);
+                this.role_01speak = speakBox;
+                this.role_01speak.alpha = 0;
+                // 反向和偏移
+                let pic = this.role_01speak.getChildByName('pic') as Laya.Sprite;
+                let label = this.role_01speak.getChildByName('label') as Laya.Sprite;
+                pic.scaleX = -1;
+                label.x += 30;
+            } else {
+                speakBox.pos(this.role_02.x, this.role_02.y);
+                this.role_02speak = speakBox;
+                this.role_02speak.alpha = 0;
+            }
+        }
+    }
+
     /**产生糖果*/
     productionCandy(): void {
         let candy = Laya.Pool.getItemByCreateFun('candy', this.candy.create, this.candy) as Laya.Sprite;
         this.candyCount++;
 
         // 随机创建一种颜色糖果
-        // 糖果的名称结构是11位字符串加上索引值，这样使他们的名称唯一
+        // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
         let randomNum = Math.floor(Math.random() * 3);
         let url_01 = 'candy/黄色糖果.png';
         let url_02 = 'candy/红色糖果.png';
@@ -149,13 +184,44 @@ export default class MainSceneControl extends Laya.Script {
     }
 
     onUpdate(): void {
-        // 主角全部死亡时停止移动
-        if (this.roleParent._children.length === 0) {
-            this.roleParent.addChild(this.role_01);
-            this.roleParent.addChild(this.role_02);
+        // 角色死亡情况
+        let len = this.roleParent._children.length;
+        if (len === 0) {
+            // 死亡
             return;
+        } else if (len === 1) {
+            let speak_01 = this.role_01speak.getChildByName('label') as Laya.Label;
+            let speak_02 = this.role_02speak.getChildByName('label') as Laya.Label;
+            // 复活
+            if (this.rescueNum >= 5) {
+                this.rescueNum = 0;
+                if (this.roleParent._children[0].name === "role_01") {
+                    this.roleParent.addChild(this.role_02);
+                    this.role_02speak.x -= 150;
+                    speak_02.text = '谢谢你啊！';
+                } else {
+                    this.roleParent.addChild(this.role_01);
+                    speak_01.text = '谢谢你啊！';
+                    this.role_01speak.x += 150;
+                }
+            } else {
+                // 待复活提示
+                if (this.roleParent._children[0].name === "role_01") {
+                    this.role_02speak.alpha = 1;
+                    this.role_02speak.x = this.role_02.x;
+                    speak_02.text = '连续吃5个糖果不犯错的话我就复活了';
+                } else {
+                    this.role_01speak.alpha = 1;
+                    this.role_01speak.x = this.role_01.x;
+                    speak_01.text = '连续吃5个糖果不犯错的话我就复活了';
+                }
+            }
+        } else if (len === 2) {
+            // 保持，复活状态为空
+            this.rescueNum === 0;
         }
 
+        // 创建糖果
         if (this.creatOnOff) {
             let nowTime = Date.now();
             if (nowTime - this.creatTime > this.candy_interval) {
@@ -163,6 +229,8 @@ export default class MainSceneControl extends Laya.Script {
                 this.productionCandy();
             }
         }
+
+        // 创建敌人
         if (this.enemyAppear) {
             this.careatEnemy();
             this.enemyAppear = false;

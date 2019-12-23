@@ -10,9 +10,11 @@ export default class Enemy extends Laya.Script {
 
     /**所属场景*/
     private selfScene: Laya.Scene;
+    /**场景脚本组件*/
+    private mainSceneControl;
+
     /**主角的父节点*/
     private roleParent: Laya.Sprite;
-
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
     private tagRoleName: string;
     /**怪物攻击对象,也是上个吃糖果对象*/
@@ -42,16 +44,16 @@ export default class Enemy extends Laya.Script {
         this.slefSpeed = 5;
 
         this.selfScene = this.owner.scene as Laya.Scene;
-        let mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
-        this.roleParent = mainSceneControl.roleParent;
-        this.tagRoleName = mainSceneControl.tagRoleName;
+        this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
+        this.roleParent = this.mainSceneControl.roleParent;
+        this.tagRoleName = this.mainSceneControl.tagRoleName;
         this.tagRole = this.roleParent.getChildByName(this.tagRoleName) as Laya.Sprite;
         this.tagHealth = this.tagRole.getChildByName('health') as Laya.ProgressBar;
 
         this.attackTnterval = 1000;
         this.recordTime = Date.now();
 
-        this.speakBox = mainSceneControl.speakBox;
+        this.speakBox = this.mainSceneControl.speakBox;
 
         this.bucketClink();
     }
@@ -80,11 +82,11 @@ export default class Enemy extends Laya.Script {
     move(event): void {
     }
     /**抬起*/
-    up(): void {
+    up(event): void {
         this.self.scale(1, 1);
     }
     /**出屏幕*/
-    out(): void {
+    out(event): void {
         this.self.scale(1, 1);
     }
 
@@ -115,6 +117,10 @@ export default class Enemy extends Laya.Script {
     }
 
     onUpdate(): void {
+        // 主角死亡停止移动
+        if (this.roleParent._children.length === 0) {
+            return;
+        }
 
         // 血量低于0死亡
         if (this.selfHealth.value <= 0) {
@@ -140,6 +146,7 @@ export default class Enemy extends Laya.Script {
                 } else {
                     // 如果这个对象死了，并且旁边的主角还在，那么把旁边的主角赋值给这个tagRole；
                     if (this.tagRole.parent === null) {
+                        (this.tagRole.getChildByName('state') as Laya.Label).text = 'die';
                         if (this.roleParent._children[0]) {
                             this.tagRole = this.roleParent._children[0];
                             let tagHealth = this.roleParent._children[0].getChildByName('health');
