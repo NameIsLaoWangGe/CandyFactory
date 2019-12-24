@@ -27,6 +27,9 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
     public scoreLabel: Laya.Label;
 
+    /** @prop {name:induction, tips:‘感应位置’, type:Node}*/
+    public induction: Laya.Sprite;
+
     /**两个主角*/
     private role_01: Laya.Sprite;
     private role_02: Laya.Sprite;
@@ -37,7 +40,7 @@ export default class MainSceneControl extends Laya.Script {
     /**敌人出现开关，这个开关每次开启后，一次性，赋一次值只能产生一个敌人*/
     private enemyAppear: boolean;
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
-    private tagRole: Laya.Sprite;
+    private enemytagRole: Laya.Sprite;
     /**敌人产生的个数计数器*/
     private enemyCount: number;
 
@@ -67,7 +70,7 @@ export default class MainSceneControl extends Laya.Script {
     /**场景初始化*/
     initSecne(): void {
         this.enemyAppear = false;
-        this.tagRole = null;
+        this.enemytagRole = null;
         this.enemyCount = 0;
 
         this.candy_interval = 500;
@@ -171,7 +174,7 @@ export default class MainSceneControl extends Laya.Script {
     /**出现敌人*/
     careatEnemy() {
         this.enemyCount++;
-        if (this.tagRole !== null) {
+        if (this.enemytagRole !== null) {
             let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
             this.enemyParent.addChild(enemy);
             // 现出来的显示在前面
@@ -180,9 +183,9 @@ export default class MainSceneControl extends Laya.Script {
             enemy.pivotY = enemy.height / 2;
 
             //通过目标位置判定出场位置
-            if (this.tagRole.x < Laya.stage.width / 2 && this.tagRole.x > 0) {
+            if (this.enemytagRole.x < Laya.stage.width / 2 && this.enemytagRole.x > 0) {
                 enemy.pos(-50, 300);
-            } else if (this.tagRole.x >= Laya.stage.width / 2 && this.tagRole.x < Laya.stage.width) {
+            } else if (this.enemytagRole.x >= Laya.stage.width / 2 && this.enemytagRole.x < Laya.stage.width) {
                 enemy.pos(800, 300);
             }
         }
@@ -239,7 +242,7 @@ export default class MainSceneControl extends Laya.Script {
         if (this.enemyAppear) {
             this.careatEnemy();
             this.enemyAppear = false;
-            this.tagRole = null;
+            this.enemytagRole = null;
         }
     }
 

@@ -28,6 +28,9 @@ export default class Enemy extends Laya.Script {
     /**当前时间，用于对比时间间隔*/
     private recordTime: number;
 
+    /**分数*/ 
+    private scoreLabel:Laya.Label;
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -47,10 +50,12 @@ export default class Enemy extends Laya.Script {
         this.tagRole = this.mainSceneControl.tagRole;
         this.tagHealth = this.tagRole.getChildByName('health') as Laya.ProgressBar;
 
-        this.attackTnterval = 1000;
+        this.attackTnterval = 100;
         this.recordTime = Date.now();
 
         this.speakBox = this.mainSceneControl.speakBox;
+        
+        this.scoreLabel=this.mainSceneControl.scoreLabel;
 
         this.bucketClink();
     }
@@ -63,7 +68,7 @@ export default class Enemy extends Laya.Script {
         this.self.on(Laya.Event.MOUSE_OUT, this, this.out);
     }
     /**点击敌人，敌人头上会出现小锤子，敲打敌人，每点击一次血量会减少;
-     * 如果不把敌人电死，那么主角就会被攻击至死
+     * 如果不把敌人打死，那么主角就会被攻击
      * 当然吃到的糖果也会有另外的增益
      * 杀敌暂时不增加分数分数增加*/
     down(event): void {
@@ -114,19 +119,15 @@ export default class Enemy extends Laya.Script {
     }
 
     onUpdate(): void {
-        // 主角死亡停止移动
+        // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
             return;
         }
 
-        // 血量低于0死亡
+        // 血量低于0死亡,并且增加分数
         if (this.selfHealth.value <= 0) {
             this.self.removeSelf();
-        }
-
-        // 超出范围消失
-        if (this.self.y > Laya.stage.height + 100 || this.self.y < 0 - 100 || this.self.x > 750 + this.self.width + 50 || this.self.x < -this.self.width) {
-            this.self.removeSelf();
+            
         }
 
         // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
@@ -137,23 +138,19 @@ export default class Enemy extends Laya.Script {
             let nowTime = Date.now();
             if (nowTime - this.recordTime > this.attackTnterval) {
                 this.recordTime = nowTime;
-                // 如果这个攻击对象死了，他会直接走向另一个主角，如果都死了那么就停止
+                // 血量判断，目标死亡后，会更换目标
                 if (this.tagHealth.value > 0) {
-                    this.tagHealth.value -= 0.1;
+                    this.tagHealth.value -= 0.01;
                 } else {
+                    // 更换目标
                     // 判断这个目标是不是助手,如果是助手，那么右边主角一定在
                     // 否则如果两个主角都死了，游戏就结束了
-                    if (this.tagRole.name === 'friend') {
-                        this.tagRole = this.roleParent.getChildByName('role_02') as Laya.Sprite;
-                    } else {
-                        // 如果这个对象死了，并且旁边的主角还在，那么把旁边的主角赋值给这个tagRole；
-                        if (this.tagRole === null) {
-                            if (this.roleParent._children[0]) {
-                                this.tagRole = this.roleParent._children[0];
-                                let tagHealth = this.roleParent._children[0].getChildByName('health');
-                                this.tagHealth = tagHealth;
-                            }
-                        }
+                    if (this.tagRole.name === 'friend' || this.tagRole.name === 'role_01') {
+                        this.tagRole = this.mainSceneControl.role_02;
+                        this.tagHealth = this.mainSceneControl.role_02.getChildByName('health');
+                    } else if (this.tagRole.name === 'role_02') {
+                        this.tagRole = this.mainSceneControl.role_01;
+                        this.tagHealth = this.mainSceneControl.role_01.getChildByName('health');
                     }
                 }
             }
@@ -166,6 +163,5 @@ export default class Enemy extends Laya.Script {
     onDisable(): void {
         Laya.Pool.recover('enemy', this.self);
     }
-
 
 }
