@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":42,
+    "selectedBox":24,
+    "selecteID":28,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":58,
+    "maxID":60,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -35,14 +35,13 @@
             "props":{"y":0,"x":0,"name":"assembly"},
             "nodeParent":2,
             "label":"assembly",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":18,
             "child":[
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,assembly",
                     "props":{"y":-59,"x":370,"width":372,"texture":"candy/流水台.png","pivotX":186,"name":"assembly","height":978},
@@ -57,7 +56,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,induction",
                     "props":{"y":471,"x":385,"width":305,"texture":"candy/感应区域.png","pivotX":153,"name":"induction","height":170},
@@ -70,7 +68,6 @@
                     "compId":15,
                     "child":[
                         {
-                            "x":45,
                             "type":"BoxCollider",
                             "switchAble":true,
                             "searchKey":"BoxCollider",
@@ -86,7 +83,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"RigidBody",
                             "switchAble":true,
                             "searchKey":"RigidBody",
@@ -110,7 +106,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","induction":"@node:15","friend":"@node:42","enemyParent":"@node:23","enemy":"@Prefab:prefab/enemy.prefab","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","induction":"@node:15","friend":"@node:42","enemyParent":"@node:23","enemy":"@Prefab:prefab/enemy.prefab","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -152,8 +148,22 @@
         {
             "x":15,
             "type":"Sprite",
+            "searchKey":"Sprite,bulletParent",
+            "props":{"y":0,"x":0,"name":"bulletParent"},
+            "nodeParent":2,
+            "label":"bulletParent",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":59,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
             "searchKey":"Sprite,roleParent,roleParent",
-            "props":{"y":0,"x":0,"width":750,"var":"roleParent","name":"roleParent","mouseThrough":true,"height":1334},
+            "props":{"y":0,"x":0,"width":750,"var":"roleParent","name":"roleParent","mouseThrough":true,"height":1334,"alpha":0.5},
             "nodeParent":2,
             "label":"roleParent",
             "isOpen":true,
@@ -226,7 +236,7 @@
                             "source":"src/script/Role.ts",
                             "searchKey":"Script,Role",
                             "removeAble":true,
-                            "props":{},
+                            "props":{"bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
                             "nodeParent":24,
                             "label":"Role",
                             "isDirectory":false,
@@ -317,7 +327,7 @@
                             "source":"src/script/Role.ts",
                             "searchKey":"Script,Role",
                             "removeAble":true,
-                            "props":{},
+                            "props":{"bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
                             "nodeParent":25,
                             "label":"Role",
                             "isDirectory":false,
@@ -364,14 +374,13 @@
             "props":{"name":"score"},
             "nodeParent":2,
             "label":"score",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":20,
             "child":[
                 {
-                    "x":30,
                     "type":"Label",
                     "searchKey":"Label,scoreLabel",
                     "props":{"y":48,"x":565,"width":112,"text":"label","name":"scoreLabel","height":50,"fontSize":30},
@@ -392,14 +401,13 @@
             "props":{"y":634,"x":585,"width":151,"pivotY":96,"pivotX":76,"name":"friend","height":191},
             "nodeParent":2,
             "label":"friend",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":42,
             "child":[
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,friend_Pic",
                     "props":{"y":99,"x":71,"width":165,"texture":"candy/帮手.png","pivotY":99,"pivotX":83,"name":"friend_Pic","height":198},
@@ -412,7 +420,6 @@
                     "compId":54,
                     "child":[
                         {
-                            "x":45,
                             "type":"BoxCollider",
                             "switchAble":true,
                             "searchKey":"BoxCollider",
@@ -428,7 +435,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"RigidBody",
                             "switchAble":true,
                             "searchKey":"RigidBody",
@@ -446,7 +452,6 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"ProgressBar",
                     "searchKey":"ProgressBar,health",
                     "props":{"y":-44,"x":0,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","scaleY":0.9,"scaleX":0.9,"name":"health"},

@@ -24,6 +24,11 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:speakBox, tips:"对话框", type:Prefab}*/
     public speakBox: Laya.Prefab;
 
+    /** @prop {name:bulletParent, tips:"子弹父节点", type:Node}*/
+    public bulletParent: Laya.Sprite;
+    /** @prop {name:bullet, tips:"子弹", type:Prefab}*/
+    public bullet: Laya.Prefab;
+
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
     public scoreLabel: Laya.Label;
 
@@ -33,6 +38,7 @@ export default class MainSceneControl extends Laya.Script {
     /**两个主角*/
     private role_01: Laya.Sprite;
     private role_02: Laya.Sprite;
+
     /**两个主角的对话框*/
     private role_01speak: Laya.Sprite;
     private role_02speak: Laya.Sprite;
@@ -40,7 +46,7 @@ export default class MainSceneControl extends Laya.Script {
     /**敌人出现开关，这个开关每次开启后，一次性，赋一次值只能产生一个敌人*/
     private enemyAppear: boolean;
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
-    private enemytagRole: Laya.Sprite;
+    private enemyTagRole: Laya.Sprite;
     /**敌人产生的个数计数器*/
     private enemyCount: number;
 
@@ -61,6 +67,7 @@ export default class MainSceneControl extends Laya.Script {
     /**复活所需吃糖果的数量*/
     private rescueNum: number;
 
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -70,7 +77,7 @@ export default class MainSceneControl extends Laya.Script {
     /**场景初始化*/
     initSecne(): void {
         this.enemyAppear = false;
-        this.enemytagRole = null;
+        this.enemyTagRole = null;
         this.enemyCount = 0;
 
         this.candy_interval = 500;
@@ -84,6 +91,8 @@ export default class MainSceneControl extends Laya.Script {
         this.rescueNum = 0;
 
         this.protagonistInit();
+      
+
         this.roelSpeakBoxs();
     }
 
@@ -174,7 +183,7 @@ export default class MainSceneControl extends Laya.Script {
     /**出现敌人*/
     careatEnemy() {
         this.enemyCount++;
-        if (this.enemytagRole !== null) {
+        if (this.enemyTagRole !== null) {
             let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
             this.enemyParent.addChild(enemy);
             // 现出来的显示在前面
@@ -183,9 +192,9 @@ export default class MainSceneControl extends Laya.Script {
             enemy.pivotY = enemy.height / 2;
 
             //通过目标位置判定出场位置
-            if (this.enemytagRole.x < Laya.stage.width / 2 && this.enemytagRole.x > 0) {
+            if (this.enemyTagRole.x < Laya.stage.width / 2 && this.enemyTagRole.x > 0) {
                 enemy.pos(-50, 300);
-            } else if (this.enemytagRole.x >= Laya.stage.width / 2 && this.enemytagRole.x < Laya.stage.width) {
+            } else if (this.enemyTagRole.x >= Laya.stage.width / 2 && this.enemyTagRole.x < Laya.stage.width) {
                 enemy.pos(800, 300);
             }
         }
@@ -242,8 +251,9 @@ export default class MainSceneControl extends Laya.Script {
         if (this.enemyAppear) {
             this.careatEnemy();
             this.enemyAppear = false;
-            this.enemytagRole = null;
+            this.enemyTagRole = null;
         }
+
     }
 
     onDisable(): void {

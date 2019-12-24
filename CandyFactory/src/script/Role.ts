@@ -1,6 +1,11 @@
 import MainSceneControl from "./MainSceneControl";
 import Candy from "./Candy";
 export default class Role extends Laya.Script {
+    /** @prop {name:bulletParent, tips:"子弹父节点", type:Node}*/
+    public bulletParent: Laya.Sprite;
+    /** @prop {name:bullet, tips:"子弹", type:Prefab}*/
+    public bullet: Laya.Prefab;
+
     /**自己*/
     private self: Laya.Sprite;
     /**所属场景*/
@@ -13,6 +18,17 @@ export default class Role extends Laya.Script {
     private candyParent: Laya.Sprite;
     /**自己的血量*/
     private selfHealth: Laya.ProgressBar;
+
+    /**主角属性*/
+    private role_01_P: object;
+    private role_02_P: object;
+
+    /**敌人预警，只要敌人进入射程就会触发警报*/
+    private role_Warning: boolean;
+    /**两个子弹创建时间间隔*/
+    private interval_bullt: number;
+    /**两个当前创建时间记录*/
+    private nowTime: number;
 
     constructor() { super(); }
 
@@ -28,6 +44,24 @@ export default class Role extends Laya.Script {
         this.candyParent = this.mainSceneControl.candyParent;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
         this.selfHealth.value = 1;
+
+        this.interval_bullt = 100;
+        this.nowTime = Date.now();
+
+        this.role_01_P = {
+            blood: 200,
+            ATK: 10,
+            ATKSpeed: 5,
+            DEF: 10,
+        };
+
+        this.role_02_P = {
+            blood: 200,
+            ATK: 10,
+            ATKSpeed: 5,
+            DEF: 10,
+        };
+
         this.bucketClink();
     }
     /**主角的点击事件*/
@@ -56,8 +90,8 @@ export default class Role extends Laya.Script {
             }
             let CandyScript = candy.getComponent(Candy);
             // 给予目标地点,非空说明点击过了,让场景和这个糖果都知道
-            if (CandyScript.targetRole === null) {
-                CandyScript.targetRole = this.self;
+            if (CandyScript.candyTagRole === null) {
+                CandyScript.candyTagRole = this.self;
             }
         } else {
             console.log('糖果不在感应区，或者点错了');
@@ -75,9 +109,28 @@ export default class Role extends Laya.Script {
         this.self.scale(1, 1);
     }
 
+
+    /**创建主角子弹
+     * 主角1位置的子弹
+    */
+    careatBullet() {
+        let bullet = Laya.Pool.getItemByCreateFun('bullet', this.bullet.create, this.bullet) as Laya.Sprite;
+        this.bulletParent.addChild(bullet);
+        bullet.pos(this.self.x, this.self.y);
+    }
+
     onUpdate(): void {
         if (this.selfHealth.value <= 0) {
             this.self.removeSelf();
+        }
+
+        //创建子弹
+        if (this.role_Warning) {
+            let nowTime = Date.now();
+            if (nowTime - this.nowTime > this.interval_bullt) {
+                this.careatBullet();
+                this.nowTime = nowTime;
+            }
         }
     }
     onDisable(): void {
