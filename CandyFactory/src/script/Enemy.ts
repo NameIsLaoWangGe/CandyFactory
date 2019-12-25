@@ -32,9 +32,12 @@ export default class Enemy extends Laya.Script {
     private attackTnterval: number;
     /**当前时间，用于对比时间间隔*/
     private recordTime: number;
-
     /**分数*/
     private scoreLabel: Laya.Label;
+    /**当前属性*/
+    private enemyProperty: any;
+    /**血量值显示的label*/
+    private bloodLabel: any;
 
     constructor() { super(); }
 
@@ -45,15 +48,15 @@ export default class Enemy extends Laya.Script {
     /**初始化*/
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
-        this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
-        this.selfHealth.value = 1;
-        this.selfSpeed = 5;
-
         this.selfScene = this.owner.scene as Laya.Scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
         this.roleParent = this.mainSceneControl.roleParent;
         this.slefTagRole = this.mainSceneControl.enemyTagRole;
         this.tagHealth = this.slefTagRole.getChildByName('health') as Laya.ProgressBar;
+
+        this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
+        this.selfHealth.value = 1;
+        this.selfSpeed = 4;
 
         this.attackTnterval = 100;
         this.recordTime = Date.now();
@@ -64,6 +67,35 @@ export default class Enemy extends Laya.Script {
         this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
 
         this.bucketClink();
+        this.enemyPropertySet();
+    }
+
+    /**怪物等级包括的一些属性*/
+    enemyPropertySet(): void {
+        // 属性赋值
+        this.enemyProperty = {
+            level: '',
+            blood: '',
+            moveSpeed: '',
+            defense: '',
+        }
+        this.enemyProperty.level = this.mainSceneControl.enemyProperty.level;
+        this.enemyProperty.blood = this.mainSceneControl.enemyProperty.blood;
+        this.enemyProperty.moveSpeed = this.mainSceneControl.enemyProperty.moveSpeed;
+        this.enemyProperty.defense = this.mainSceneControl.enemyProperty.defense;
+
+        this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
+        this.bloodLabel.text = this.enemyProperty.blood + '/' + this.enemyProperty.blood;
+    }
+
+    /**属性刷新显示规则,血量显示一定是整数*/
+    enemyPropertyUpdate(): void {
+        // 血量显示,把最后一个变为零
+        let str = Math.round(this.enemyProperty.blood * this.selfHealth.value).toString();
+        let subStr_01 = str.substring(0, str.length - 1);
+        let subStr_02 = subStr_01 + 0;
+
+        this.bloodLabel.text = subStr_02 + '/' + this.enemyProperty.blood;
     }
 
     /**敌人点击事件*/
@@ -83,7 +115,7 @@ export default class Enemy extends Laya.Script {
             return;
         } else {
             this.self.scale(0.95, 0.95);
-            this.selfHealth.value -= 0.5;
+            this.selfHealth.value -= 0.01;
         }
     }
     /**移动*/
@@ -100,7 +132,6 @@ export default class Enemy extends Laya.Script {
 
     /** 敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则*/
     enemyMove(): void {
-
         // x,y分别相减是两点连线向量
         // 向量计算并且归一化，向量长度为1。
         let point = new Laya.Point(this.slefTagRole.x - this.self.x, this.slefTagRole.y - this.self.y);
@@ -129,7 +160,9 @@ export default class Enemy extends Laya.Script {
         }
     }
 
+
     onUpdate(): void {
+        this.enemyPropertyUpdate();
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
             return;
@@ -156,9 +189,7 @@ export default class Enemy extends Laya.Script {
                     this.tagHealth.value -= 0.01;
                 } else {
                     // 更换目标
-                    // 判断这个目标是不是助手,如果是助手，那么右边主角一定在
-                    // 否则如果两个主角都死了，游戏就结束了
-                    if (this.slefTagRole.name === 'friend' || this.slefTagRole.name === 'role_01') {
+                    if (this.slefTagRole.name === 'role_01') {
                         this.slefTagRole = this.mainSceneControl.role_02;
                         this.tagHealth = this.mainSceneControl.role_02.getChildByName('health');
                     } else if (this.slefTagRole.name === 'role_02') {

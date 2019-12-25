@@ -2,11 +2,11 @@
     "x":0,
     "type":"Sprite",
     "selectedBox":8,
-    "selecteID":10,
+    "selecteID":11,
     "searchKey":"Sprite,candy",
     "props":{"y":0,"x":0,"width":125,"presetID":1,"preset":"laya/pages/prefab/candy.prefab","name":"candy","isPresetRoot":true,"height":120},
     "nodeParent":-1,
-    "maxID":13,
+    "maxID":14,
     "label":"candy",
     "isOpen":true,
     "isDirectory":true,
@@ -51,7 +51,7 @@
             "switchAble":true,
             "searchKey":"BoxCollider",
             "removeAble":true,
-            "props":{"y":0,"x":40,"width":50,"presetID":4,"preset":"laya/pages/prefab/candy.prefab","isSensor":true,"height":120},
+            "props":{"y":0,"x":40,"width":50,"presetID":4,"preset":"laya/pages/prefab/candy.prefab","isSensor":false,"height":120},
             "nodeParent":8,
             "label":"BoxCollider(candy)",
             "isDirectory":false,
@@ -74,6 +74,20 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":12,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Label",
+            "searchKey":"Label",
+            "props":{"y":48,"x":65,"width":64,"text":"label","presetID":6,"preset":"laya/pages/prefab/candy.prefab","pivotY":17,"pivotX":32,"height":33,"fontSize":30},
+            "nodeParent":8,
+            "label":"Label(candy)",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":13,
             "child":[
                 ]
         }],

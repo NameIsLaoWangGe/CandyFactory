@@ -21,8 +21,7 @@ export default class Role extends Laya.Script {
     private selfHealth: Laya.ProgressBar;
 
     /**主角属性*/
-    private role_01_P: object;
-    private role_02_P: object;
+    private role_property: object;
 
     /**敌人预警，只要敌人进入射程就会触发警报*/
     private role_Warning: boolean;
@@ -30,6 +29,8 @@ export default class Role extends Laya.Script {
     private interval_bullt: number;
     /**两个当前创建时间记录*/
     private nowTime: number;
+    /**得分显示*/
+    public scoreLabel: Laya.Label;
 
     constructor() { super(); }
 
@@ -46,25 +47,37 @@ export default class Role extends Laya.Script {
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
         this.selfHealth.value = 1;
 
+        this.scoreLabel = this.mainSceneControl.scoreLabel;
+
         this.interval_bullt = 100;
         this.nowTime = Date.now();
 
-        this.role_01_P = {
-            blood: 200,
-            ATK: 10,
-            ATKSpeed: 5,
-            DEF: 10,
-        };
-
-        this.role_02_P = {
-            blood: 200,
-            ATK: 10,
-            ATKSpeed: 5,
-            DEF: 10,
-        };
-
         this.bucketClink();
+        this.rolePropertySet();
     }
+
+    /**主角的属性
+     *两个主角属性分别计算
+     *四个属性依次是，生命值，子弹攻击力，子弹发射频率和弹道速度，防御能力
+    */
+    rolePropertySet(): void {
+        if (this.self.name === 'role_01') {
+            this.role_property = {
+                blood: 200,
+                attackValue: 10,
+                attackSpeed: 500,
+                defense: 10,
+            };
+        } else if (this.self.name === 'role_02') {
+            this.role_property = {
+                blood: 200,
+                attackV: 10,
+                attackSpeed: 500,
+                defense: 10,
+            };
+        }
+    }
+
     /**主角的点击事件*/
     bucketClink(): void {
         this.self.on(Laya.Event.MOUSE_DOWN, this, this.down);
@@ -110,6 +123,9 @@ export default class Role extends Laya.Script {
         this.self.scale(1, 1);
     }
 
+    onTriggerEnter(other: any, self: any, contact: any): void {
+        console.log('你好!');
+    }
 
     /**创建主角子弹
      * 主角1位置的子弹

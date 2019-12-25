@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":12,
-    "selecteID":25,
+    "selectedBox":40,
+    "selecteID":60,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":60,
+    "maxID":62,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -35,13 +35,14 @@
             "props":{"y":0,"x":0,"name":"assembly"},
             "nodeParent":2,
             "label":"assembly",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":18,
             "child":[
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,assembly",
                     "props":{"y":-59,"x":370,"width":372,"texture":"candy/流水台.png","pivotX":186,"name":"assembly","height":978},
@@ -56,6 +57,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,induction",
                     "props":{"y":471,"x":385,"width":305,"texture":"candy/感应区域.png","pivotX":153,"name":"induction","height":170},
@@ -68,6 +70,7 @@
                     "compId":15,
                     "child":[
                         {
+                            "x":45,
                             "type":"BoxCollider",
                             "switchAble":true,
                             "searchKey":"BoxCollider",
@@ -83,6 +86,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"RigidBody",
                             "switchAble":true,
                             "searchKey":"RigidBody",
@@ -203,7 +207,7 @@
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
                                     "removeAble":true,
-                                    "props":{"y":0,"x":12,"width":150,"height":150},
+                                    "props":{"y":0,"x":12,"width":150,"isSensor":true,"height":150},
                                     "nodeParent":28,
                                     "label":"BoxCollider",
                                     "isDirectory":false,
@@ -218,7 +222,7 @@
                                     "switchAble":true,
                                     "searchKey":"RigidBody",
                                     "removeAble":true,
-                                    "props":{"type":"static","gravityScale":0},
+                                    "props":{"type":"dynamic","gravityScale":0},
                                     "nodeParent":28,
                                     "label":"RigidBody",
                                     "isDirectory":false,
@@ -253,12 +257,26 @@
                             "props":{"y":-36,"x":4.5,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","name":"health"},
                             "nodeParent":24,
                             "label":"health",
-                            "isDirectory":false,
+                            "isOpen":true,
+                            "isDirectory":true,
                             "isAniNode":true,
-                            "hasChild":false,
+                            "hasChild":true,
                             "compId":40,
                             "child":[
-                                ]
+                                {
+                                    "x":60,
+                                    "type":"Label",
+                                    "searchKey":"Label,bloodLabel",
+                                    "props":{"y":18,"x":86,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
+                                    "nodeParent":40,
+                                    "label":"bloodLabel",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":60,
+                                    "child":[
+                                        ]
+                                }]
                         }]
                 },
                 {
@@ -293,7 +311,7 @@
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
                                     "removeAble":true,
-                                    "props":{"y":0,"x":11.5,"width":150,"height":150},
+                                    "props":{"y":0,"x":11.5,"width":150,"isSensor":true,"height":150},
                                     "nodeParent":29,
                                     "label":"BoxCollider",
                                     "isDirectory":false,
@@ -344,12 +362,26 @@
                             "props":{"y":-36,"x":4.5,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","name":"health"},
                             "nodeParent":25,
                             "label":"health",
-                            "isDirectory":false,
+                            "isOpen":true,
+                            "isDirectory":true,
                             "isAniNode":true,
-                            "hasChild":false,
+                            "hasChild":true,
                             "compId":41,
                             "child":[
-                                ]
+                                {
+                                    "x":60,
+                                    "type":"Label",
+                                    "searchKey":"Label,bloodLabel",
+                                    "props":{"y":18,"x":86,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
+                                    "nodeParent":41,
+                                    "label":"bloodLabel",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":61,
+                                    "child":[
+                                        ]
+                                }]
                         }]
                 }]
         },
@@ -390,77 +422,6 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":21,
-                    "child":[
-                        ]
-                }]
-        },
-        {
-            "x":15,
-            "type":"Sprite",
-            "searchKey":"Sprite,friend",
-            "props":{"y":634,"x":585,"width":151,"visible":true,"pivotY":96,"pivotX":76,"name":"friend","height":191},
-            "nodeParent":2,
-            "label":"friend",
-            "isOpen":false,
-            "isDirectory":true,
-            "isAniNode":true,
-            "hasChild":true,
-            "compId":42,
-            "child":[
-                {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,friend_Pic",
-                    "props":{"y":99,"x":71,"width":165,"texture":"candy/帮手.png","pivotY":99,"pivotX":83,"name":"friend_Pic","height":198},
-                    "nodeParent":42,
-                    "label":"friend_Pic",
-                    "isOpen":true,
-                    "isDirectory":true,
-                    "isAniNode":true,
-                    "hasChild":true,
-                    "compId":54,
-                    "child":[
-                        {
-                            "type":"BoxCollider",
-                            "switchAble":true,
-                            "searchKey":"BoxCollider",
-                            "removeAble":true,
-                            "props":{"y":50,"x":35,"width":100,"height":100},
-                            "nodeParent":54,
-                            "label":"BoxCollider",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":56,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "type":"RigidBody",
-                            "switchAble":true,
-                            "searchKey":"RigidBody",
-                            "removeAble":true,
-                            "props":{"type":"static","gravityScale":0},
-                            "nodeParent":54,
-                            "label":"RigidBody",
-                            "isDirectory":false,
-                            "isClose":true,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":57,
-                            "child":[
-                                ]
-                        }]
-                },
-                {
-                    "type":"ProgressBar",
-                    "searchKey":"ProgressBar,health",
-                    "props":{"y":-44,"x":0,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","scaleY":0.9,"scaleX":0.9,"name":"health"},
-                    "nodeParent":42,
-                    "label":"health",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":55,
                     "child":[
                         ]
                 }]

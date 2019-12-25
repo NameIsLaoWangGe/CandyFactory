@@ -1,3 +1,5 @@
+import Enemy from "./Enemy";
+
 export default class MainSceneControl extends Laya.Script {
     /** @prop {name:candy, tips:"糖果", type:Prefab}*/
     public candy: Laya.Prefab;
@@ -6,8 +8,6 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:roleParent, tips:"角色父节点", type:Node}*/
     public roleParent: Laya.Sprite;
-    /** @prop {name:friend, tips:"帮手", type:Node}*/
-    public friend: Laya.Sprite;
 
     /** @prop {name:enemy, tips:"敌人", type:Prefab}*/
     public enemy: Laya.Prefab;
@@ -67,6 +67,11 @@ export default class MainSceneControl extends Laya.Script {
     /**复活所需吃糖果的数量*/
     private rescueNum: number;
 
+    /**怪物属性*/
+    private enemyProperty: any;
+
+    /**时间线*/
+    private timerControl: number;
 
     constructor() { super(); }
 
@@ -92,8 +97,15 @@ export default class MainSceneControl extends Laya.Script {
 
         this.protagonistInit();
 
-
         this.roelSpeakBoxs();
+        // 怪物属性，依次为血量，
+        this.enemyProperty = {
+            level: 1,
+            blood: 200,
+            moveSpeed: 10,
+            defense: 10,
+        }
+        this.timerControl = 0;
     }
 
     /**主角初始化，成对出现在两个固定位置，每次初始化后的位置可能会调换*/
@@ -150,11 +162,10 @@ export default class MainSceneControl extends Laya.Script {
 
         // 随机创建一种颜色糖果
         // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
-        let randomNum = Math.floor(Math.random() * 4);
+        let randomNum = Math.floor(Math.random() * 3);
         let url_01 = 'candy/黄色糖果.png';
         let url_02 = 'candy/红色糖果.png';
         let url_03 = 'candy/加血糖果.png';
-        let url_04 = 'candy/黑色糖果.png';
         switch (randomNum) {
             case 0:
                 candy.name = 'yellowCandy' + this.candyCount;
@@ -168,13 +179,10 @@ export default class MainSceneControl extends Laya.Script {
                 candy.name = 'addBlood___' + this.candyCount;
                 (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_03);
                 break;
-            case 3:
-                candy.name = 'blackCandy_' + this.candyCount;
-                (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_04);
-                break;
             default:
                 break;
         }
+
         candy.pos(Laya.stage.width / 2 - candy.width / 2, -100);
         this.candyParent.addChild(candy);
         candy.rotation = 0;
@@ -191,7 +199,6 @@ export default class MainSceneControl extends Laya.Script {
             enemy.zOrder = -this.enemyCount;
             enemy.pivotX = enemy.width / 2;
             enemy.pivotY = enemy.height / 2;
-
             //通过目标位置判定出场位置
             if (this.enemyTagRole.x < Laya.stage.width / 2 && this.enemyTagRole.x > 0) {
                 enemy.pos(-50, 300);
@@ -201,7 +208,24 @@ export default class MainSceneControl extends Laya.Script {
         }
     }
 
+    /**属性刷新显示规则,血量显示一定是整数，并且是10的倍数
+    */
+    enemyPropertyUpdate(): void {
+        // 根据时间线，刷新怪物属性
+        this.enemyProperty.blood = this.timerControl * 100;
+        // 改成10的倍数
+        let str = Math.round(this.enemyProperty.blood).toString();
+        let subStr_01 = str.substring(0, str.length - 1);
+        let subStr_02 = subStr_01 + 0;
+        this.enemyProperty.blood = subStr_02;
+    }
+
+    /**属性刷新显示规则*/
     onUpdate(): void {
+        // 记录时间
+        this.timerControl += 0.01;
+        // 根据时间线，刷新怪物属性
+        this.enemyPropertyUpdate();
         // 角色死亡情况
         let len = this.roleParent._children.length;
         if (len === 0) {
