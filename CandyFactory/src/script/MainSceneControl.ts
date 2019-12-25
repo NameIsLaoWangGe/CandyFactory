@@ -91,7 +91,7 @@ export default class MainSceneControl extends Laya.Script {
         this.rescueNum = 0;
 
         this.protagonistInit();
-      
+
 
         this.roelSpeakBoxs();
     }
@@ -186,6 +186,7 @@ export default class MainSceneControl extends Laya.Script {
         if (this.enemyTagRole !== null) {
             let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
             this.enemyParent.addChild(enemy);
+            enemy.name = 'enemy' + this.enemyCount;
             // 现出来的显示在前面
             enemy.zOrder = -this.enemyCount;
             enemy.pivotX = enemy.width / 2;

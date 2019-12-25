@@ -6,7 +6,7 @@ export default class Enemy extends Laya.Script {
     /**自己的血量*/
     private selfHealth: Laya.ProgressBar;
     /**自己移动速度*/
-    private slefSpeed: number;
+    private selfSpeed: number;
 
     /**所属场景*/
     private selfScene: Laya.Scene;
@@ -47,7 +47,7 @@ export default class Enemy extends Laya.Script {
         this.self = this.owner as Laya.Sprite;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
         this.selfHealth.value = 1;
-        this.slefSpeed = 5;
+        this.selfSpeed = 5;
 
         this.selfScene = this.owner.scene as Laya.Scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
@@ -110,21 +110,21 @@ export default class Enemy extends Laya.Script {
             if (this.self.x - this.slefTagRole.x < 100) {
                 // 发生预警
                 this.Role_02.role_Warning = true;
-                //向量相加
-                this.self.x += point.x * this.slefSpeed;
-                this.self.y += point.y * this.slefSpeed;
+                //向量相加移动
+                this.self.x += point.x * this.selfSpeed;
+                this.self.y += point.y * this.selfSpeed;
             } else {
-                this.self.x -= this.slefSpeed;
+                this.self.x -= this.selfSpeed;
             }
         } else if (this.slefTagRole.x < Laya.stage.width / 2) {//左边
             if (this.slefTagRole.x - this.self.x < 100) {
                 // 发生预警
                 this.Role_01.role_Warning = true;
-                //向量相加
-                this.self.x += point.x * this.slefSpeed;
-                this.self.y += point.y * this.slefSpeed;
+                //向量相加移动
+                this.self.x += point.x * this.selfSpeed;
+                this.self.y += point.y * this.selfSpeed;
             } else {
-                this.self.x += this.slefSpeed;
+                this.self.x += this.selfSpeed;
             }
         }
     }

@@ -1,5 +1,6 @@
 import MainSceneControl from "./MainSceneControl";
 import Candy from "./Candy";
+import Bullet from "./Bullet";
 export default class Role extends Laya.Script {
     /** @prop {name:bulletParent, tips:"子弹父节点", type:Node}*/
     public bulletParent: Laya.Sprite;
@@ -117,6 +118,8 @@ export default class Role extends Laya.Script {
         let bullet = Laya.Pool.getItemByCreateFun('bullet', this.bullet.create, this.bullet) as Laya.Sprite;
         this.bulletParent.addChild(bullet);
         bullet.pos(this.self.x, this.self.y);
+        let bulletScprit = bullet.getComponent(Bullet);
+        bulletScprit.location = this.self.name;
     }
 
     onUpdate(): void {
