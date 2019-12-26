@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":40,
-    "selecteID":60,
+    "selectedBox":62,
+    "selecteID":64,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":62,
+    "maxID":67,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -170,27 +170,25 @@
             "props":{"y":0,"x":0,"width":750,"var":"roleParent","name":"roleParent","mouseThrough":true,"height":1334,"alpha":1},
             "nodeParent":2,
             "label":"roleParent",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":12,
             "child":[
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,role_02,role_02",
-                    "props":{"y":976,"x":559,"width":170,"var":"role_02","pivotY":95,"pivotX":85,"name":"role_02","height":190},
+                    "props":{"y":976,"x":600,"width":170,"var":"role_02","pivotY":95,"pivotX":85,"name":"role_02","height":190},
                     "nodeParent":12,
                     "label":"role_02",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":24,
                     "child":[
                         {
-                            "x":45,
                             "type":"Sprite",
                             "searchKey":"Sprite,pic",
                             "props":{"texture":"candy/黄色桶.png","name":"pic"},
@@ -234,7 +232,6 @@
                                 }]
                         },
                         {
-                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/script/Role.ts",
@@ -251,7 +248,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"ProgressBar",
                             "searchKey":"ProgressBar,health",
                             "props":{"y":-36,"x":4.5,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","name":"health"},
@@ -264,7 +260,6 @@
                             "compId":40,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,bloodLabel",
                                     "props":{"y":18,"x":86,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
@@ -280,20 +275,18 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,role_01,role_01",
-                    "props":{"y":976,"x":207,"width":170,"var":"role_01","pivotY":95,"pivotX":85,"name":"role_01","height":190},
+                    "props":{"y":976,"x":151,"width":170,"var":"role_01","pivotY":95,"pivotX":85,"name":"role_01","height":190},
                     "nodeParent":12,
                     "label":"role_01",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":25,
                     "child":[
                         {
-                            "x":45,
                             "type":"Sprite",
                             "searchKey":"Sprite,pic",
                             "props":{"texture":"candy/红色桶.png","name":"pic"},
@@ -306,7 +299,6 @@
                             "compId":29,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -322,7 +314,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"RigidBody",
                                     "switchAble":true,
                                     "searchKey":"RigidBody",
@@ -339,7 +330,6 @@
                                 }]
                         },
                         {
-                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/script/Role.ts",
@@ -356,7 +346,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"ProgressBar",
                             "searchKey":"ProgressBar,health",
                             "props":{"y":-36,"x":4.5,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","name":"health"},
@@ -369,7 +358,6 @@
                             "compId":41,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,bloodLabel",
                                     "props":{"y":18,"x":86,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
@@ -424,6 +412,80 @@
                     "compId":21,
                     "child":[
                         ]
+                }]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite,operating,operating",
+            "props":{"var":"operating","name":"operating"},
+            "nodeParent":2,
+            "label":"operating",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":62,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite,redButton",
+                    "props":{"y":1111,"x":228,"texture":"candy/红色糖果.png","name":"redButton"},
+                    "nodeParent":62,
+                    "label":"redButton",
+                    "isOpen":null,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":63,
+                    "child":[
+                        {
+                            "type":"Script",
+                            "switchAble":true,
+                            "source":"src/script/OperationButton.ts",
+                            "searchKey":"Script,OperationButton",
+                            "removeAble":true,
+                            "props":{},
+                            "nodeParent":63,
+                            "label":"OperationButton",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":65,
+                            "child":[
+                                ]
+                        }]
+                },
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite,yellowButton",
+                    "props":{"y":1111,"x":386,"texture":"candy/黄色糖果.png","name":"yellowButton"},
+                    "nodeParent":62,
+                    "label":"yellowButton",
+                    "isOpen":null,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":64,
+                    "child":[
+                        {
+                            "type":"Script",
+                            "switchAble":true,
+                            "source":"src/script/OperationButton.ts",
+                            "searchKey":"Script,OperationButton",
+                            "removeAble":true,
+                            "props":{},
+                            "nodeParent":64,
+                            "label":"OperationButton",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":66,
+                            "child":[
+                                ]
+                        }]
                 }]
         }],
     "animations":[

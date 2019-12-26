@@ -19,14 +19,14 @@ export default class Role extends Laya.Script {
     private candyParent: Laya.Sprite;
     /**自己的血量*/
     private selfHealth: Laya.ProgressBar;
+    /**血量显示文字*/
+    private bloodLabel: Laya.Label;
 
     /**主角属性*/
-    private role_property: object;
+    private role_property: any;
 
     /**敌人预警，只要敌人进入射程就会触发警报*/
     private role_Warning: boolean;
-    /**两个子弹创建时间间隔*/
-    private interval_bullt: number;
     /**两个当前创建时间记录*/
     private nowTime: number;
     /**得分显示*/
@@ -36,6 +36,8 @@ export default class Role extends Laya.Script {
 
     onEnable(): void {
         this.initProperty();
+        this.bucketClink();
+        this.rolePropertySet();
     }
     /**初始化*/
     initProperty(): void {
@@ -44,16 +46,11 @@ export default class Role extends Laya.Script {
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
         this.nameArr = this.mainSceneControl.nameArr;
         this.candyParent = this.mainSceneControl.candyParent;
-        this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
-        this.selfHealth.value = 1;
 
         this.scoreLabel = this.mainSceneControl.scoreLabel;
+        this.self['Role'] = this;
 
-        this.interval_bullt = 100;
         this.nowTime = Date.now();
-
-        this.bucketClink();
-        this.rolePropertySet();
     }
 
     /**主角的属性
@@ -64,19 +61,30 @@ export default class Role extends Laya.Script {
         if (this.self.name === 'role_01') {
             this.role_property = {
                 blood: 200,
-                attackValue: 10,
-                attackSpeed: 500,
+                attackValue: 100,
+                attackSpeed: 100,
                 defense: 10,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
                 blood: 200,
-                attackV: 10,
-                attackSpeed: 500,
+                attackValue: 100,
+                attackSpeed: 100,
                 defense: 10,
             };
         }
+
+        this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
+        this.selfHealth.value = 1;
+        this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
+        this.bloodLabel.text = this.role_property.blood;
+
+        let str = Math.round(this.role_property.blood * this.selfHealth.value).toString();
+        let subStr_01 = str.substring(0, str.length - 1);
+        let subStr_02 = subStr_01 + 0;
+        this.bloodLabel.text = subStr_02;
     }
+
 
     /**主角的点击事件*/
     bucketClink(): void {
@@ -134,8 +142,7 @@ export default class Role extends Laya.Script {
         let bullet = Laya.Pool.getItemByCreateFun('bullet', this.bullet.create, this.bullet) as Laya.Sprite;
         this.bulletParent.addChild(bullet);
         bullet.pos(this.self.x, this.self.y);
-        let bulletScprit = bullet.getComponent(Bullet);
-        bulletScprit.location = this.self.name;
+        bullet['Bullet'].location = this.self.name;
     }
 
     onUpdate(): void {
@@ -143,15 +150,17 @@ export default class Role extends Laya.Script {
             this.self.removeSelf();
         }
 
+
         //创建子弹
         if (this.role_Warning) {
             let nowTime = Date.now();
-            if (nowTime - this.nowTime > this.interval_bullt) {
+            if (nowTime - this.nowTime > this.role_property.attackSpeed) {
                 this.careatBullet();
                 this.nowTime = nowTime;
             }
         }
     }
     onDisable(): void {
+
     }
 }

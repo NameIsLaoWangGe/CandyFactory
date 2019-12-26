@@ -7,7 +7,13 @@ export default class Bullet extends Laya.Script {
     private self: Laya.Sprite;
     /**所属场景*/
     private selfScene: Laya.Scene;
-    /**主角*/ 
+    /**主角父节点*/
+    private roleParent: Laya.Sprite;
+    /**主角1*/
+    private role_01: Laya.Sprite;
+    /**主角2*/
+    private role_02: Laya.Sprite;
+
     /**场景脚本*/
     private mainSceneControl;
     /**初始x*/
@@ -20,6 +26,8 @@ export default class Bullet extends Laya.Script {
     private location: string;
     /**目标，这个目标是最近的那个敌人*/
     private bulletTarget: Laya.Sprite;
+    /**攻击力*/
+    private attackValue: number;
 
     constructor() { super(); }
 
@@ -34,8 +42,15 @@ export default class Bullet extends Laya.Script {
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
         this.enemyParent = this.mainSceneControl.enemyParent;
         this.selfSpeed = 15;
+        this.attackValue = 0.5;
+
+        // 属性赋值
+        this.role_01 = this.selfScene['MainSceneControl'].role_01;
+        this.attackValue = this.role_01['Role'].role_property.attackValue;
+        this.self['Bullet'] = this;
         // 索敌
         this.lockedBulletTarget();
+
     }
 
     /**锁定最近的那个敌人
@@ -118,12 +133,22 @@ export default class Bullet extends Laya.Script {
             let differenceX = Math.abs(enemy.x - this.self.x);
             let differenceY = Math.abs(enemy.y - this.self.y);
             if (differenceX < 30 && differenceY < 30) {
-                let enemyHealth = enemy.getChildByName('health') as Laya.ProgressBar;
-                enemyHealth.value -= 0.01;
+                this.buckleEnemyBlood(enemy);
                 this.self.removeSelf();
             }
         }
     }
+
+    /**攻击后，敌人扣血规则
+     * 根据攻击力扣除血量
+    */
+    buckleEnemyBlood(enemy): void {
+        let enemyHealth = enemy.getChildByName('health') as Laya.ProgressBar;
+        let bloodLabel = enemyHealth.getChildByName('bloodLabel') as Laya.Label;
+        bloodLabel.text = (Number(bloodLabel.text) - this.attackValue).toString();
+        enemyHealth.value = Number(bloodLabel.text) / enemy['Enemy'].enemyProperty.blood;
+    }
+
 
     onDisable(): void {
         Laya.Pool.recover('bullet', this.self);

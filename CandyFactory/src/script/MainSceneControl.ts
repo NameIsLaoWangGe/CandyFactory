@@ -1,5 +1,5 @@
 import Enemy from "./Enemy";
-
+import Candy from "./Candy";
 export default class MainSceneControl extends Laya.Script {
     /** @prop {name:candy, tips:"糖果", type:Prefab}*/
     public candy: Laya.Prefab;
@@ -47,7 +47,7 @@ export default class MainSceneControl extends Laya.Script {
     private enemyAppear: boolean;
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
     private enemyTagRole: Laya.Sprite;
-    /**敌人产生的个数计数器*/
+    /**敌人产生的总个数记录*/
     private enemyCount: number;
 
     /**糖果产生的时间间隔*/
@@ -58,20 +58,31 @@ export default class MainSceneControl extends Laya.Script {
     private creatOnOff: boolean;
     /**糖果到碰到感应装置时，名字装进这个数组*/
     private nameArr: Array<string>;
-    /**生成糖果个数计数器*/
+    /**糖果生产的总个数记录*/
     private candyCount: number;
-
-    /**主角2是否死亡*/
-    private roledie_02: boolean;
-
     /**复活所需吃糖果的数量*/
     private rescueNum: number;
+
+    /**时间线*/
+    private timerControl: number;
 
     /**怪物属性*/
     private enemyProperty: any;
 
-    /**时间线*/
-    private timerControl: number;
+    /**左边出怪的时间间隔*/
+    private enemyInterval_01: number;
+    /**左边每次出怪时间控制*/
+    private enemyTime_01: number;
+    /**左边出怪开关*/
+    private enemySwitch_01: boolean;
+
+    /**右边出怪的时间间隔*/
+    private enemyInterval_02: number;
+    /**右边每次出怪时间控制*/
+    private enemyTime_02: number;
+    /**左边出怪开关*/
+    private enemySwitch_02: boolean;
+
 
     constructor() { super(); }
 
@@ -85,31 +96,43 @@ export default class MainSceneControl extends Laya.Script {
         this.enemyTagRole = null;
         this.enemyCount = 0;
 
-        this.candy_interval = 500;
+        // 初始化怪物属性，依次为血量，
+        this.enemyProperty = {
+            level: 1,
+            blood: 200,
+            moveSpeed: 10,
+            defense: 10,
+            creatInterval: 1000
+        }
+
+        this.enemyInterval_01 = 500;
+        this.enemyTime_01 = Date.now();
+        this.enemySwitch_01 = true;
+
+        this.enemyInterval_02 = 500;
+        this.enemyTime_02 = Date.now();
+        this.enemySwitch_02 = true;
+
+        this.candy_interval = 1000;
         this.creatTime = Date.now();
         this.creatOnOff = true;
-        Laya.MouseManager.multiTouchEnabled = true;
         this.nameArr = [];
         this.candyCount = 0;
         this.scoreLabel.text = '0';
 
         this.rescueNum = 0;
 
-        this.protagonistInit();
+        this.roletInit();
+        this.roleSpeakBoxs();
 
-        this.roelSpeakBoxs();
-        // 怪物属性，依次为血量，
-        this.enemyProperty = {
-            level: 1,
-            blood: 200,
-            moveSpeed: 10,
-            defense: 10,
-        }
+        Laya.MouseManager.multiTouchEnabled = true;
         this.timerControl = 0;
+
+        this.owner['MainSceneControl'] = this;//脚本赋值
     }
 
     /**主角初始化，成对出现在两个固定位置，每次初始化后的位置可能会调换*/
-    protagonistInit(): void {
+    roletInit(): void {
         this.role_01 = this.owner.scene.role_01;
         this.role_02 = this.owner.scene.role_02;
         let pic_01 = (this.role_01.getChildByName('pic') as Laya.Sprite);
@@ -134,7 +157,7 @@ export default class MainSceneControl extends Laya.Script {
     }
 
     /**两个主角对话框的初始化*/
-    roelSpeakBoxs(): void {
+    roleSpeakBoxs(): void {
         for (let i = 0; i < 2; i++) {
             let speakBox = Laya.Pool.getItemByCreateFun('speakBox', this.speakBox.create, this.speakBox) as Laya.Sprite;
             this.speakBoxParent.addChild(speakBox);
@@ -156,13 +179,12 @@ export default class MainSceneControl extends Laya.Script {
     }
 
     /**产生糖果*/
-    productionCandy(): void {
+    createCandy(): Laya.Sprite {
+        // 通过对象池创建
         let candy = Laya.Pool.getItemByCreateFun('candy', this.candy.create, this.candy) as Laya.Sprite;
-        this.candyCount++;
-
         // 随机创建一种颜色糖果
         // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
-        let randomNum = Math.floor(Math.random() * 3);
+        let randomNum = Math.floor(Math.random() * 2);
         let url_01 = 'candy/黄色糖果.png';
         let url_02 = 'candy/红色糖果.png';
         let url_03 = 'candy/加血糖果.png';
@@ -175,57 +197,25 @@ export default class MainSceneControl extends Laya.Script {
                 candy.name = 'redCandy___' + this.candyCount;
                 (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_02);
                 break;
-            case 2:
-                candy.name = 'addBlood___' + this.candyCount;
-                (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_03);
-                break;
+            // case 2:
+            //     candy.name = 'addBlood___' + this.candyCount;
+            //     (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_03);
+            //     break;
             default:
                 break;
         }
-
+        // 随机点击次数
+        let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
+        clicksLabel.text = (Math.floor(Math.random() * 3) + 1).toString();
         candy.pos(Laya.stage.width / 2 - candy.width / 2, -100);
         this.candyParent.addChild(candy);
         candy.rotation = 0;
+        this.candyCount++;
+        return candy;
     }
 
-    /**出现敌人*/
-    careatEnemy() {
-        this.enemyCount++;
-        if (this.enemyTagRole !== null) {
-            let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
-            this.enemyParent.addChild(enemy);
-            enemy.name = 'enemy' + this.enemyCount;
-            // 现出来的显示在前面
-            enemy.zOrder = -this.enemyCount;
-            enemy.pivotX = enemy.width / 2;
-            enemy.pivotY = enemy.height / 2;
-            //通过目标位置判定出场位置
-            if (this.enemyTagRole.x < Laya.stage.width / 2 && this.enemyTagRole.x > 0) {
-                enemy.pos(-50, 300);
-            } else if (this.enemyTagRole.x >= Laya.stage.width / 2 && this.enemyTagRole.x < Laya.stage.width) {
-                enemy.pos(800, 300);
-            }
-        }
-    }
-
-    /**属性刷新显示规则,血量显示一定是整数，并且是10的倍数
-    */
-    enemyPropertyUpdate(): void {
-        // 根据时间线，刷新怪物属性
-        this.enemyProperty.blood = this.timerControl * 100;
-        // 改成10的倍数
-        let str = Math.round(this.enemyProperty.blood).toString();
-        let subStr_01 = str.substring(0, str.length - 1);
-        let subStr_02 = subStr_01 + 0;
-        this.enemyProperty.blood = subStr_02;
-    }
-
-    /**属性刷新显示规则*/
-    onUpdate(): void {
-        // 记录时间
-        this.timerControl += 0.01;
-        // 根据时间线，刷新怪物属性
-        this.enemyPropertyUpdate();
+    /**角色死亡复活状况*/
+    roleDeathState(): void {
         // 角色死亡情况
         let len = this.roleParent._children.length;
         if (len === 0) {
@@ -262,26 +252,93 @@ export default class MainSceneControl extends Laya.Script {
             // 保持，复活状态为空
             this.rescueNum === 0;
         }
+    }
 
-        // 创建糖果
-        if (this.creatOnOff) {
-            let nowTime = Date.now();
-            if (nowTime - this.creatTime > this.candy_interval) {
-                this.creatTime = nowTime;
-                this.productionCandy();
+    /**出现敌人
+     * 创建方式决定了敌人出生的位置
+    */
+    careatEnemy(mode: string) {
+        this.enemyCount++;
+        if (this.enemyTagRole !== null) {
+            let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
+            this.enemyParent.addChild(enemy);
+            enemy.name = 'enemy' + this.enemyCount;//名称唯一
+            enemy.zOrder = -this.enemyCount; // 现出来的显示在前面
+            enemy.pivotX = enemy.width / 2;
+            enemy.pivotY = enemy.height / 2;
+            //出生位置判定,和攻击目标选择
+            if (mode === 'left') {
+                enemy.pos(-50, 300);
+            } else if (mode === 'right') {
+                enemy.pos(800, 300);
+            } else if (mode === 'target') {
+                if (this.enemyTagRole.x < Laya.stage.width / 2 && this.enemyTagRole.x > 0) {
+                    enemy.pos(-50, 300);
+                } else if (this.enemyTagRole.x >= Laya.stage.width / 2 && this.enemyTagRole.x < Laya.stage.width) {
+                    enemy.pos(800, 300);
+                }
             }
         }
+    }
 
-        // 创建敌人
-        if (this.enemyAppear) {
-            this.careatEnemy();
-            this.enemyAppear = false;
-            this.enemyTagRole = null;
+    /**属性刷新显示规则,血量显示一定是整数，并且是10的倍数
+    * 根据时间线的增长，怪物的属性不断增强
+    */
+    enemyPropertyUpdate(): void {
+        // 血量增长
+        this.enemyProperty.blood = this.timerControl * 10 + 200;
+        // 改成10的倍数
+        let str = Math.round(this.enemyProperty.blood).toString();
+        let subStr_01 = str.substring(0, str.length - 1);
+        let subStr_02 = subStr_01 + 0;
+        this.enemyProperty.blood = subStr_02;
+    }
+
+    /**属性刷新显示规则*/
+    onUpdate(): void {
+        // 记录时间
+        this.timerControl += 0.01;
+        // 根据时间线，刷新怪物属性
+        this.enemyPropertyUpdate();
+        // 角色死亡复活状况
+        this.roleDeathState();
+        // 开局创建10个糖果
+        if (this.creatOnOff && this.candyCount < 10) {
+            for (let i = 0; i < 10; i++) {
+                this.createCandy();
+            }
+        } else {
+            this.creatOnOff = false;
         }
-
+        // 通过时间间隔产生敌人，左右产生的敌人不一样
+        // 左
+        if (this.enemySwitch_01) {
+            let nowTime = Date.now();
+            if (nowTime - this.enemyTime_01 > this.enemyProperty.creatInterval) {
+                this.enemyTime_01 = nowTime;
+                this.enemyTagRole = this.role_01;
+                this.careatEnemy('left');
+                this.enemyTagRole = null;
+            }
+        }
+        // 右
+        if (this.enemySwitch_02) {
+            let nowTime = Date.now();
+            if (nowTime - this.enemyTime_02 > this.enemyProperty.creatInterval) {
+                this.enemyTime_02 = nowTime;
+                this.enemyTagRole = this.role_02;
+                this.careatEnemy('right');
+                this.enemyTagRole = null;
+            }
+        }
+        // // 通过点击错误产生敌人创建敌人
+        // if (this.enemyAppear) {
+        //     this.careatEnemy();
+        //     this.enemyAppear = false;
+        //     this.enemyTagRole = null;
+        // }
     }
 
     onDisable(): void {
-
     }
 }

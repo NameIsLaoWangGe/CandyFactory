@@ -22,9 +22,10 @@ export default class Enemy extends Laya.Script {
     private roleParent: Laya.Sprite;
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
     private slefTagRole: Laya.Sprite;
+    /**怪物出现位置*/
+    private
     /**攻击对象血量*/
     private tagHealth: Laya.ProgressBar;
-
     /**对话框*/
     private speakBox: Laya.Prefab;
 
@@ -66,6 +67,7 @@ export default class Enemy extends Laya.Script {
         this.Role_01 = this.mainSceneControl.role_01.getComponent(Role);
         this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
 
+        this.self['Enemy'] = this;
         this.bucketClink();
         this.enemyPropertySet();
     }
@@ -85,7 +87,7 @@ export default class Enemy extends Laya.Script {
         this.enemyProperty.defense = this.mainSceneControl.enemyProperty.defense;
 
         this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
-        this.bloodLabel.text = this.enemyProperty.blood + '/' + this.enemyProperty.blood;
+        this.bloodLabel.text = this.enemyProperty.blood;
     }
 
     /**属性刷新显示规则,血量显示一定是整数*/
@@ -94,8 +96,7 @@ export default class Enemy extends Laya.Script {
         let str = Math.round(this.enemyProperty.blood * this.selfHealth.value).toString();
         let subStr_01 = str.substring(0, str.length - 1);
         let subStr_02 = subStr_01 + 0;
-
-        this.bloodLabel.text = subStr_02 + '/' + this.enemyProperty.blood;
+        this.bloodLabel.text = subStr_02;
     }
 
     /**敌人点击事件*/
