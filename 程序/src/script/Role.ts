@@ -62,14 +62,14 @@ export default class Role extends Laya.Script {
         if (this.self.name === 'role_01') {
             this.role_property = {
                 blood: 200,
-                attackValue: 100,
+                attackValue: 10,
                 attackSpeed: 100,
                 defense: 10,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
                 blood: 200,
-                attackValue: 100,
+                attackValue: 10,
                 attackSpeed: 100,
                 defense: 10,
             };
@@ -132,7 +132,7 @@ export default class Role extends Laya.Script {
 
     onUpdate(): void {
         // 血量低于0则死亡
-        if (this.selfHealth.value <= 0) {
+        if (this.role_property.blood <= 0) {
             this.self.removeSelf();
         }
         // 刷新属性

@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Sprite",
-    "selectedBox":25,
-    "selecteID":28,
+    "selectedBox":22,
+    "selecteID":25,
     "searchKey":"Sprite,enemy",
     "props":{"y":1,"x":0,"width":180,"presetID":1,"preset":"laya/pages/prefab/enemy.prefab","pivotY":1,"pivotX":0.5,"name":"enemy","isPresetRoot":true,"height":200},
     "nodeParent":-1,
-    "maxID":29,
+    "maxID":34,
     "label":"enemy",
     "isOpen":true,
     "isDirectory":true,
@@ -49,7 +49,7 @@
             "x":15,
             "type":"ProgressBar",
             "searchKey":"ProgressBar,health",
-            "props":{"y":-39,"x":2,"skin":"candy/血条.png","sizeGrid":"0,18,0,12","presetID":4,"preset":"laya/pages/prefab/enemy.prefab","name":"health"},
+            "props":{"y":-39,"x":2,"value":1,"skin":"candy/血条.png","sizeGrid":"0,18,0,12","presetID":4,"preset":"laya/pages/prefab/enemy.prefab","name":"health"},
             "nodeParent":22,
             "label":"health",
             "isOpen":true,
@@ -69,6 +69,79 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":28,
+                    "child":[
+                        ]
+                }]
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,propertyShow",
+            "props":{"y":-170,"x":-11,"width":194,"skin":"candy/属性战士框.png","sizeGrid":"38,34,48,48","presetID":6,"preset":"laya/pages/prefab/enemy.prefab","name":"propertyShow","height":126},
+            "nodeParent":22,
+            "label":"propertyShow",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":29,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,blood",
+                    "props":{"y":13,"x":22.5,"width":149,"text":"blood","presetID":7,"preset":"laya/pages/prefab/enemy.prefab","name":"blood","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
+                    "nodeParent":29,
+                    "label":"blood",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":30,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,attackValue",
+                    "props":{"y":38,"x":22,"width":149,"text":"attackValue","presetID":8,"preset":"laya/pages/prefab/enemy.prefab","name":"attackValue","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
+                    "nodeParent":29,
+                    "label":"attackValue",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":31,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,attackSpeed",
+                    "props":{"y":67,"x":24,"width":149,"text":"attackSpeed","presetID":9,"preset":"laya/pages/prefab/enemy.prefab","name":"attackSpeed","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
+                    "nodeParent":29,
+                    "label":"attackSpeed",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":32,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,defense",
+                    "props":{"y":91,"x":24,"width":149,"text":"defense","presetID":10,"preset":"laya/pages/prefab/enemy.prefab","name":"defense","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
+                    "nodeParent":29,
+                    "label":"defense",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":33,
                     "child":[
                         ]
                 }]

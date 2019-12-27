@@ -143,10 +143,7 @@ export default class Bullet extends Laya.Script {
      * 根据攻击力扣除血量
     */
     buckleEnemyBlood(enemy): void {
-        let enemyHealth = enemy.getChildByName('health') as Laya.ProgressBar;
-        let bloodLabel = enemyHealth.getChildByName('bloodLabel') as Laya.Label;
-        bloodLabel.text = (Number(bloodLabel.text) - this.attackValue).toString();
-        enemyHealth.value = Number(bloodLabel.text) / enemy['Enemy'].enemyProperty.blood;
+        enemy['Enemy'].enemyProperty.blood -= this.attackValue;
     }
 
 

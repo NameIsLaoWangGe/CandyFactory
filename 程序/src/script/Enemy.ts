@@ -39,6 +39,8 @@ export default class Enemy extends Laya.Script {
     private enemyProperty: any;
     /**血量值显示的label*/
     private bloodLabel: any;
+    /**属性展示框*/
+    private propertyShow: Laya.Image;
 
     constructor() { super(); }
 
@@ -54,10 +56,9 @@ export default class Enemy extends Laya.Script {
         this.roleParent = this.mainSceneControl.roleParent;
         this.slefTagRole = this.mainSceneControl.enemyTagRole;
         this.tagHealth = this.slefTagRole.getChildByName('health') as Laya.ProgressBar;
-
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
-        this.selfHealth.value = 1;
         this.selfSpeed = 4;
+        this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
 
         this.attackTnterval = 100;
         this.recordTime = Date.now();
@@ -81,22 +82,35 @@ export default class Enemy extends Laya.Script {
             moveSpeed: '',
             defense: '',
         }
-        this.enemyProperty.level = this.mainSceneControl.enemyProperty.level;
         this.enemyProperty.blood = this.mainSceneControl.enemyProperty.blood;
-        this.enemyProperty.moveSpeed = this.mainSceneControl.enemyProperty.moveSpeed;
+        this.enemyProperty.attackValue = this.mainSceneControl.enemyProperty.attackValue;
+        this.enemyProperty.attackSpeed = this.mainSceneControl.enemyProperty.attackSpeed;
         this.enemyProperty.defense = this.mainSceneControl.enemyProperty.defense;
-
-        this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
-        this.bloodLabel.text = this.enemyProperty.blood;
+        this.enemyProperty.moveSpeed = this.mainSceneControl.enemyProperty.moveSpeed;
     }
 
-    /**属性刷新显示规则,血量显示一定是整数*/
+    /**属性刷新显示规则,血量显示一定是整数10*/
     enemyPropertyUpdate(): void {
-        // 血量显示,把最后一个变为零
+        // 血条上的血量显示、
+        this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
         let str = Math.round(this.enemyProperty.blood * this.selfHealth.value).toString();
         let subStr_01 = str.substring(0, str.length - 1);
         let subStr_02 = subStr_01 + 0;
         this.bloodLabel.text = subStr_02;
+
+        // 属性显示框上面显示的属性
+        // 血量
+        let blood = this.propertyShow.getChildByName('blood') as Laya.Label;
+        blood.text = "血量: " + this.enemyProperty.blood;
+        // 攻击力
+        let attackValue = this.propertyShow.getChildByName('attackValue') as Laya.Label;
+        attackValue.text = "攻击力: " + this.enemyProperty.attackValue;
+        // 攻击速度
+        let attackSpeed = this.propertyShow.getChildByName('attackSpeed') as Laya.Label;
+        attackSpeed.text = "攻击速度: " + this.enemyProperty.attackSpeed;
+        // 防御力
+        let defense = this.propertyShow.getChildByName('defense') as Laya.Label;
+        defense.text = "防御力: " + this.enemyProperty.defense;
     }
 
     /**敌人点击事件*/
@@ -161,8 +175,12 @@ export default class Enemy extends Laya.Script {
         }
     }
 
-
     onUpdate(): void {
+        // 血量低于0则死亡
+        if (this.enemyProperty.blood < 0) {
+            this.self.removeSelf();
+        }
+        // 属性事实检查
         this.enemyPropertyUpdate();
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
@@ -183,11 +201,11 @@ export default class Enemy extends Laya.Script {
         if (differenceX < 100 && differenceY < 100) {
 
             let nowTime = Date.now();
-            if (nowTime - this.recordTime > this.attackTnterval) {
+            if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
                 this.recordTime = nowTime;
                 // 血量判断，目标死亡后，会更换目标
-                if (this.tagHealth.value > 0) {
-                    this.tagHealth.value -= 0.01;
+                if (this.slefTagRole['Role'].role_property.blood > 0) {
+                    this.slefTagRole['Role'].role_property.blood -= this.enemyProperty.attackValue;
                 } else {
                     // 更换目标
                     if (this.slefTagRole.name === 'role_01') {
