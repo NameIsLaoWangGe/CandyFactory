@@ -5,6 +5,8 @@ export default class MainSceneControl extends Laya.Script {
     public candy: Laya.Prefab;
     /** @prop {name:candyParent, tips:"糖果父节点", type:Node}*/
     public candyParent: Laya.Sprite;
+    /** @prop {name:candyParent_Move, tips:"克隆糖果用来移动的父节点", type:Node}*/
+    public candyParent_Move: Laya.Sprite;
 
     /** @prop {name:roleParent, tips:"角色父节点", type:Node}*/
     public roleParent: Laya.Sprite;
@@ -32,8 +34,8 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
     public scoreLabel: Laya.Label;
 
-    /** @prop {name:induction, tips:‘感应位置’, type:Node}*/
-    public induction: Laya.Sprite;
+    /** @prop {name:hintWord , tips:"属性飘字提示", type:Prefab}*/
+    public hintWord : Laya.Prefab;
 
     /**两个主角*/
     private role_01: Laya.Sprite;
@@ -98,11 +100,11 @@ export default class MainSceneControl extends Laya.Script {
         // 初始化怪物属性，依次为血量，
         this.enemyProperty = {
             blood: 200,
-            attackValue:10,
-            attackSpeed:100,
+            attackValue: 1,
+            attackSpeed: 100,
             defense: 10,
             moveSpeed: 10,
-            creatInterval: 1000
+            creatInterval: 5000
         }
 
         this.enemyInterval_01 = 500;
@@ -184,30 +186,36 @@ export default class MainSceneControl extends Laya.Script {
         let candy = Laya.Pool.getItemByCreateFun('candy', this.candy.create, this.candy) as Laya.Sprite;
         // 随机创建一种颜色糖果
         // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
-        let randomNum = Math.floor(Math.random() * 2);
+        let randomNum = Math.floor(Math.random() * 4);
         let url_01 = 'candy/黄色糖果.png';
         let url_02 = 'candy/红色糖果.png';
-        let url_03 = 'candy/加血糖果.png';
+        let url_03 = 'candy/蓝色糖果.png';
+        let url_04 = 'candy/绿色糖果.png';
+        let pic = (candy.getChildByName('pic') as Laya.Sprite);
         switch (randomNum) {
             case 0:
                 candy.name = 'yellowCandy' + this.candyCount;
-                (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_01);
+                pic.loadImage(url_01);
                 break;
             case 1:
                 candy.name = 'redCandy___' + this.candyCount;
-                (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_02);
+                pic.loadImage(url_02);
                 break;
-            // case 2:
-            //     candy.name = 'addBlood___' + this.candyCount;
-            //     (candy.getChildByName('pic') as Laya.Sprite).loadImage(url_03);
-            //     break;
+            case 2:
+                candy.name = 'blueCandy__' + this.candyCount;
+                pic.loadImage(url_03);
+                break;
+            case 3:
+                candy.name = 'greenCandy_' + this.candyCount;
+                pic.loadImage(url_04);
+                break;
             default:
                 break;
         }
         // 随机点击次数
         let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-        clicksLabel.text = (Math.floor(Math.random() * 3) + 1).toString();
-        candy.pos(Laya.stage.width / 2 - candy.width / 2, -100);
+        clicksLabel.text = (Math.floor(Math.random() * 0) + 1).toString();
+        candy.pos(Laya.stage.width / 2, -100);
         this.candyParent.addChild(candy);
         candy.rotation = 0;
         this.candyCount++;
@@ -285,19 +293,25 @@ export default class MainSceneControl extends Laya.Script {
     * 根据时间线的增长，怪物的属性不断增强
     */
     enemyPropertyUpdate(): void {
-        // 血量增长
-        this.enemyProperty.blood = this.timerControl * 10 + 200;
-        // 改成10的倍数
-        let str = Math.round(this.enemyProperty.blood).toString();
-        let subStr_01 = str.substring(0, str.length - 1);
-        let subStr_02 = subStr_01 + 0;
-        this.enemyProperty.blood = subStr_02;
+        if (this.timerControl % 500 === 0) {
+            // 血量增长
+            this.enemyProperty.blood += 50;
+            // 攻击力增长
+            this.enemyProperty.attackValue += 1;
+            // 防御力增长
+            this.enemyProperty.defense += 1;
+            // 出怪时间增长,这里会有个最短间隔
+            if (this.enemyProperty.creatInterval > 500) {
+                this.enemyProperty.creatInterval -= 1;
+            }
+        }
+
     }
 
     /**属性刷新显示规则*/
     onUpdate(): void {
         // 记录时间
-        this.timerControl += 0.01;
+        this.timerControl += 1;
         // 根据时间线，刷新怪物属性
         this.enemyPropertyUpdate();
         // 角色死亡复活状况

@@ -9,10 +9,8 @@ export default class OperationButton extends Laya.Script {
     private mainSceneControl;
     /**糖果父节点*/
     private candyParent: Laya.Sprite;
-    /**主角1*/
-    private role_01;
-    /**主角2*/
-    private role_02;
+    /**克隆糖果用来移动的父节点*/
+    private candyParent_Move: Laya.Sprite;
     /**操作开关*/
     private operationSwitch: boolean;
 
@@ -27,6 +25,7 @@ export default class OperationButton extends Laya.Script {
         this.selfScene = this.self.scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
         this.candyParent = this.mainSceneControl.candyParent;
+        this.candyParent_Move = this.mainSceneControl.candyParent_Move;
         this.operationSwitch = false;
     }
 
@@ -46,7 +45,6 @@ export default class OperationButton extends Laya.Script {
      * 如果不匹配，说明点错了，糖果会跳到外面变成一个怪物,则出现一个怪物
      */
     down(event): void {
-        console.log(event);
         if (this.candyParent._children.length > 0) {
             let candy = this.candyParent._children[0] as Laya.Sprite;
             let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
@@ -55,12 +53,14 @@ export default class OperationButton extends Laya.Script {
             let group = candyName + event.currentTarget.name;
             let matching_01 = 'redCandy___' + 'redButton';
             let matching_02 = 'yellowCandy' + 'yellowButton';
+            let matching_03 = 'greenCandy_' + 'greenButton';
+            let matching_04 = 'blueCandy__' + 'blueButton';
 
-            if (group === matching_01 || group === matching_02) {
+            if (group === matching_01 || group === matching_02 || group === matching_03 || group === matching_04) {
                 clicksLabel.text = (Number(clicksLabel.text) - 1).toString();
                 // 消除重置点击次数
                 if (Number(clicksLabel.text) === 0) {
-                    this.roleAddProperty(candyName);
+                    this.candyMove(candy);
                     candy.removeSelf();
                     this.createNewCandy();
                     for (let i = 0; i < this.candyParent._children.length; i++) {
@@ -85,20 +85,45 @@ export default class OperationButton extends Laya.Script {
         candy['Candy'].timerControl = 20;
     }
 
-    /**根据糖果的种类增加主角属性规则
-     * 并且播放增加属性文字提示动画
-    */
-    roleAddProperty(candyName: String): void {
-        this.role_01 = this.selfScene['MainSceneControl'].role_01;
-        switch (candyName) {
-            case 'yellowCandy':
-                this.role_01['Role'].role_property.attackValue += 100;
-                break;
-            case 'redCandy___':
-                this.role_01['Role'].role_property.blood += 50;
-                break;
-            default:
-                break;
+    /**复制一个糖果到*/
+    candyMove(candy: Laya.Sprite): void {
+        for (let i = 0; i < 2; i++) {
+            // 通过对象池创建
+            let prefabCandy = this.mainSceneControl.candy;
+            let moveCandy = Laya.Pool.getItemByCreateFun('candy', prefabCandy.create, prefabCandy) as Laya.Sprite;
+            this.candyParent_Move.addChild(moveCandy);
+            moveCandy.x = candy.x;
+            moveCandy.y = candy.y;
+            let candyName = candy.name.substring(0, 11);
+            moveCandy.name = candyName;
+            let url_01 = 'candy/黄色糖果.png';
+            let url_02 = 'candy/红色糖果.png';
+            let url_03 = 'candy/蓝色糖果.png';
+            let url_04 = 'candy/绿色糖果.png';
+            let pic = (moveCandy.getChildByName('pic') as Laya.Sprite);
+            switch (candyName) {
+                case 'yellowCandy':
+                    pic.loadImage(url_01);
+                    break;
+                case 'redCandy___':
+                    pic.loadImage(url_02);
+                    break;
+                case 'blueCandy__':
+                    pic.loadImage(url_03);
+                    break;
+                case 'greenCandy_':
+                    pic.loadImage(url_04);
+                    break;
+                default:
+                    break;
+            }
+            let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
+            clicksLabel.text = '';
+            if (i === 0) {
+                moveCandy['Candy'].candyTagRole = this.mainSceneControl.role_01;
+            } else {
+                moveCandy['Candy'].candyTagRole = this.mainSceneControl.role_02;
+            }
         }
     }
 
@@ -116,7 +141,7 @@ export default class OperationButton extends Laya.Script {
 
     onUpdate(): void {
         // 时间到了才可以进行操作
-        if (this.mainSceneControl.timerControl > 2 && !this.operationSwitch) {
+        if (this.mainSceneControl.timerControl > 200 && !this.operationSwitch) {
             this.operationSwitch = true;
             this.buttonClink();
             console.log('游戏开始！敌人来袭!');

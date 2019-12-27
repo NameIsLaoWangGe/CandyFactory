@@ -41,6 +41,8 @@ export default class Enemy extends Laya.Script {
     private bloodLabel: any;
     /**属性展示框*/
     private propertyShow: Laya.Image;
+    /**被击退效果计时*/
+    private repelTimer: number;
 
     constructor() { super(); }
 
@@ -68,6 +70,8 @@ export default class Enemy extends Laya.Script {
         this.Role_01 = this.mainSceneControl.role_01.getComponent(Role);
         this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
 
+        this.repelTimer = 0;
+
         this.self['Enemy'] = this;
         this.bucketClink();
         this.enemyPropertySet();
@@ -91,7 +95,7 @@ export default class Enemy extends Laya.Script {
 
     /**属性刷新显示规则,血量显示一定是整数10*/
     enemyPropertyUpdate(): void {
-        // 血条上的血量显示、
+        // 血条上的血量显示
         this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
         let str = Math.round(this.enemyProperty.blood * this.selfHealth.value).toString();
         let subStr_01 = str.substring(0, str.length - 1);
@@ -145,33 +149,44 @@ export default class Enemy extends Laya.Script {
         this.self.scale(1, 1);
     }
 
-    /** 敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则*/
+    /** 敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则
+     * 加入被子弹击退效果
+    */
     enemyMove(): void {
         // x,y分别相减是两点连线向量
         // 向量计算并且归一化，向量长度为1。
         let point = new Laya.Point(this.slefTagRole.x - this.self.x, this.slefTagRole.y - this.self.y);
         point.normalize();
-
+        // 判断是否激活被击退效果
         if (this.slefTagRole.x > Laya.stage.width / 2) {//右边
-            if (this.self.x - this.slefTagRole.x < 100) {
-                // 发生预警
-                this.Role_02.role_Warning = true;
-                //向量相加移动
-                this.self.x += point.x * this.selfSpeed;
-                this.self.y += point.y * this.selfSpeed;
-            } else {
-                this.self.x -= this.selfSpeed;
-            }
+            // 右边发生预警
+            this.Role_02.role_Warning = true;
         } else if (this.slefTagRole.x < Laya.stage.width / 2) {//左边
-            if (this.slefTagRole.x - this.self.x < 100) {
-                // 发生预警
-                this.Role_01.role_Warning = true;
-                //向量相加移动
-                this.self.x += point.x * this.selfSpeed;
-                this.self.y += point.y * this.selfSpeed;
-            } else {
-                this.self.x += this.selfSpeed;
-            }
+            // 左边发生预警
+            this.Role_01.role_Warning = true;
+        }
+        // 被击退反向移动
+        if (this.repelTimer > 0) {
+            this.repelTimer--;
+            //反向移动
+            this.self.x -= point.x * 2;
+            this.self.y -= point.y * 2;
+        } else {
+            //向量相加移动
+            this.self.x += point.x * this.selfSpeed;
+            this.self.y += point.y * this.selfSpeed;
+        }
+    }
+
+    /**怪物对主角造成伤害的公式
+     * 攻击力-主角防御如果大于零则造成伤害，否则不造成伤害
+    */
+    enemyAttackRules(): void {
+        let damage = this.enemyProperty.attackValue - this.slefTagRole['Role'].role_property.defense;
+        if (damage > 0) {
+            this.slefTagRole['Role'].role_property.blood -= damage;
+        } else {
+            // console.log('怪物攻击力低于主角防御');
         }
     }
 
@@ -180,32 +195,33 @@ export default class Enemy extends Laya.Script {
         if (this.enemyProperty.blood < 0) {
             this.self.removeSelf();
         }
-        // 属性事实检查
+        // 属性实时刷新
         this.enemyPropertyUpdate();
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
             return;
         }
-
         // 血量低于0死亡,并且增加分数,并且关闭主角攻击预警
         if (this.selfHealth.value <= 0) {
             this.scoreLabel.text = (Number(this.scoreLabel.text) + 200).toString();
             this.self.removeSelf();
-            this.Role_01.role_Warning = true;
-            this.Role_02.role_Warning = true;
+            this.Role_01.role_Warning = false;
+            this.Role_02.role_Warning = false;
         }
-
+        // 移动
+        this.enemyMove();
         // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
+        // 此时移动速度为零
         let differenceX = Math.abs(this.self.x - this.slefTagRole.x);
         let differenceY = Math.abs(this.self.y - this.slefTagRole.y);
         if (differenceX < 100 && differenceY < 100) {
-
+            this.selfSpeed = 0;
             let nowTime = Date.now();
             if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
                 this.recordTime = nowTime;
                 // 血量判断，目标死亡后，会更换目标
                 if (this.slefTagRole['Role'].role_property.blood > 0) {
-                    this.slefTagRole['Role'].role_property.blood -= this.enemyProperty.attackValue;
+                    this.enemyAttackRules();
                 } else {
                     // 更换目标
                     if (this.slefTagRole.name === 'role_01') {
@@ -218,9 +234,8 @@ export default class Enemy extends Laya.Script {
                 }
             }
         } else {
-            this.enemyMove();
+            this.selfSpeed =  4;
         }
-
     }
 
     onDisable(): void {

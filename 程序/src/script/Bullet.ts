@@ -127,23 +127,31 @@ export default class Bullet extends Laya.Script {
         }
 
         // 碰到任何一个怪物，子弹消失怪物掉血
+        // 子弹击中怪物怪物会后退
         // 如果没有到自己的位置，那么算出最近的那个敌人攻击
         for (let i = 0; i < this.enemyParent._children.length; i++) {
             let enemy = this.enemyParent._children[i] as Laya.Sprite;
             let differenceX = Math.abs(enemy.x - this.self.x);
             let differenceY = Math.abs(enemy.y - this.self.y);
             if (differenceX < 30 && differenceY < 30) {
-                this.buckleEnemyBlood(enemy);
+
+                this.bulletAttackRules(enemy);
                 this.self.removeSelf();
             }
         }
     }
 
-    /**攻击后，敌人扣血规则
-     * 根据攻击力扣除血量
-    */
-    buckleEnemyBlood(enemy): void {
-        enemy['Enemy'].enemyProperty.blood -= this.attackValue;
+    /**子弹对怪物造成伤害的公式
+     * 子弹击中怪物，怪物会被击退
+      * 攻击力-主角防御如果大于零则造成伤害，否则不造成伤害
+     */
+    bulletAttackRules(enemy): void {
+        let damage = this.attackValue - enemy['Enemy'].enemyProperty.defense;
+        if (damage > 0) {
+            enemy['Enemy'].enemyProperty.blood -= damage;
+        }
+        // 触发击退
+        enemy['Enemy'].repelTimer = 2;
     }
 
 

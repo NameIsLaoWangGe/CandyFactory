@@ -5,6 +5,7 @@ import OperationControl from "./script/OperationControl"
 import Bullet from "./script/Bullet"
 import Candy from "./script/Candy"
 import Enemy from "./script/Enemy"
+import HintWord from "./script/HintWord"
 /*
 * 游戏初始化配置;
 */
@@ -30,6 +31,7 @@ export default class GameConfig{
         reg("script/Bullet.ts",Bullet);
         reg("script/Candy.ts",Candy);
         reg("script/Enemy.ts",Enemy);
+        reg("script/HintWord.ts",HintWord);
     }
 }
 GameConfig.init();

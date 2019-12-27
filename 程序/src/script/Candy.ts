@@ -24,8 +24,9 @@ export default class Candy extends Laya.Script {
     private moveSwitch: boolean;
     /**初始化的10个糖果的位置记录*/
     private posYArr: Array<number>;
-    /**是否是新增糖果*/
-    private newCandy: boolean;
+    /**属性飘字提示*/
+    private hintWord: Laya.Prefab;
+
 
     constructor() { super(); }
     onEnable(): void {
@@ -38,8 +39,7 @@ export default class Candy extends Laya.Script {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
         this.candyTagRole = null;
-
-        this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
+        this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
         this.roleParent = this.mainSceneControl.roleParent;
         this.scoreLabel = this.mainSceneControl.scoreLabel;
         this.selfSpeed = 6;
@@ -50,6 +50,8 @@ export default class Candy extends Laya.Script {
 
         this.moveSwitch = false;
         this.spaceY = 5;
+
+        this.hintWord = this.mainSceneControl.hintWord;
     }
 
     /**初始位置初始化*/
@@ -64,7 +66,7 @@ export default class Candy extends Laya.Script {
 
     /**当第一个糖果被吃掉后的移动函数*/
     moveRules(): void {
-        Laya.Tween.to(this.self, { y: this.self.y + this.self.height + this.spaceY }, 100, Laya.Ease.circIn, Laya.Handler.create(this, function () {
+        Laya.Tween.to(this.self, { y: this.self.y + this.self.height + this.spaceY }, 50, null, Laya.Handler.create(this, function () {
         }, []), 0);
     }
 
@@ -73,7 +75,9 @@ export default class Candy extends Laya.Script {
 
     }
 
-    /**飞到主角身上增加主角属性*/
+    /**飞到主角身上增加主角属性
+     * 并且播放属性增加动画
+    */
     flyToRole(): void {
         if (this.candyTagRole !== null) {
             // x,y分别相减是两点连线向量
@@ -83,6 +87,81 @@ export default class Candy extends Laya.Script {
             //向量相加移动
             this.self.x += point.x * this.selfSpeed;
             this.self.y += point.y * this.selfSpeed;
+            // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
+            // 此时移动速度为零
+            let differenceX = Math.abs(this.self.x - this.candyTagRole.x);
+            let differenceY = Math.abs(this.self.y - this.candyTagRole.y);
+            if (differenceX < 50 && differenceY < 50) {
+                this.candyTagRole = null;
+                this.self.removeSelf();
+                this.hintWordMove();
+                this.roleAddProperty();
+            }
+        }
+    }
+
+    /**属性增加提示动画*/
+    hintWordMove(): void {
+        for (let i = 0; i < 2; i++) {
+            let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
+            let role_01 = this.mainSceneControl.role_01 as Laya.Sprite;
+            let role_02 = this.mainSceneControl.role_02 as Laya.Sprite;
+            if (i === 0) {
+                role_01.addChild(hintWord);
+            } else {
+                role_02.addChild(hintWord);
+            }
+            hintWord.pos(0, -300);
+            let proPertyType: string;
+            let numberValue: number;
+            switch (this.self.name) {
+                case 'yellowCandy':
+                    proPertyType = '攻击里';
+                    numberValue = 10;
+                    break;
+                case 'redCandy___':
+                    proPertyType = '生命';
+                    numberValue = 5;
+                    break;
+                case 'blueCandy__':
+                    proPertyType = '公鸡速度';
+                    numberValue = 10;
+                    break;
+                case 'greenCandy_':
+                    proPertyType = '防御力';
+                    numberValue = 5;
+                    break;
+                default:
+            }
+            hintWord['HintWord'].initProperty(proPertyType, numberValue);
+        }
+    }
+
+    /**根据糖果的种类增加主角属性规则
+     * 并且播放增加属性文字提示动画
+    */
+    roleAddProperty(): void {
+        let role_01 = this.mainSceneControl.role_01;
+        let role_02 = this.mainSceneControl.role_02;
+        switch (this.self.name) {
+            case 'yellowCandy':
+                role_01['Role'].role_property.attackValue += 10;
+                role_02['Role'].role_property.attackValue += 10;
+                break;
+            case 'redCandy___':
+                role_01['Role'].role_property.blood += 5;
+                role_02['Role'].role_property.blood += 5;
+                break;
+            case 'blueCandy__':
+                role_01['Role'].role_property.attackSpeed += 10;
+                role_02['Role'].role_property.attackSpeed += 10;
+                break;
+            case 'greenCandy_':
+                role_01['Role'].role_property.defense += 5;
+                role_02['Role'].role_property.defense += 5;
+                break;
+            default:
+                break;
         }
     }
 
@@ -93,7 +172,8 @@ export default class Candy extends Laya.Script {
             return;
         }
         this.self.y += 3;
-        // 
+        // 飞到主角身上
+        this.flyToRole();
     }
     onDisable(): void {
         // 清理动画

@@ -61,14 +61,14 @@ export default class Role extends Laya.Script {
     rolePropertySet(): void {
         if (this.self.name === 'role_01') {
             this.role_property = {
-                blood: 200,
+                blood: 2000,
                 attackValue: 10,
                 attackSpeed: 100,
                 defense: 10,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
-                blood: 200,
+                blood: 2000,
                 attackValue: 10,
                 attackSpeed: 100,
                 defense: 10,
@@ -76,6 +76,7 @@ export default class Role extends Laya.Script {
         }
         // 生命值显示
     }
+
     /**属性实时刷新刷新*/
     updateProperty(): void {
         // 血条上的血量显示、
@@ -97,6 +98,7 @@ export default class Role extends Laya.Script {
 
     /**主角的点击事件
      * 和长按出现属性展示页面
+     * 滑动可以拖动主角到规定的位置
     */
     bucketClink(): void {
         this.self.on(Laya.Event.MOUSE_DOWN, this, this.down);

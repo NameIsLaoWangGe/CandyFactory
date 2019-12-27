@@ -1,3 +1,6 @@
-2019/12/27-12:06:25.760 1578 Reusing MANIFEST F:\Git_Warehouse\CandyFactory\程序\.laya\chrome\Default\Local Storage\leveldb/MANIFEST-000001
-2019/12/27-12:06:25.760 1578 Recovering log #39
-2019/12/27-12:06:25.761 1578 Reusing old log F:\Git_Warehouse\CandyFactory\程序\.laya\chrome\Default\Local Storage\leveldb/000039.log 
+2019/12/27-21:02:48.112 2010 Reusing MANIFEST F:\Git_Warehouse\CandyFactory\程序\.laya\chrome\Default\Local Storage\leveldb/MANIFEST-000001
+2019/12/27-21:02:48.112 2010 Recovering log #55
+2019/12/27-21:02:48.112 2010 Reusing old log F:\Git_Warehouse\CandyFactory\程序\.laya\chrome\Default\Local Storage\leveldb/000055.log 
+2019/12/27-21:04:07.619 1ecc Level-0 table #59: started
+2019/12/27-21:04:07.652 1ecc Level-0 table #59: 11396 bytes OK
+2019/12/27-21:04:07.672 1ecc Delete type=0 #55
