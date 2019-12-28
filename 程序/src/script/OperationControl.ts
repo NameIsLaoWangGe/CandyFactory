@@ -13,6 +13,8 @@ export default class OperationButton extends Laya.Script {
     private candyParent_Move: Laya.Sprite;
     /**操作开关*/
     private operationSwitch: boolean;
+    /**敌人*/
+    private enemy: Laya.Prefab;
 
     constructor() { super(); }
 
@@ -27,6 +29,7 @@ export default class OperationButton extends Laya.Script {
         this.candyParent = this.mainSceneControl.candyParent;
         this.candyParent_Move = this.mainSceneControl.candyParent_Move;
         this.operationSwitch = false;
+
     }
 
     /**操作按钮的点击事件*/
@@ -69,7 +72,13 @@ export default class OperationButton extends Laya.Script {
                     }
                 }
             } else {
-                console.log('产生一个敌人');
+                this.candybecomeEnemy(candy);
+                candy.removeSelf();
+                this.createNewCandy();
+                for (let i = 0; i < this.candyParent._children.length; i++) {
+                    // 下移
+                    this.candyParent._children[i]['Candy'].moveRules();
+                }
             }
         }
         event.currentTarget.scale(0.9, 0.9);
@@ -85,45 +94,81 @@ export default class OperationButton extends Laya.Script {
         candy['Candy'].timerControl = 20;
     }
 
-    /**复制一个糖果到*/
+    /**复制一个糖果到移动节点并移动
+     *  @param candy 复制这个糖果
+    */
     candyMove(candy: Laya.Sprite): void {
         for (let i = 0; i < 2; i++) {
-            // 通过对象池创建
-            let prefabCandy = this.mainSceneControl.candy;
-            let moveCandy = Laya.Pool.getItemByCreateFun('candy', prefabCandy.create, prefabCandy) as Laya.Sprite;
-            this.candyParent_Move.addChild(moveCandy);
-            moveCandy.x = candy.x;
-            moveCandy.y = candy.y;
-            let candyName = candy.name.substring(0, 11);
-            moveCandy.name = candyName;
-            let url_01 = 'candy/黄色糖果.png';
-            let url_02 = 'candy/红色糖果.png';
-            let url_03 = 'candy/蓝色糖果.png';
-            let url_04 = 'candy/绿色糖果.png';
-            let pic = (moveCandy.getChildByName('pic') as Laya.Sprite);
-            switch (candyName) {
-                case 'yellowCandy':
-                    pic.loadImage(url_01);
-                    break;
-                case 'redCandy___':
-                    pic.loadImage(url_02);
-                    break;
-                case 'blueCandy__':
-                    pic.loadImage(url_03);
-                    break;
-                case 'greenCandy_':
-                    pic.loadImage(url_04);
-                    break;
-                default:
-                    break;
-            }
-            let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-            clicksLabel.text = '';
+            let copyCandy = this.copyTheCandy(candy);
             if (i === 0) {
-                moveCandy['Candy'].candyTagRole = this.mainSceneControl.role_01;
+                copyCandy['Candy'].candyTagRole = this.mainSceneControl.role_01;
             } else {
-                moveCandy['Candy'].candyTagRole = this.mainSceneControl.role_02;
+                copyCandy['Candy'].candyTagRole = this.mainSceneControl.role_02;
             }
+        }
+    }
+
+    /**复制糖果
+     *  @param candy 复制这个糖果
+    */
+    copyTheCandy(candy: Laya.Sprite): Laya.Sprite {
+        let prefabCandy = this.mainSceneControl.candy;
+        let copyCandy = Laya.Pool.getItemByCreateFun('candy', prefabCandy.create, prefabCandy) as Laya.Sprite;
+        this.candyParent_Move.addChild(copyCandy);
+        copyCandy.x = candy.x;
+        copyCandy.y = candy.y;
+        let candyName = candy.name.substring(0, 11);
+        copyCandy.name = candyName;
+        let url_01 = 'candy/黄色糖果.png';
+        let url_02 = 'candy/红色糖果.png';
+        let url_03 = 'candy/蓝色糖果.png';
+        let url_04 = 'candy/绿色糖果.png';
+        let pic = (copyCandy.getChildByName('pic') as Laya.Sprite);
+        switch (candyName) {
+            case 'yellowCandy':
+                pic.loadImage(url_01);
+                break;
+            case 'redCandy___':
+                pic.loadImage(url_02);
+                break;
+            case 'blueCandy__':
+                pic.loadImage(url_03);
+                break;
+            case 'greenCandy_':
+                pic.loadImage(url_04);
+                break;
+            default:
+                break;
+        }
+        let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
+        clicksLabel.text = '';
+        return copyCandy;
+    }
+
+    /**点错后，糖果跳到地上变成2个敌人
+     * @param candy 复制这个糖果的信息
+    */
+    candybecomeEnemy(candy: Laya.Sprite): void {
+        for (let i = 0; i < 2; i++) {
+            let copyCandy = this.copyTheCandy(candy);
+            // 左右两个方向
+            let destination;
+            let direction;
+            let enemyTarget;
+            if (i === 0) {
+                destination = -250;
+                direction = 'left';
+                enemyTarget = this.mainSceneControl.role_01;
+            } else {
+                destination = 250;
+                direction = 'right';
+                enemyTarget = this.mainSceneControl.role_02;
+            }
+            Laya.Tween.to(copyCandy, { x: copyCandy.x + destination }, 500, null, Laya.Handler.create(this, function () {
+                let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget);
+                enemy.pos(copyCandy.x, copyCandy.y);
+                copyCandy.removeSelf();
+            }, []), 0);
         }
     }
 

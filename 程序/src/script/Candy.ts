@@ -20,13 +20,17 @@ export default class Candy extends Laya.Script {
     private tab: number;
     /**每个糖果之间的间距*/
     private spaceY: number;
-    /**再次移动开关*/
-    private moveSwitch: boolean;
+
     /**初始化的10个糖果的位置记录*/
     private posYArr: Array<number>;
     /**属性飘字提示*/
     private hintWord: Laya.Prefab;
 
+    /**控制这个糖果是否变成敌人*/
+    private becomeEnemy: boolean;
+
+    /**是否向下移动一格*/
+    private moveAStep: boolean;
 
     constructor() { super(); }
     onEnable(): void {
@@ -44,16 +48,28 @@ export default class Candy extends Laya.Script {
         this.scoreLabel = this.mainSceneControl.scoreLabel;
         this.selfSpeed = 6;
 
-        this.self['Candy'] = this;
         this.tab = this.mainSceneControl.candyCount;
         this.timerControl = 0;
 
-        this.moveSwitch = false;
         this.spaceY = 5;
 
         this.hintWord = this.mainSceneControl.hintWord;
-    }
 
+        this.becomeEnemy = false;
+
+        this.moveAStep = false;
+
+        this.self['Candy'] = this;
+    }
+    // get moveAStep():boolean{
+    //     return this._moveAStep;
+    // }
+    // set moveAStep(value:boolean){
+    //     if(value){
+    //         debugger
+    //     }
+    //     this._moveAStep=value;
+    // }
     /**初始位置初始化*/
     locationInit(): void {
         this.posYArr = [];
@@ -71,8 +87,9 @@ export default class Candy extends Laya.Script {
     }
 
     /**跳到地上变成一个敌人*/
-    becomeEnemy(): void {
-
+    candybecomeEnemy(): void {
+        Laya.Tween.to(this.self, { x: this.self.x + 200 }, 50, null, Laya.Handler.create(this, function () {
+        }, []), 0);
     }
 
     /**飞到主角身上增加主角属性
@@ -107,8 +124,16 @@ export default class Candy extends Laya.Script {
             let role_01 = this.mainSceneControl.role_01 as Laya.Sprite;
             let role_02 = this.mainSceneControl.role_02 as Laya.Sprite;
             if (i === 0) {
+                if (role_01.parent === null) {
+                    this.self.removeSelf();
+                    return;
+                }
                 role_01.addChild(hintWord);
             } else {
+                if (role_02.parent === null) {
+                    this.self.removeSelf();
+                    return;
+                }
                 role_02.addChild(hintWord);
             }
             hintWord.pos(0, -150);
@@ -133,6 +158,7 @@ export default class Candy extends Laya.Script {
                     break;
                 default:
             }
+
             hintWord['HintWord'].initProperty(proPertyType, numberValue);
         }
     }
@@ -181,7 +207,7 @@ export default class Candy extends Laya.Script {
     onUpdate(): void {
         // 第一波糖果出厂控制，此刻不可点击
         this.timerControl += 0.1;
-        if (this.timerControl > 20) {
+        if (this.timerControl > 18) {
             return;
         }
         this.self.y += 3;
@@ -195,6 +221,10 @@ export default class Candy extends Laya.Script {
             Laya.Pool.recover('yellowCandy', this.self);
         } else if (this.self.name === 'redCandy___') {
             Laya.Pool.recover('redCandy___', this.self);
+        } else if (this.self.name === 'blueCandy__') {
+            Laya.Pool.recover('blueCandy__', this.self);
+        } else if (this.self.name === 'greenCandy_') {
+            Laya.Pool.recover('greenCandy_', this.self);
         }
     }
 }

@@ -29,6 +29,10 @@ export default class Bullet extends Laya.Script {
     /**攻击力*/
     private attackValue: number;
 
+    /**属性飘字提示*/
+    private hintWord: Laya.Prefab;
+
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -41,6 +45,7 @@ export default class Bullet extends Laya.Script {
         this.selfScene = this.self.scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
         this.enemyParent = this.mainSceneControl.enemyParent;
+        this.hintWord = this.mainSceneControl.hintWord;
         this.selfSpeed = 15;
         this.attackValue = 0.5;
 
@@ -144,16 +149,38 @@ export default class Bullet extends Laya.Script {
     /**子弹对怪物造成伤害的公式
      * 子弹击中怪物，怪物会被击退
       * 攻击力-主角防御如果大于零则造成伤害，否则不造成伤害
+      * 并且有动画提示文字
      */
     bulletAttackRules(enemy): void {
+        // 掉血显示值，伤害小于零则显示0
+        let numberValue: number;
+        // 伤害
         let damage = this.attackValue - enemy['Enemy'].enemyProperty.defense;
         if (damage > 0) {
             enemy['Enemy'].enemyProperty.blood -= damage;
+            numberValue = damage;
+        } else {
+            numberValue = 0;
         }
+        // 飘字
+        this.hintWordMove(enemy, damage);
         // 触发击退
         enemy['Enemy'].repelTimer = 2;
     }
 
+    hintWordMove(enemy: Laya.Sprite, damage: number): void {
+        // 敌人被消灭了，则不执行这个
+        if (enemy.parent === null) {
+            return;
+        }
+        // 创建提示动画对象
+        let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
+        hintWord.pos(100, -150);
+        enemy.addChild(hintWord);
+        let proPertyType: string = '主角掉血';
+        let numberValue: number;
+        hintWord['HintWord'].initProperty(proPertyType, damage);
+    }
 
     onDisable(): void {
         Laya.Pool.recover('bullet', this.self);

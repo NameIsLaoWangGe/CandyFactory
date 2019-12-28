@@ -1,10 +1,12 @@
 export default class HintWord extends Laya.Script {
     /**自己*/
     private self: Laya.Sprite;
-    /**属性标签*/
-    private property: Laya.FontClip;
-    /**属性值*/
-    private number: Laya.FontClip;
+    /**增加属性属性标签*/
+    private addProperty: Laya.FontClip;
+    /**增加属性值属性值*/
+    private addNumber: Laya.FontClip;
+    /**减少属性值属性值*/
+    private subNumber: Laya.FontClip;
 
     constructor() { super(); }
 
@@ -12,6 +14,14 @@ export default class HintWord extends Laya.Script {
         this.self = this.owner as Laya.Sprite;
         this.self['HintWord'] = this;
         this.self.alpha = 0;
+
+        this.addProperty = this.self.getChildByName('addProperty') as Laya.FontClip;
+        this.addNumber = this.self.getChildByName('addNumber') as Laya.FontClip;
+        this.subNumber = this.self.getChildByName('subNumber') as Laya.FontClip;
+
+        this.addProperty.value = null;
+        this.addNumber.value = null;
+        this.subNumber.value = null;
     }
 
     /**通过传入的参数来，设置属性图片字的格式
@@ -19,25 +29,33 @@ export default class HintWord extends Laya.Script {
      * @param numberValue 属性值
      * */
     initProperty(propertyType: string, numberValue: number): void {
-        this.property = this.self.getChildByName('property') as Laya.FontClip;
-        this.property.value = propertyType;
-        this.number = this.self.getChildByName('number') as Laya.FontClip;
+        this.addProperty.value = propertyType;
         // 位置偏移，因为字符长度不一样
         switch (propertyType) {
             case '公鸡速度':
-                this.property.x -= 40;
+                this.addProperty.x -= 40;
+                this.addNumber.value = "+" + numberValue;
                 break;
             case '攻击里':
-                this.property.x -= 20;
-                this.number.x -= 20;
+                this.addProperty.x -= 20;
+                this.addNumber.x -= 20;
+                this.addNumber.value = "+" + numberValue;
                 break;
             case '生命':
-                this.number.x -= 40;
+                this.addNumber.x -= 40;
+                this.addNumber.value = "+" + numberValue;
                 break;
             case '防御力':
-                this.property.x -= 20;
-                this.number.x -= 20;
+                this.addProperty.x -= 20;
+                this.addNumber.x -= 20;
+                this.addNumber.value = "+" + numberValue;
                 break;
+            case '主角掉血':
+                this.subNumber.x -= 80;
+                this.subNumber.value = "-" + numberValue;
+            case '敌人掉血':
+                this.subNumber.x -= 80;
+                this.subNumber.value = "-" + numberValue;
             default:
                 break;
         }

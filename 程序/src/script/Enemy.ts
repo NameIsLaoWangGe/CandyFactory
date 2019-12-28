@@ -44,7 +44,8 @@ export default class Enemy extends Laya.Script {
     /**被击退效果计时*/
     private repelTimer: number;
 
-    // 
+    /**属性飘字提示*/
+    private hintWord: Laya.Prefab;
 
     constructor() { super(); }
 
@@ -58,8 +59,8 @@ export default class Enemy extends Laya.Script {
         this.selfScene = this.owner.scene as Laya.Scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
         this.roleParent = this.mainSceneControl.roleParent;
-        this.slefTagRole = this.mainSceneControl.enemyTagRole;
-        this.tagHealth = this.slefTagRole.getChildByName('health') as Laya.ProgressBar;
+        // this.slefTagRole = this.mainSceneControl.enemyTagRole;
+        // this.tagHealth = this.slefTagRole.getChildByName('health') as Laya.ProgressBar;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
         this.selfSpeed = 4;
         this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
@@ -73,11 +74,13 @@ export default class Enemy extends Laya.Script {
         this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
 
         this.repelTimer = 0;
+        this.hintWord = this.mainSceneControl.hintWord as Laya.Prefab;
 
         this.self['Enemy'] = this;
         this.bucketClink();
         this.enemyPropertySet();
     }
+
 
     /**怪物等级包括的一些属性*/
     enemyPropertySet(): void {
@@ -182,52 +185,37 @@ export default class Enemy extends Laya.Script {
 
     /**怪物对主角造成伤害的公式
      * 攻击力-主角防御如果大于零则造成伤害，否则不造成伤害
-     * 并且在怪物头上出现掉血动画提示
+     * 并且在主角头上出现掉血动画提示
     */
     enemyAttackRules(): void {
+        // 掉血显示值，伤害小于零则显示0
+        let numberValue: number;
+        // 通过攻击力计算掉血状况
         let damage = this.enemyProperty.attackValue - this.slefTagRole['Role'].role_property.defense;
         if (damage > 0) {
             this.slefTagRole['Role'].role_property.blood -= damage;
+            numberValue = damage;
         } else {
-            // console.log('怪物攻击力低于主角防御');
+            numberValue = 0;
         }
+        this.hintWordMove(damage);
     }
-     /**属性增加提示动画*/
-     hintWordMove(): void {
-            let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
-            let role_01 = this.mainSceneControl.role_01 as Laya.Sprite;
-            let role_02 = this.mainSceneControl.role_02 as Laya.Sprite;
-            if (i === 0) {
-                role_01.addChild(hintWord);
-            } else {
-                role_02.addChild(hintWord);
-            }
-            hintWord.pos(0, -150);
-            let proPertyType: string;
-            let numberValue: number;
-            switch (this.self.name) {
-                case 'yellowCandy':
-                    proPertyType = '攻击里';
-                    numberValue = 10;
-                    break;
-                case 'redCandy___':
-                    proPertyType = '生命';
-                    numberValue = 5;
-                    break;
-                case 'blueCandy__':
-                    proPertyType = '公鸡速度';
-                    numberValue = 10;
-                    break;
-                case 'greenCandy_':
-                    proPertyType = '防御力';
-                    numberValue = 5;
-                    break;
-                default:
-            }
-            hintWord['HintWord'].initProperty(proPertyType, numberValue);
+
+    hintWordMove(damage: number): void {
+        // 创建提示动画对象
+        let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
+        hintWord.pos(0, -150);
+        this.slefTagRole.addChild(hintWord);
+        let proPertyType: string = '敌人掉血';
+        let numberValue: number;
+        hintWord['HintWord'].initProperty(proPertyType, damage);
     }
 
     onUpdate(): void {
+        // 如果没有目标则什么都不执行
+        if (this.slefTagRole === null) {
+            return;
+        }
         // 血量低于0则死亡
         if (this.enemyProperty.blood < 0) {
             this.self.removeSelf();
@@ -271,7 +259,7 @@ export default class Enemy extends Laya.Script {
                 }
             }
         } else {
-            this.selfSpeed =  4;
+            this.selfSpeed = 4;
         }
     }
 

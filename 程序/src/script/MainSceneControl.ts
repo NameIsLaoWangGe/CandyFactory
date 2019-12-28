@@ -35,7 +35,7 @@ export default class MainSceneControl extends Laya.Script {
     public scoreLabel: Laya.Label;
 
     /** @prop {name:hintWord , tips:"属性飘字提示", type:Prefab}*/
-    public hintWord : Laya.Prefab;
+    public hintWord: Laya.Prefab;
 
     /**两个主角*/
     private role_01: Laya.Sprite;
@@ -100,8 +100,8 @@ export default class MainSceneControl extends Laya.Script {
         // 初始化怪物属性，依次为血量，
         this.enemyProperty = {
             blood: 200,
-            attackValue: 1,
-            attackSpeed: 100,
+            attackValue: 11,
+            attackSpeed: 1000,
             defense: 10,
             moveSpeed: 10,
             creatInterval: 5000
@@ -264,10 +264,12 @@ export default class MainSceneControl extends Laya.Script {
 
     /**出现敌人
      * 创建方式决定了敌人出生的位置
+     * @param mode 创建模式是左边还是右边
+     * @param tagRole 目标是哪个主角
     */
-    careatEnemy(mode: string) {
+    careatEnemy(mode: string, tagRole: Laya.Sprite): Laya.Sprite {
         this.enemyCount++;
-        if (this.enemyTagRole !== null) {
+        if (tagRole !== null) {
             let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
             this.enemyParent.addChild(enemy);
             enemy.name = 'enemy' + this.enemyCount;//名称唯一
@@ -280,12 +282,14 @@ export default class MainSceneControl extends Laya.Script {
             } else if (mode === 'right') {
                 enemy.pos(800, 300);
             } else if (mode === 'target') {
-                if (this.enemyTagRole.x < Laya.stage.width / 2 && this.enemyTagRole.x > 0) {
+                if (tagRole.x < Laya.stage.width / 2 && tagRole.x > 0) {
                     enemy.pos(-50, 300);
-                } else if (this.enemyTagRole.x >= Laya.stage.width / 2 && this.enemyTagRole.x < Laya.stage.width) {
+                } else if (tagRole.x >= Laya.stage.width / 2 && tagRole.x < Laya.stage.width) {
                     enemy.pos(800, 300);
                 }
             }
+            enemy['Enemy'].slefTagRole = tagRole;
+            return enemy;
         }
     }
 
@@ -331,7 +335,7 @@ export default class MainSceneControl extends Laya.Script {
             if (nowTime - this.enemyTime_01 > this.enemyProperty.creatInterval) {
                 this.enemyTime_01 = nowTime;
                 this.enemyTagRole = this.role_01;
-                this.careatEnemy('left');
+                this.careatEnemy('left', this.role_01);
                 this.enemyTagRole = null;
             }
         }
@@ -341,7 +345,7 @@ export default class MainSceneControl extends Laya.Script {
             if (nowTime - this.enemyTime_02 > this.enemyProperty.creatInterval) {
                 this.enemyTime_02 = nowTime;
                 this.enemyTagRole = this.role_02;
-                this.careatEnemy('right');
+                this.careatEnemy('right', this.role_02);
                 this.enemyTagRole = null;
             }
         }
