@@ -92,10 +92,10 @@ export default class Candy extends Laya.Script {
             let differenceX = Math.abs(this.self.x - this.candyTagRole.x);
             let differenceY = Math.abs(this.self.y - this.candyTagRole.y);
             if (differenceX < 50 && differenceY < 50) {
-                this.candyTagRole = null;
                 this.self.removeSelf();
                 this.hintWordMove();
                 this.roleAddProperty();
+                this.candyTagRole = null;
             }
         }
     }
@@ -111,7 +111,7 @@ export default class Candy extends Laya.Script {
             } else {
                 role_02.addChild(hintWord);
             }
-            hintWord.pos(0, -300);
+            hintWord.pos(0, -150);
             let proPertyType: string;
             let numberValue: number;
             switch (this.self.name) {
@@ -145,20 +145,33 @@ export default class Candy extends Laya.Script {
         let role_02 = this.mainSceneControl.role_02;
         switch (this.self.name) {
             case 'yellowCandy':
-                role_01['Role'].role_property.attackValue += 10;
-                role_02['Role'].role_property.attackValue += 10;
+                if (this.candyTagRole === role_01) {
+                    role_01['Role'].role_property.attackValue += 10;
+                } else {
+                    role_02['Role'].role_property.attackValue += 10;
+                }
                 break;
             case 'redCandy___':
-                role_01['Role'].role_property.blood += 5;
-                role_02['Role'].role_property.blood += 5;
+                if (this.candyTagRole === role_01) {
+                    role_01['Role'].role_property.blood += 5;
+                } else {
+                    role_02['Role'].role_property.blood += 5;
+                }
+
                 break;
             case 'blueCandy__':
-                role_01['Role'].role_property.attackSpeed += 10;
-                role_02['Role'].role_property.attackSpeed += 10;
+                if (this.candyTagRole === role_01) {
+                    role_01['Role'].role_property.attackSpeed += 10;
+                } else {
+                    role_02['Role'].role_property.attackSpeed += 10;
+                }
                 break;
             case 'greenCandy_':
-                role_01['Role'].role_property.defense += 5;
-                role_02['Role'].role_property.defense += 5;
+                if (this.candyTagRole === role_01) {
+                    role_01['Role'].role_property.defense += 5;
+                } else {
+                    role_02['Role'].role_property.defense += 5;
+                }
                 break;
             default:
                 break;

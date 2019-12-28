@@ -44,6 +44,8 @@ export default class Enemy extends Laya.Script {
     /**被击退效果计时*/
     private repelTimer: number;
 
+    // 
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -180,6 +182,7 @@ export default class Enemy extends Laya.Script {
 
     /**怪物对主角造成伤害的公式
      * 攻击力-主角防御如果大于零则造成伤害，否则不造成伤害
+     * 并且在怪物头上出现掉血动画提示
     */
     enemyAttackRules(): void {
         let damage = this.enemyProperty.attackValue - this.slefTagRole['Role'].role_property.defense;
@@ -188,6 +191,40 @@ export default class Enemy extends Laya.Script {
         } else {
             // console.log('怪物攻击力低于主角防御');
         }
+    }
+     /**属性增加提示动画*/
+     hintWordMove(): void {
+            let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
+            let role_01 = this.mainSceneControl.role_01 as Laya.Sprite;
+            let role_02 = this.mainSceneControl.role_02 as Laya.Sprite;
+            if (i === 0) {
+                role_01.addChild(hintWord);
+            } else {
+                role_02.addChild(hintWord);
+            }
+            hintWord.pos(0, -150);
+            let proPertyType: string;
+            let numberValue: number;
+            switch (this.self.name) {
+                case 'yellowCandy':
+                    proPertyType = '攻击里';
+                    numberValue = 10;
+                    break;
+                case 'redCandy___':
+                    proPertyType = '生命';
+                    numberValue = 5;
+                    break;
+                case 'blueCandy__':
+                    proPertyType = '公鸡速度';
+                    numberValue = 10;
+                    break;
+                case 'greenCandy_':
+                    proPertyType = '防御力';
+                    numberValue = 5;
+                    break;
+                default:
+            }
+            hintWord['HintWord'].initProperty(proPertyType, numberValue);
     }
 
     onUpdate(): void {
