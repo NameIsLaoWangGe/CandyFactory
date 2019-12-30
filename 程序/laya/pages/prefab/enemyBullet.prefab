@@ -6,7 +6,7 @@
     "searchKey":"Sprite,enemyBullet",
     "props":{"y":0,"x":0,"width":50,"presetID":1,"preset":"laya/pages/prefab/enemyBullet.prefab","name":"enemyBullet","isPresetRoot":true,"height":50},
     "nodeParent":-1,
-    "maxID":89,
+    "maxID":90,
     "label":"enemyBullet",
     "isOpen":true,
     "isDirectory":true,
@@ -25,6 +25,23 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":88,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Script",
+            "switchAble":true,
+            "source":"src/script/EnemyBullet.ts",
+            "searchKey":"Script,EnemyBullet",
+            "removeAble":true,
+            "props":{"presetID":3,"preset":"laya/pages/prefab/enemyBullet.prefab"},
+            "nodeParent":87,
+            "label":"EnemyBullet",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":89,
             "child":[
                 ]
         }],

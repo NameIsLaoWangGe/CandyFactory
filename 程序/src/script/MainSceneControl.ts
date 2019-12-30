@@ -15,8 +15,8 @@ export default class MainSceneControl extends Laya.Script {
     public enemy: Laya.Prefab;
     /** @prop {name:enemyParent, tips:"敌人父节点", type:Node}*/
     public enemyParent: Laya.Sprite;
-    /** @prop {name:enemyBullet, tips:"敌人子弹预制体", type:Node}*/
-    public enemyBullet: Laya.Sprite;
+    /** @prop {name:enemyBullet, tips:"敌人子弹预制体", type:Prefab}*/
+    public enemyBullet: Laya.Prefab;
 
     /** @prop {name:background, tips:"背景图", type:Node}*/
     public background: Laya.Sprite;
@@ -38,6 +38,9 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:hintWord , tips:"属性飘字提示", type:Prefab}*/
     public hintWord: Laya.Prefab;
+
+    /**是否处于暂停状态*/
+    private suspend: boolean;
 
     /**两个主角*/
     private role_01: Laya.Sprite;
@@ -87,6 +90,7 @@ export default class MainSceneControl extends Laya.Script {
     /**左边出怪开关*/
     private enemySwitch_02: boolean;
 
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -102,8 +106,8 @@ export default class MainSceneControl extends Laya.Script {
         // 初始化怪物属性，依次为血量，
         this.enemyProperty = {
             blood: 200,
-            attackValue: 11,
-            attackSpeed: 1000,
+            attackValue: 15,
+            attackSpeed: 100,
             defense: 10,
             moveSpeed: 10,
             creatInterval: 5000
@@ -134,6 +138,7 @@ export default class MainSceneControl extends Laya.Script {
 
         this.owner['MainSceneControl'] = this;//脚本赋值
 
+        this.suspend = false;
         // 生成10个初始糖果
         for (let i = 0; i < 10; i++) {
             this.createCandy();
@@ -274,7 +279,7 @@ export default class MainSceneControl extends Laya.Script {
      * @param mode 创建模式是左边还是右边
      * @param tagRole 目标是哪个主角
     */
-    careatEnemy(mode: string, tagRole: Laya.Sprite): Laya.Sprite {
+    careatEnemy(mode: string, tagRole: Laya.Sprite, type: string): Laya.Sprite {
         this.enemyCount++;
         if (tagRole !== null) {
             let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
@@ -296,6 +301,16 @@ export default class MainSceneControl extends Laya.Script {
                 }
             }
             enemy['Enemy'].slefTagRole = tagRole;
+            enemy['Enemy'].ennemyType = type;
+
+            // 默认属性不可见
+            let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;
+            if (!this.suspend) {
+                propertyShow.alpha = 0;
+            } else {
+                propertyShow.alpha = 1;
+            }
+
             return enemy;
         }
     }
@@ -319,6 +334,7 @@ export default class MainSceneControl extends Laya.Script {
 
     }
 
+
     /**属性刷新显示规则*/
     onUpdate(): void {
         // 记录时间
@@ -334,7 +350,7 @@ export default class MainSceneControl extends Laya.Script {
             if (nowTime - this.enemyTime_01 > this.enemyProperty.creatInterval) {
                 this.enemyTime_01 = nowTime;
                 this.enemyTagRole = this.role_01;
-                this.careatEnemy('left', this.role_01);
+                this.careatEnemy('left', this.role_01, 'infighting');
                 this.enemyTagRole = null;
             }
         }
@@ -344,16 +360,10 @@ export default class MainSceneControl extends Laya.Script {
             if (nowTime - this.enemyTime_02 > this.enemyProperty.creatInterval) {
                 this.enemyTime_02 = nowTime;
                 this.enemyTagRole = this.role_02;
-                this.careatEnemy('right', this.role_02);
+                this.careatEnemy('right', this.role_02, 'infighting');
                 this.enemyTagRole = null;
             }
         }
-        // // 通过点击错误产生敌人创建敌人
-        // if (this.enemyAppear) {
-        //     this.careatEnemy();
-        //     this.enemyAppear = false;
-        //     this.enemyTagRole = null;
-        // }
     }
 
     onDisable(): void {

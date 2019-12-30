@@ -12,18 +12,10 @@ export default class Enemy extends Laya.Script {
     private selfScene: Laya.Scene;
     /**场景脚本组件*/
     private mainSceneControl;
-
-    /**主角1脚本组件*/
-    private Role_01;
-    /**主角2脚本组件*/
-    private Role_02;
-
     /**主角的父节点*/
     private roleParent: Laya.Sprite;
     /**怪物攻击对象,也是上个吃糖果对象,一次性，赋一次值只能用一次*/
     private slefTagRole: Laya.Sprite;
-    /**怪物出现位置*/
-    private
     /**攻击对象血量*/
     private tagHealth: Laya.ProgressBar;
     /**对话框*/
@@ -33,6 +25,7 @@ export default class Enemy extends Laya.Script {
     private attackTnterval: number;
     /**当前时间，用于对比时间间隔*/
     private recordTime: number;
+
     /**分数*/
     private scoreLabel: Laya.Label;
     /**当前属性*/
@@ -46,6 +39,10 @@ export default class Enemy extends Laya.Script {
 
     /**属性飘字提示*/
     private hintWord: Laya.Prefab;
+    /**所属敌人的类型，是远程还是近战*/
+    private ennemyType: string;
+    /**子弹*/
+    private enemyBullet: Laya.Prefab;
 
     constructor() { super(); }
 
@@ -59,8 +56,6 @@ export default class Enemy extends Laya.Script {
         this.selfScene = this.owner.scene as Laya.Scene;
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
         this.roleParent = this.mainSceneControl.roleParent;
-        // this.slefTagRole = this.mainSceneControl.enemyTagRole;
-        // this.tagHealth = this.slefTagRole.getChildByName('health') as Laya.ProgressBar;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
         this.selfSpeed = 4;
         this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
@@ -70,11 +65,10 @@ export default class Enemy extends Laya.Script {
 
         this.speakBox = this.mainSceneControl.speakBox;
         this.scoreLabel = this.mainSceneControl.scoreLabel;
-        // this.Role_01 = this.mainSceneControl.role_01.getComponent(Role);
-        // this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
 
         this.repelTimer = 0;
         this.hintWord = this.mainSceneControl.hintWord as Laya.Prefab;
+        this.enemyBullet = this.mainSceneControl.enemyBullet as Laya.Prefab;
 
         this.self['Enemy'] = this;
         this.bucketClink();
@@ -154,7 +148,7 @@ export default class Enemy extends Laya.Script {
         this.self.scale(1, 1);
     }
 
-    /** 敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则
+    /** 近战攻击的敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则
      * 加入被子弹击退效果
     */
     enemyMove(): void {
@@ -211,6 +205,16 @@ export default class Enemy extends Laya.Script {
         hintWord['HintWord'].initProperty(proPertyType, damage);
     }
 
+    /**远程攻击创建子弹*/
+    creatEnemy(): void {
+        let bullet = Laya.Pool.getItemByCreateFun('enemyBullet', this.enemyBullet.create, this.enemyBullet) as Laya.Sprite;
+        let bulletParent = this.mainSceneControl.bulletParent;
+        bulletParent.addChild(bullet);
+        bullet.pos(this.self.x, this.self.y);
+        bullet['EnemyBullet'].belongEnemy = this.self;
+        bullet['EnemyBullet'].bulletTarget = this.slefTagRole;
+    }
+
     onUpdate(): void {
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
@@ -228,41 +232,49 @@ export default class Enemy extends Laya.Script {
         }
         // 属性实时刷新
         this.enemyPropertyUpdate();
-
         // 血量低于0死亡,并且增加分数,并且关闭主角攻击预警
         if (this.selfHealth.value <= 0) {
             this.scoreLabel.text = (Number(this.scoreLabel.text) + 200).toString();
             this.self.removeSelf();
-            this.Role_01.role_Warning = false;
-            this.Role_02.role_Warning = false;
+            this.mainSceneControl.role_01['Role'].role_Warning = false;
+            this.mainSceneControl.role_02['Role'].role_Warning = false;
         }
-        // 移动
-        this.enemyMove();
-        // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
-        // 此时移动速度为零
-        let differenceX = Math.abs(this.self.x - this.slefTagRole.x);
-        let differenceY = Math.abs(this.self.y - this.slefTagRole.y);
-        if (differenceX < 100 && differenceY < 100) {
-            this.selfSpeed = 0;
+        //判断这个敌人是不是远程攻击，远程攻击的敌人暂时不会移动,会主动发射子弹进行攻击
+        if (this.ennemyType === 'range') {
             let nowTime = Date.now();
             if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
                 this.recordTime = nowTime;
-                // 血量判断，目标死亡后，会更换目标
-                if (this.slefTagRole['Role'].role_property.blood > 0) {
-                    this.enemyAttackRules();
-                } else {
-                    // 更换目标
-                    if (this.slefTagRole.name === 'role_01') {
-                        this.slefTagRole = this.mainSceneControl.role_02;
-                        this.tagHealth = this.mainSceneControl.role_02.getChildByName('health');
-                    } else if (this.slefTagRole.name === 'role_02') {
-                        this.slefTagRole = this.mainSceneControl.role_01;
-                        this.tagHealth = this.mainSceneControl.role_01.getChildByName('health');
+                this.creatEnemy();
+            }
+        } else if (this.ennemyType === 'infighting') {
+            // 近战移动
+            this.enemyMove();
+            // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
+            // 此时移动速度为零
+            let differenceX = Math.abs(this.self.x - this.slefTagRole.x);
+            let differenceY = Math.abs(this.self.y - this.slefTagRole.y);
+            if (differenceX < 100 && differenceY < 100) {
+                this.selfSpeed = 0;
+                let nowTime = Date.now();
+                if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
+                    this.recordTime = nowTime;
+                    // 血量判断，目标死亡后，会更换目标
+                    if (this.slefTagRole['Role'].role_property.blood > 0) {
+                        this.enemyAttackRules();
+                    } else {
+                        // 更换目标
+                        if (this.slefTagRole.name === 'role_01') {
+                            this.slefTagRole = this.mainSceneControl.role_02;
+                            this.tagHealth = this.mainSceneControl.role_02.getChildByName('health');
+                        } else if (this.slefTagRole.name === 'role_02') {
+                            this.slefTagRole = this.mainSceneControl.role_01;
+                            this.tagHealth = this.mainSceneControl.role_01.getChildByName('health');
+                        }
                     }
                 }
+            } else {
+                this.selfSpeed = 4;
             }
-        } else {
-            this.selfSpeed = 4;
         }
     }
 

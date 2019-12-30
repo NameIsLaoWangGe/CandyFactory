@@ -166,8 +166,9 @@ export default class OperationButton extends Laya.Script {
                 direction = 'right';
                 enemyTarget = this.mainSceneControl.role_02;
             }
-            Laya.Tween.to(copyCandy, { x: copyCandy.x + destination }, 500, null, Laya.Handler.create(this, function () {
-                let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget);
+            Laya.Tween.to(copyCandy, { x: copyCandy.x + destination, }, 500, null, Laya.Handler.create(this, function () {
+
+                let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget, 'range');
                 enemy.pos(copyCandy.x, copyCandy.y);
                 copyCandy.removeSelf();
             }, []), 0);

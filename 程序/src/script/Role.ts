@@ -1,6 +1,6 @@
 import MainSceneControl from "./MainSceneControl";
 import Candy from "./Candy";
-import Bullet from "./Bullet";
+import Bullet from "./RoleBullet";
 export default class Role extends Laya.Script {
     /** @prop {name:bulletParent, tips:"子弹父节点", type:Node}*/
     public bulletParent: Laya.Sprite;
@@ -44,6 +44,9 @@ export default class Role extends Laya.Script {
         this.self = this.owner as Laya.Sprite;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
         this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
+        // 默认属性不可见
+        this.propertyShow.alpha = 0;
+        
         this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
         this.self['Role'] = this;
 
