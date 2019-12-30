@@ -48,6 +48,8 @@ export default class OperationButton extends Laya.Script {
      * 如果不匹配，说明点错了，糖果会跳到外面变成一个怪物,则出现一个怪物
      */
     down(event): void {
+        // this.candyParent._children[5]['Candy'].moveAStep = true;
+        // console.log(this.candyParent);
         if (this.candyParent._children.length > 0) {
             let candy = this.candyParent._children[0] as Laya.Sprite;
             let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
@@ -67,8 +69,8 @@ export default class OperationButton extends Laya.Script {
                     candy.removeSelf();
                     this.createNewCandy();
                     for (let i = 0; i < this.candyParent._children.length; i++) {
-                        // 下移
-                        this.candyParent._children[i]['Candy'].moveRules();
+                        // 下移一格
+                        this.candyParent._children[i]['Candy'].moveAStep = true;
                     }
                 }
             } else {
@@ -185,6 +187,7 @@ export default class OperationButton extends Laya.Script {
     }
 
     onUpdate(): void {
+        // console.log(this.candyParent._children[5]['Candy'].moveAStep);
         // 时间到了才可以进行操作
         if (this.mainSceneControl.timerControl > 200 && !this.operationSwitch) {
             this.operationSwitch = true;

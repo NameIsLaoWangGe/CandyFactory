@@ -2,10 +2,10 @@
 import MainSceneControl from "./script/MainSceneControl"
 import Role from "./script/Role"
 import OperationControl from "./script/OperationControl"
-import Bullet from "./script/Bullet"
 import Candy from "./script/Candy"
 import Enemy from "./script/Enemy"
 import HintWord from "./script/HintWord"
+import Bullet from "./script/Bullet"
 /*
 * 游戏初始化配置;
 */
@@ -28,10 +28,10 @@ export default class GameConfig{
         reg("script/MainSceneControl.ts",MainSceneControl);
         reg("script/Role.ts",Role);
         reg("script/OperationControl.ts",OperationControl);
-        reg("script/Bullet.ts",Bullet);
         reg("script/Candy.ts",Candy);
         reg("script/Enemy.ts",Enemy);
         reg("script/HintWord.ts",HintWord);
+        reg("script/Bullet.ts",Bullet);
     }
 }
 GameConfig.init();

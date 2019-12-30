@@ -4,8 +4,8 @@ import Bullet from "./Bullet";
 export default class Role extends Laya.Script {
     /** @prop {name:bulletParent, tips:"子弹父节点", type:Node}*/
     public bulletParent: Laya.Sprite;
-    /** @prop {name:bullet, tips:"子弹", type:Prefab}*/
-    public bullet: Laya.Prefab;
+    /** @prop {name:roleBullet, tips:"子弹", type:Prefab}*/
+    public roleBullet: Laya.Prefab;
 
     /**自己*/
     private self: Laya.Sprite;
@@ -62,19 +62,18 @@ export default class Role extends Laya.Script {
         if (this.self.name === 'role_01') {
             this.role_property = {
                 blood: 2000,
-                attackValue: 10,
+                attackValue: 20,
                 attackSpeed: 100,
                 defense: 3,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
                 blood: 2000,
-                attackValue: 10,
+                attackValue: 20,
                 attackSpeed: 100,
                 defense: 3,
             };
         }
-        // 生命值显示
     }
 
     /**属性实时刷新刷新*/
@@ -126,10 +125,50 @@ export default class Role extends Laya.Script {
      * 主角1位置的子弹
     */
     careatBullet() {
-        let bullet = Laya.Pool.getItemByCreateFun('bullet', this.bullet.create, this.bullet) as Laya.Sprite;
+        let bullet = Laya.Pool.getItemByCreateFun('roleBullet', this.roleBullet.create, this.roleBullet) as Laya.Sprite;
         this.bulletParent.addChild(bullet);
         bullet.pos(this.self.x, this.self.y);
-        bullet['Bullet'].location = this.self.name;
+        this.lockedBulletTarget(bullet);
+        bullet['Bullet'].belongRole = this.self;
+    }
+
+    /**锁定最近的那个敌人
+    * 如果没有敌人，且屏幕上敌人存在，那么会锁定一个敌人
+    * 左右判断原则是，如果是左边角色发射子弹，那么先观察左边有没有敌人，如果有那么优先攻击左边
+   */
+    lockedBulletTarget(bullet): void {
+        // 两点之间的距离数组
+        let distanceArr: Array<any> = [];
+        let enemyParent = this.mainSceneControl.enemyParent;
+        for (let i = 0; i < enemyParent._children.length; i++) {
+            let enemy = enemyParent._children[i] as Laya.Sprite;
+            //两点之间的距离
+            let dx: number = enemy.x - this.self.x;
+            let dy: number = enemy.y - this.self.y;
+            let distance: number = Math.sqrt(dx * dx + dy * dy);
+            let object = {
+                distance: distance,
+                name: enemy.name
+            }
+            distanceArr.push(object);
+        }
+        // 距离排序
+        var compare = function (obj1, obj2) {
+            var val1 = obj1.distance;
+            var val2 = obj2.distance;
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        // 找出距离最近的
+        distanceArr.sort(compare);
+        if (distanceArr.length > 0) {
+            bullet['Bullet'].bulletTarget = enemyParent.getChildByName(distanceArr[0].name) as Laya.Sprite;
+        }
     }
 
     onUpdate(): void {

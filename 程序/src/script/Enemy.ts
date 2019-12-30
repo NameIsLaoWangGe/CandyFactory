@@ -70,8 +70,8 @@ export default class Enemy extends Laya.Script {
 
         this.speakBox = this.mainSceneControl.speakBox;
         this.scoreLabel = this.mainSceneControl.scoreLabel;
-        this.Role_01 = this.mainSceneControl.role_01.getComponent(Role);
-        this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
+        // this.Role_01 = this.mainSceneControl.role_01.getComponent(Role);
+        // this.Role_02 = this.mainSceneControl.role_02.getComponent(Role);
 
         this.repelTimer = 0;
         this.hintWord = this.mainSceneControl.hintWord as Laya.Prefab;
@@ -165,10 +165,10 @@ export default class Enemy extends Laya.Script {
         // 判断是否激活被击退效果
         if (this.slefTagRole.x > Laya.stage.width / 2) {//右边
             // 右边发生预警
-            this.Role_02.role_Warning = true;
+            this.mainSceneControl.role_01['Role'].role_Warning = true;
         } else if (this.slefTagRole.x < Laya.stage.width / 2) {//左边
             // 左边发生预警
-            this.Role_01.role_Warning = true;
+            this.mainSceneControl.role_02['Role'].role_Warning = true;
         }
         // 被击退反向移动
         if (this.repelTimer > 0) {
@@ -212,20 +212,23 @@ export default class Enemy extends Laya.Script {
     }
 
     onUpdate(): void {
-        // 如果没有目标则什么都不执行
-        if (this.slefTagRole === null) {
-            return;
-        }
-        // 血量低于0则死亡
-        if (this.enemyProperty.blood < 0) {
-            this.self.removeSelf();
-        }
-        // 属性实时刷新
-        this.enemyPropertyUpdate();
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
             return;
         }
+        // 如果没有目标则什么都不执行
+        if (this.slefTagRole === null) {
+            return;
+        }
+        // 血量低于0则死亡,并且关闭主角发射子弹预警
+        if (this.enemyProperty.blood < 0) {
+            this.mainSceneControl.role_01['Role'].role_Warning = false;
+            this.mainSceneControl.role_02['Role'].role_Warning = false;
+            this.self.removeSelf();
+        }
+        // 属性实时刷新
+        this.enemyPropertyUpdate();
+
         // 血量低于0死亡,并且增加分数,并且关闭主角攻击预警
         if (this.selfHealth.value <= 0) {
             this.scoreLabel.text = (Number(this.scoreLabel.text) + 200).toString();

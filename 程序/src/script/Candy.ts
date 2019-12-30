@@ -28,7 +28,6 @@ export default class Candy extends Laya.Script {
 
     /**控制这个糖果是否变成敌人*/
     private becomeEnemy: boolean;
-
     /**是否向下移动一格*/
     private moveAStep: boolean;
 
@@ -57,22 +56,15 @@ export default class Candy extends Laya.Script {
 
         this.becomeEnemy = false;
 
-        this.moveAStep = false;
+        this.moveAStep;
 
         this.self['Candy'] = this;
     }
-    // get moveAStep():boolean{
-    //     return this._moveAStep;
-    // }
-    // set moveAStep(value:boolean){
-    //     if(value){
-    //         debugger
-    //     }
-    //     this._moveAStep=value;
-    // }
+
     /**初始位置初始化*/
     locationInit(): void {
         this.posYArr = [];
+        this.moveAStep = false;
         this.self.y = - this.tab * (this.self.height + this.spaceY);
         for (let i = 0; i < 10; i++) {
             let y = -(this.self.height + this.spaceY) * i;
@@ -82,7 +74,9 @@ export default class Candy extends Laya.Script {
 
     /**当第一个糖果被吃掉后的移动函数*/
     moveRules(): void {
+        // this.moveAStep = true;
         Laya.Tween.to(this.self, { y: this.self.y + this.self.height + this.spaceY }, 50, null, Laya.Handler.create(this, function () {
+            // console.log(this.moveAStep);
         }, []), 0);
     }
 
@@ -205,15 +199,20 @@ export default class Candy extends Laya.Script {
     }
 
     onUpdate(): void {
-        // 第一波糖果出厂控制，此刻不可点击
+        // 第一波10个糖果出厂控制，此刻不可点击
         this.timerControl += 0.1;
-        if (this.timerControl > 18) {
-            return;
+        if (this.timerControl < 18 && this.self.parent === this.mainSceneControl.candyParent) {
+            this.self.y += 3;
         }
-        this.self.y += 3;
         // 飞到主角身上
         this.flyToRole();
+        // 下移一格
+        if (this.moveAStep) {
+            this.moveRules();
+            this.moveAStep = false;
+        }
     }
+
     onDisable(): void {
         // 清理动画
         Laya.Tween.clearAll(this);

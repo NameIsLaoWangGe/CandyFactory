@@ -15,6 +15,8 @@ export default class MainSceneControl extends Laya.Script {
     public enemy: Laya.Prefab;
     /** @prop {name:enemyParent, tips:"敌人父节点", type:Node}*/
     public enemyParent: Laya.Sprite;
+    /** @prop {name:enemyBullet, tips:"敌人子弹预制体", type:Node}*/
+    public enemyBullet: Laya.Sprite;
 
     /** @prop {name:background, tips:"背景图", type:Node}*/
     public background: Laya.Sprite;
@@ -28,8 +30,8 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:bulletParent, tips:"子弹父节点", type:Node}*/
     public bulletParent: Laya.Sprite;
-    /** @prop {name:bullet, tips:"子弹", type:Prefab}*/
-    public bullet: Laya.Prefab;
+    /** @prop {name:roleBullet, tips:"子弹", type:Prefab}*/
+    public roleBullet: Laya.Prefab;
 
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
     public scoreLabel: Laya.Label;
@@ -131,6 +133,11 @@ export default class MainSceneControl extends Laya.Script {
         this.timerControl = 0;
 
         this.owner['MainSceneControl'] = this;//脚本赋值
+
+        // 生成10个初始糖果
+        for (let i = 0; i < 10; i++) {
+            this.createCandy();
+        }
     }
 
     /**主角初始化，成对出现在两个固定位置，每次初始化后的位置可能会调换*/
@@ -320,14 +327,6 @@ export default class MainSceneControl extends Laya.Script {
         this.enemyPropertyUpdate();
         // 角色死亡复活状况
         this.roleDeathState();
-        // 开局创建10个糖果
-        if (this.creatOnOff && this.candyCount < 10) {
-            for (let i = 0; i < 10; i++) {
-                this.createCandy();
-            }
-        } else {
-            this.creatOnOff = false;
-        }
         // 通过时间间隔产生敌人，左右产生的敌人不一样
         // 左
         if (this.enemySwitch_01) {

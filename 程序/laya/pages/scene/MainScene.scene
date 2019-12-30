@@ -2,7 +2,7 @@
     "x":0,
     "type":"Scene",
     "selectedBox":12,
-    "selecteID":24,
+    "selecteID":25,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
@@ -106,7 +106,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","enemyParent":"@node:23","enemy":"@Prefab:prefab/enemy.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","enemyParent":"@node:23","enemy":"@Prefab:prefab/enemy.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -251,7 +251,7 @@
                             "source":"src/script/Role.ts",
                             "searchKey":"Script,Role",
                             "removeAble":true,
-                            "props":{"y":1,"x":0,"bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
+                            "props":{"y":1,"x":0,"roleBullet":"@Prefab:prefab/roleBullet.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/roleBullet.prefab"},
                             "nodeParent":24,
                             "label":"Role",
                             "isDirectory":false,
@@ -366,14 +366,13 @@
                     "props":{"y":993,"x":151,"width":170,"var":"role_01","pivotY":95,"pivotX":85,"name":"role_01","height":190},
                     "nodeParent":12,
                     "label":"role_01",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":25,
                     "child":[
                         {
-                            "x":45,
                             "type":"Sprite",
                             "searchKey":"Sprite,pic",
                             "props":{"y":1,"x":0,"texture":"candy/红色桶.png","name":"pic"},
@@ -386,7 +385,6 @@
                             "compId":29,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"BoxCollider",
                                     "switchAble":true,
                                     "searchKey":"BoxCollider",
@@ -402,7 +400,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"RigidBody",
                                     "switchAble":true,
                                     "searchKey":"RigidBody",
@@ -419,13 +416,12 @@
                                 }]
                         },
                         {
-                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/script/Role.ts",
                             "searchKey":"Script,Role",
                             "removeAble":true,
-                            "props":{"y":1,"x":0,"bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
+                            "props":{"y":1,"x":0,"roleBullet":"@Prefab:prefab/roleBullet.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
                             "nodeParent":25,
                             "label":"Role",
                             "isDirectory":false,
@@ -436,7 +432,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"ProgressBar",
                             "searchKey":"ProgressBar,health",
                             "props":{"y":-35,"x":5,"value":1,"skin":"candy/血条.png","sizeGrid":"0,13,0,13","name":"health"},
@@ -449,7 +444,6 @@
                             "compId":41,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,bloodLabel",
                                     "props":{"y":19,"x":86,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
@@ -464,7 +458,6 @@
                                 }]
                         },
                         {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,propertyShow",
                             "props":{"y":-167,"x":-12,"width":194,"skin":"candy/属性战士框.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},
@@ -477,7 +470,6 @@
                             "compId":76,
                             "child":[
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,blood",
                                     "props":{"y":13,"x":22.5,"width":149,"text":"blood","name":"blood","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -491,7 +483,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,attackValue",
                                     "props":{"y":38,"x":22,"width":149,"text":"attackValue","name":"attackValue","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -506,7 +497,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,attackSpeed",
                                     "props":{"y":67,"x":24,"width":149,"text":"attackSpeed","name":"attackSpeed","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -521,7 +511,6 @@
                                         ]
                                 },
                                 {
-                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,defense",
                                     "props":{"y":91,"x":24,"width":149,"text":"defense","name":"defense","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
