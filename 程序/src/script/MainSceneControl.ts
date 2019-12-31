@@ -133,7 +133,8 @@ export default class MainSceneControl extends Laya.Script {
         this.roletInit();
         this.roleSpeakBoxs();
 
-        Laya.MouseManager.multiTouchEnabled = true;
+        // 关闭多点触控
+        Laya.MouseManager.multiTouchEnabled = false;
         this.timerControl = 0;
 
         this.owner['MainSceneControl'] = this;//脚本赋值
@@ -304,6 +305,7 @@ export default class MainSceneControl extends Laya.Script {
             }
             enemy['Enemy'].slefTagRole = tagRole;
             enemy['Enemy'].enemyType = type;
+            enemy['Enemy'].randomAttackPoint();
 
             // 默认属性不可见
             let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;

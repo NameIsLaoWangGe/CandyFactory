@@ -100,18 +100,16 @@ export default class Bullet extends Laya.Script {
     /**子弹对敌人造成伤害的公式
      * 子弹击中敌人，敌人会被击退
       * 攻击力-敌人防御如果大于零则造成伤害，否则不造成伤害
+      * 掉血显示值，伤害小于零则显示0
       * 并且有动画提示文字
      */
     bulletAttackRules(enemy): void {
-        // 掉血显示值，伤害小于零则显示0
-        let numberValue: number;
-        // 伤害
+        // 通过攻击力计算掉血状况
         let damage = this.attackValue - enemy['Enemy'].enemyProperty.defense;
         if (damage > 0) {
             enemy['Enemy'].enemyProperty.blood -= damage;
-            numberValue = damage;
         } else {
-            numberValue = 0;
+            damage = 0;
         }
         // 飘字
         this.hintWordMove(enemy, damage);

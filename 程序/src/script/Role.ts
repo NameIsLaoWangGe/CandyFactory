@@ -46,7 +46,7 @@ export default class Role extends Laya.Script {
         this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
         // 默认属性不可见
         this.propertyShow.alpha = 0;
-        
+
         this.bloodLabel = this.selfHealth.getChildByName('bloodLabel') as Laya.Label;
         this.self['Role'] = this;
 
@@ -65,16 +65,16 @@ export default class Role extends Laya.Script {
         if (this.self.name === 'role_01') {
             this.role_property = {
                 blood: 2000,
-                attackValue: 20,
-                attackSpeed: 100,
-                defense: 3,
+                attackValue: 1,
+                attackSpeed: 5000,
+                defense: 50,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
                 blood: 2000,
-                attackValue: 20,
-                attackSpeed: 100,
-                defense: 3,
+                attackValue: 1,
+                attackSpeed: 1000,
+                defense: 50,
             };
         }
     }

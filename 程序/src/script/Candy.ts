@@ -72,11 +72,11 @@ export default class Candy extends Laya.Script {
         }
     }
 
-    /**当第一个糖果被吃掉后的移动函数*/
+    /**当第一个糖果被吃掉后的移动函数
+     * 移动速度要非常快
+    */
     moveRules(): void {
-        // this.moveAStep = true;
-        Laya.Tween.to(this.self, { y: this.self.y + this.self.height + this.spaceY }, 50, null, Laya.Handler.create(this, function () {
-            // console.log(this.moveAStep);
+        Laya.Tween.to(this.self, { y: this.self.y + this.self.height + this.spaceY }, 10, null, Laya.Handler.create(this, function () {
         }, []), 0);
     }
 

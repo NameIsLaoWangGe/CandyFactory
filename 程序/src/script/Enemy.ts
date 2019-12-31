@@ -1,5 +1,6 @@
 import MainSceneControl from "./MainSceneControl";
 import Role from "./Role";
+import { tools } from "./Tool";
 export default class Enemy extends Laya.Script {
     /**自己*/
     private self: Laya.Sprite;
@@ -43,11 +44,15 @@ export default class Enemy extends Laya.Script {
     private enemyType: string;
     /**子弹*/
     private enemyBullet: Laya.Prefab;
+    /**出来之后就确定了在主角的什么位置对主角发动攻击*/
+    private attackX: number;
+    private attackY: number;
 
     constructor() { super(); }
 
     onEnable(): void {
         this.initProperty();
+        this.enemyPropertySet();
     }
 
     /**初始化*/
@@ -71,10 +76,24 @@ export default class Enemy extends Laya.Script {
         this.enemyBullet = this.mainSceneControl.enemyBullet as Laya.Prefab;
 
         this.self['Enemy'] = this;
-        this.bucketClink();
-        this.enemyPropertySet();
     }
 
+    /**近战攻击的敌人攻击主角的时候，会随机在主角范围内停止然后攻击
+     * 这样做的好处是敌人不会重叠,并且这个坐标在主角的上方
+     * 并且这个坐标在开始的时候执行一次
+     * 更换主角的时候执行一次
+     * */
+    randomAttackPoint(): void {
+        let difference;
+        let number = Math.floor(Math.random() * 2);
+        if (number === 1) {
+            difference = -Math.floor(Math.random() * 50);
+        } else {
+            difference = Math.floor(Math.random() * 50);
+        }
+        this.attackX = this.slefTagRole.x + difference;
+        this.attackY = this.slefTagRole.y - Math.floor(Math.random() * 50);
+    }
 
     /**怪物等级包括的一些属性*/
     enemyPropertySet(): void {
@@ -116,37 +135,6 @@ export default class Enemy extends Laya.Script {
         defense.text = "防御力: " + this.enemyProperty.defense;
     }
 
-    /**敌人点击事件*/
-    bucketClink(): void {
-        this.self.on(Laya.Event.MOUSE_DOWN, this, this.down);
-        this.self.on(Laya.Event.MOUSE_MOVE, this, this.move);
-        this.self.on(Laya.Event.MOUSE_UP, this, this.up);
-        this.self.on(Laya.Event.MOUSE_OUT, this, this.out);
-    }
-    /**点击敌人，敌人头上会出现小锤子，敲打敌人，每点击一次血量会减少;
-     * 如果不把敌人打死，那么主角就会被攻击
-     * 当然吃到的糖果也会有另外的增益
-     * 杀敌暂时不增加分数分数增加*/
-    down(event): void {
-        // 主角全部死亡时停止移动
-        if (this.roleParent._children.length === 0) {
-            return;
-        } else {
-            this.self.scale(0.95, 0.95);
-            this.selfHealth.value -= 0.01;
-        }
-    }
-    /**移动*/
-    move(event): void {
-    }
-    /**抬起*/
-    up(event): void {
-        this.self.scale(1, 1);
-    }
-    /**出屏幕*/
-    out(event): void {
-        this.self.scale(1, 1);
-    }
 
     /** 近战攻击的敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则
      * 加入被子弹击退效果
@@ -154,7 +142,7 @@ export default class Enemy extends Laya.Script {
     enemyMove(): void {
         // x,y分别相减是两点连线向量
         // 向量计算并且归一化，向量长度为1。
-        let point = new Laya.Point(this.slefTagRole.x - this.self.x, this.slefTagRole.y - this.self.y);
+        let point = new Laya.Point(this.attackX - this.self.x, this.attackY - this.self.y);
         point.normalize();
         // 判断是否激活被击退效果
         if (this.slefTagRole.x > Laya.stage.width / 2) {//右边
@@ -179,18 +167,16 @@ export default class Enemy extends Laya.Script {
 
     /**怪物对主角造成伤害的公式
      * 攻击力-主角防御如果大于零则造成伤害，否则不造成伤害
+     * 掉血显示值，伤害小于零则显示0
      * 并且在主角头上出现掉血动画提示
     */
     enemyAttackRules(): void {
-        // 掉血显示值，伤害小于零则显示0
-        let numberValue: number;
         // 通过攻击力计算掉血状况
         let damage = this.enemyProperty.attackValue - this.slefTagRole['Role'].role_property.defense;
         if (damage > 0) {
             this.slefTagRole['Role'].role_property.blood -= damage;
-            numberValue = damage;
         } else {
-            numberValue = 0;
+            damage = 0;
         }
         this.hintWordMove(damage);
     }
@@ -272,8 +258,8 @@ export default class Enemy extends Laya.Script {
             this.enemyMove();
             // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
             // 此时移动速度为零
-            let differenceX = Math.abs(this.self.x - this.slefTagRole.x);
-            let differenceY = Math.abs(this.self.y - this.slefTagRole.y);
+            let differenceX = Math.abs(this.self.x - this.attackX);
+            let differenceY = Math.abs(this.self.y - this.attackY);
             if (differenceX < 100 && differenceY < 100) {
                 this.selfSpeed = 0;
                 let nowTime = Date.now();

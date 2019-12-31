@@ -17,6 +17,10 @@ export default class OperationButton extends Laya.Script {
     /**敌人*/
     private enemy: Laya.Prefab;
 
+    /**连续点击糖果正确而不犯错的事件*/
+    private rightCount: number;
+
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -31,6 +35,7 @@ export default class OperationButton extends Laya.Script {
         this.candyParent = this.mainSceneControl.candyParent;
         this.candyParent_Move = this.mainSceneControl.candyParent_Move;
         this.operationSwitch = false;
+        this.rightCount = 0;
 
     }
 
@@ -68,6 +73,7 @@ export default class OperationButton extends Laya.Script {
                 clicksLabel.text = (Number(clicksLabel.text) - 1).toString();
                 // 消除重置点击次数
                 if (Number(clicksLabel.text) === 0) {
+                    this.rightCount += 1;
                     this.candyMove(candy);
                     candy.removeSelf();
                     this.createNewCandy();
@@ -77,6 +83,7 @@ export default class OperationButton extends Laya.Script {
                     }
                 }
             } else {
+                this.rightCount = 0;
                 this.candybecomeEnemy(candy);
                 candy.removeSelf();
                 this.createNewCandy();
@@ -86,6 +93,7 @@ export default class OperationButton extends Laya.Script {
                 }
             }
         }
+        console.log(this.rightCount);
         event.currentTarget.scale(0.9, 0.9);
     }
 
@@ -178,6 +186,9 @@ export default class OperationButton extends Laya.Script {
             moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).y;
 
             Laya.Tween.to(copyCandy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
+                // 触发预警并生成2个敌人
+                this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
+                this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
                 let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget, 'range');
                 enemy.pos(copyCandy.x, copyCandy.y);
                 copyCandy.removeSelf();
