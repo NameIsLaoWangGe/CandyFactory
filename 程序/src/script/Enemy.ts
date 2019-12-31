@@ -40,7 +40,7 @@ export default class Enemy extends Laya.Script {
     /**属性飘字提示*/
     private hintWord: Laya.Prefab;
     /**所属敌人的类型，是远程还是近战*/
-    private ennemyType: string;
+    private enemyType: string;
     /**子弹*/
     private enemyBullet: Laya.Prefab;
 
@@ -206,13 +206,29 @@ export default class Enemy extends Laya.Script {
     }
 
     /**远程攻击创建子弹*/
-    creatEnemy(): void {
+    creatBullet(): void {
         let bullet = Laya.Pool.getItemByCreateFun('enemyBullet', this.enemyBullet.create, this.enemyBullet) as Laya.Sprite;
         let bulletParent = this.mainSceneControl.bulletParent;
         bulletParent.addChild(bullet);
         bullet.pos(this.self.x, this.self.y);
         bullet['EnemyBullet'].belongEnemy = this.self;
         bullet['EnemyBullet'].bulletTarget = this.slefTagRole;
+    }
+
+    /**更换攻击目标
+     * 如果当前攻击的主角死了，敌人会攻击另一个目标
+    */
+    replaceTarget(): void {
+        if (this.slefTagRole['Role'].role_property.blood <= 0) {
+            // 更换目标
+            if (this.slefTagRole.name === 'role_01') {
+                this.slefTagRole = this.mainSceneControl.role_02;
+                this.tagHealth = this.mainSceneControl.role_02.getChildByName('health');
+            } else if (this.slefTagRole.name === 'role_02') {
+                this.slefTagRole = this.mainSceneControl.role_01;
+                this.tagHealth = this.mainSceneControl.role_01.getChildByName('health');
+            }
+        }
     }
 
     onUpdate(): void {
@@ -240,13 +256,18 @@ export default class Enemy extends Laya.Script {
             this.mainSceneControl.role_02['Role'].role_Warning = false;
         }
         //判断这个敌人是不是远程攻击，远程攻击的敌人暂时不会移动,会主动发射子弹进行攻击
-        if (this.ennemyType === 'range') {
+        if (this.enemyType === 'range') {
             let nowTime = Date.now();
             if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
                 this.recordTime = nowTime;
-                this.creatEnemy();
+                // 血量判断，目标死亡后，会更换目标
+                if (this.slefTagRole['Role'].role_property.blood > 0) {
+                    this.creatBullet();
+                } else {
+                    this.replaceTarget();
+                }
             }
-        } else if (this.ennemyType === 'infighting') {
+        } else if (this.enemyType === 'infighting') {
             // 近战移动
             this.enemyMove();
             // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
@@ -262,14 +283,7 @@ export default class Enemy extends Laya.Script {
                     if (this.slefTagRole['Role'].role_property.blood > 0) {
                         this.enemyAttackRules();
                     } else {
-                        // 更换目标
-                        if (this.slefTagRole.name === 'role_01') {
-                            this.slefTagRole = this.mainSceneControl.role_02;
-                            this.tagHealth = this.mainSceneControl.role_02.getChildByName('health');
-                        } else if (this.slefTagRole.name === 'role_02') {
-                            this.slefTagRole = this.mainSceneControl.role_01;
-                            this.tagHealth = this.mainSceneControl.role_01.getChildByName('health');
-                        }
+                        this.replaceTarget();
                     }
                 }
             } else {

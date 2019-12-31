@@ -240,6 +240,9 @@ export default class MainSceneControl extends Laya.Script {
         let len = this.roleParent._children.length;
         if (len === 0) {
             // 死亡
+            this.enemySwitch_01 = false;
+            this.enemySwitch_02 = false;
+
             return;
         } else if (len === 1) {
             let speak_01 = this.role_01speak.getChildByName('label') as Laya.Label;
@@ -285,7 +288,6 @@ export default class MainSceneControl extends Laya.Script {
             let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
             this.enemyParent.addChild(enemy);
             enemy.name = 'enemy' + this.enemyCount;//名称唯一
-            enemy.zOrder = -this.enemyCount; // 现出来的显示在前面
             enemy.pivotX = enemy.width / 2;
             enemy.pivotY = enemy.height / 2;
             //出生位置判定,和攻击目标选择
@@ -301,7 +303,7 @@ export default class MainSceneControl extends Laya.Script {
                 }
             }
             enemy['Enemy'].slefTagRole = tagRole;
-            enemy['Enemy'].ennemyType = type;
+            enemy['Enemy'].enemyType = type;
 
             // 默认属性不可见
             let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;
@@ -310,11 +312,17 @@ export default class MainSceneControl extends Laya.Script {
             } else {
                 propertyShow.alpha = 1;
             }
-
             return enemy;
         }
     }
-
+    /** 敌人的层级进行排序
+   * 规则是判断y轴，y坐标越低的越靠前
+  */
+    enemyOrder(): void {
+        for (let i = 0; i < this.enemyParent._children.length; i++) {
+            this.enemyParent._children[i].zOrder = Math.round(this.enemyParent._children[i].y);
+        }
+    }
     /**属性刷新显示规则,血量显示一定是整数，并且是10的倍数
     * 根据时间线的增长，怪物的属性不断增强
     */
@@ -337,6 +345,8 @@ export default class MainSceneControl extends Laya.Script {
 
     /**属性刷新显示规则*/
     onUpdate(): void {
+        // 时刻对敌人的层级进行排序
+        this.enemyOrder();
         // 记录时间
         this.timerControl += 1;
         // 根据时间线，刷新怪物属性

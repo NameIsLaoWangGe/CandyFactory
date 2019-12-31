@@ -89,7 +89,6 @@ export default class EnemyBullet extends Laya.Script {
         if (this.self.x > 750 + this.self.width + 50 || this.self.x < -this.self.width) {
             this.self.removeSelf();
         }
-
         // 碰到任何一个主角，子弹消失怪物掉血
         for (let i = 0; i < this.roleParent._children.length; i++) {
             let role = this.roleParent._children[i] as Laya.Sprite;

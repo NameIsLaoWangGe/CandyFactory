@@ -26,7 +26,6 @@ export default class Suspend extends Laya.Script {
         this.selfScene = this.self.scene as Laya.Scene;
         this.roleParent = this.selfScene['MainSceneControl'].roleParent;
         this.enemyParent = this.selfScene['MainSceneControl'].enemyParent;
-
     }
 
     /**主角的点击事件
@@ -50,9 +49,11 @@ export default class Suspend extends Laya.Script {
             if (!suspend) {
                 this.selfScene['MainSceneControl'].suspend = true;
                 propertyShow.alpha = 1;
+                // Laya.stage.renderingEnabled = true;
             } else {
                 this.selfScene['MainSceneControl'].suspend = false;
                 propertyShow.alpha = 0;
+                // Laya.stage.renderingEnabled = false;
             }
         }
         // 主角的属性

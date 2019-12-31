@@ -1,5 +1,6 @@
 import MainSceneControl from "./MainSceneControl";
 import Candy from "./Candy";
+import tools from "./Tool";
 export default class OperationButton extends Laya.Script {
     /**自己*/
     private self: Laya.Sprite;
@@ -20,6 +21,7 @@ export default class OperationButton extends Laya.Script {
 
     onEnable(): void {
         this.initProperty();
+        this.buttonClink();
     }
 
     initProperty(): void {
@@ -48,8 +50,9 @@ export default class OperationButton extends Laya.Script {
      * 如果不匹配，说明点错了，糖果会跳到外面变成一个怪物,则出现一个怪物
      */
     down(event): void {
-        // this.candyParent._children[5]['Candy'].moveAStep = true;
-        // console.log(this.candyParent);
+        if (!this.operationSwitch) {
+            return;
+        }
         if (this.candyParent._children.length > 0) {
             let candy = this.candyParent._children[0] as Laya.Sprite;
             let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
@@ -148,26 +151,33 @@ export default class OperationButton extends Laya.Script {
     }
 
     /**点错后，糖果跳到地上变成2个敌人
+     * 这两个敌人是随机出生地点
      * @param candy 复制这个糖果的信息
     */
     candybecomeEnemy(candy: Laya.Sprite): void {
         for (let i = 0; i < 2; i++) {
             let copyCandy = this.copyTheCandy(candy);
             // 左右两个方向
-            let destination;
-            let direction;
-            let enemyTarget;
+            let point;//固定圆心点
+            let direction;//左右，用来判断位置和enemyTarget
+            let enemyTarget;//攻击对象
+            // 最终位置
+            let moveX;
+            let moveY;
             if (i === 0) {
-                destination = -250;
                 direction = 'left';
                 enemyTarget = this.mainSceneControl.role_01;
+                point = new Laya.Point(copyCandy.x - 250, copyCandy.y);
             } else {
-                destination = 250;
                 direction = 'right';
                 enemyTarget = this.mainSceneControl.role_02;
+                point = new Laya.Point(copyCandy.x + 250, copyCandy.y);
             }
-            Laya.Tween.to(copyCandy, { x: copyCandy.x + destination, }, 500, null, Laya.Handler.create(this, function () {
+            // 随机取点函数
+            moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).x;
+            moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).y;
 
+            Laya.Tween.to(copyCandy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
                 let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget, 'range');
                 enemy.pos(copyCandy.x, copyCandy.y);
                 copyCandy.removeSelf();
@@ -177,25 +187,36 @@ export default class OperationButton extends Laya.Script {
 
     /**移动*/
     move(event): void {
+        if (!this.operationSwitch) {
+            return;
+        }
     }
     /**抬起*/
     up(event): void {
+        if (!this.operationSwitch) {
+            return;
+        }
         event.currentTarget.scale(1, 1);
     }
     /**出屏幕*/
     out(event): void {
+        if (!this.operationSwitch) {
+            return;
+        }
         event.currentTarget.scale(1, 1);
     }
 
     onUpdate(): void {
-        // console.log(this.candyParent._children[5]['Candy'].moveAStep);
+        if (this.mainSceneControl.roleParent._children.length === 0) {
+            this.operationSwitch = false;
+            return;
+        }
         // 时间到了才可以进行操作
-        if (this.mainSceneControl.timerControl > 200 && !this.operationSwitch) {
+        if (this.mainSceneControl.timerControl > 200) {
             this.operationSwitch = true;
-            this.buttonClink();
-            console.log('游戏开始！敌人来袭!');
         }
     }
+
     onDisable(): void {
     }
 }
