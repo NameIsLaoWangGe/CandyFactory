@@ -19,7 +19,12 @@ export default class OperationButton extends Laya.Script {
 
     /**连续点击糖果正确而不犯错的事件*/
     private rightCount: number;
-
+    /**点击次数记录*/
+    private clicksCount: number;
+    /**点击过的糖果颜色顺序*/
+    private clicksNameArr: Array<string>;
+    /**点击过的糖果颜色顺序*/
+    private candyGropArr: Array<string>;
 
     constructor() { super(); }
 
@@ -34,9 +39,11 @@ export default class OperationButton extends Laya.Script {
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
         this.candyParent = this.mainSceneControl.candyParent;
         this.candyParent_Move = this.mainSceneControl.candyParent_Move;
-        this.operationSwitch = false;
+        this.operationSwitch = true;
         this.rightCount = 0;
-
+        this.clicksCount = 0;
+        this.clicksNameArr = [];
+        this.candyGropArr = [];
     }
 
     /**操作按钮的点击事件*/
@@ -55,6 +62,58 @@ export default class OperationButton extends Laya.Script {
      * 如果不匹配，说明点错了，糖果会跳到外面变成一个怪物,则出现一个怪物
      */
     down(event): void {
+        this.clicksCount++;
+        switch (event.currentTarget.name) {
+            case 'redButton':
+                this.clicksNameArr.push('redCandy___');
+                break;
+            case 'yellowButton':
+                this.clicksNameArr.push('yellowCandy');
+                break;
+            case 'greenButton':
+                this.clicksNameArr.push('greenCandy_');
+                break;
+            case 'blueButton':
+                this.clicksNameArr.push('blueCandy__');
+                break;
+            default: break;
+        }
+        // 两两对比判断之后清空这个数组
+        if (this.clicksCount % 2 === 0 && this.clicksCount >= 2) {
+            this.compareName();
+            this.clicksNameArr = [];
+        }
+        event.currentTarget.scale(0.9, 0.9);
+    }
+
+    /**对比名称*/
+    compareName(): void {
+        let nameArr = [];
+        for (let i = 0; i < this.candyParent._children.length; i++) {
+            let candy = this.candyParent._children[i];
+            if (candy["Candy"].group === (this.clicksCount - 2) / 2) {//第二次点击对应的组
+                nameArr.push(candy.name);
+                if (nameArr.length >= 2) {
+                    nameArr[0] = nameArr[0].substring(0, 11);
+                    nameArr[1] = nameArr[1].substring(0, 11);
+                    // 对比两个数组看看是否相等，排序，转成字符串方可对比；
+                    if (nameArr.sort().toString() === this.clicksNameArr.sort().toString()) {
+                        console.log("点对了");
+                        if (candy.x < Laya.stage.width / 2) {
+                            candy["Candy"].candyTagRole = this.mainSceneControl.role_01;
+                        } else {
+                            candy["Candy"].candyTagRole = this.mainSceneControl.role_02;
+                        }
+                    } else {
+                        console.log('点错了！');
+                    }
+                }
+            }
+        }
+    }
+    
+    /**玩法1点击事件*/
+    game1(event): void {
         if (!this.operationSwitch) {
             return;
         }
@@ -93,8 +152,6 @@ export default class OperationButton extends Laya.Script {
                 }
             }
         }
-        console.log(this.rightCount);
-        event.currentTarget.scale(0.9, 0.9);
     }
 
     /**在最后面重新生成一个糖果加入队列*/

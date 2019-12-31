@@ -90,11 +90,18 @@ export default class MainSceneControl extends Laya.Script {
     /**左边出怪开关*/
     private enemySwitch_02: boolean;
 
+    /**10个糖果固定位置*/
+    private posArr_left: Array<Array<number>>;
+    private posArr_right: Array<Array<number>>;
 
     constructor() { super(); }
 
     onEnable(): void {
         this.initSecne();
+        this.roletInit();
+        this.roleSpeakBoxs();
+        this.candyPosInit();
+        this.createWaveCandys();
     }
 
     /**场景初始化*/
@@ -129,10 +136,6 @@ export default class MainSceneControl extends Laya.Script {
         this.scoreLabel.text = '0';
 
         this.rescueNum = 0;
-
-        this.roletInit();
-        this.roleSpeakBoxs();
-
         // 关闭多点触控
         Laya.MouseManager.multiTouchEnabled = false;
         this.timerControl = 0;
@@ -140,9 +143,51 @@ export default class MainSceneControl extends Laya.Script {
         this.owner['MainSceneControl'] = this;//脚本赋值
 
         this.suspend = false;
+    }
+
+    /**生成10个初始糖果
+     * 在固定的10个位置*/
+    candyPosInit(): void {
+        this.posArr_left = [];
+        this.posArr_right = [];
+        let candyHeiht = 100;
+        let spacing = 10;
+        let startX_01 = Laya.stage.width / 2 - 70;
+        let startX_02 = Laya.stage.width / 2 + 70;
+        let startY = Laya.stage.width / 3;
+        // 注意排布顺序，把第一个排到最前，所以返回来循环
+        for (let i = 1; i >= 0; i--) {
+            for (let j = 4; j >= 0; j--) {
+                if (i === 0) {
+                    let arr = [startX_01, startY + j * (candyHeiht + spacing)];
+                    this.posArr_left.push(arr);
+                } else if (i === 1) {
+                    let arr = [startX_02, startY + j * (candyHeiht + spacing)];
+                    this.posArr_right.push(arr);
+                }
+            }
+        }
+    }
+
+    /**10个糖果排布动画*/
+    createWaveCandys(): void {
         // 生成10个初始糖果
-        for (let i = 0; i < 10; i++) {
-            this.createCandy();
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 5; j++) {
+                let x;
+                let y;
+                let candy = this.createCandy();
+                if (i === 0) {
+                    x = this.posArr_left[j][0];
+                    y = this.posArr_left[j][1];
+                } else if (i === 1) {
+                    x = this.posArr_right[j][0];
+                    y = this.posArr_right[j][1];
+                }
+                candy.x = x;
+                candy.y = y;
+                candy['Candy'].group = j;
+            }
         }
     }
 

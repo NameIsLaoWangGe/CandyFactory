@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":90,
+    "selectedBox":62,
+    "selecteID":64,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
@@ -35,13 +35,14 @@
             "props":{"y":0,"x":0,"name":"assembly"},
             "nodeParent":2,
             "label":"assembly",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":18,
             "child":[
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,assembly",
                     "props":{"y":-59,"x":370,"width":372,"texture":"candy/流水台.png","pivotX":186,"name":"assembly","height":978},
@@ -54,49 +55,6 @@
                     "compId":14,
                     "child":[
                         ]
-                },
-                {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,induction",
-                    "props":{"y":471,"x":385,"width":305,"texture":"candy/感应区域.png","pivotX":153,"name":"induction","height":170},
-                    "nodeParent":18,
-                    "label":"induction",
-                    "isOpen":true,
-                    "isDirectory":true,
-                    "isAniNode":true,
-                    "hasChild":true,
-                    "compId":15,
-                    "child":[
-                        {
-                            "type":"BoxCollider",
-                            "switchAble":true,
-                            "searchKey":"BoxCollider",
-                            "removeAble":true,
-                            "props":{"x":60,"width":185,"isSensor":true,"height":150},
-                            "nodeParent":15,
-                            "label":"BoxCollider",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":16,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "type":"RigidBody",
-                            "switchAble":true,
-                            "searchKey":"RigidBody",
-                            "removeAble":true,
-                            "props":{"gravityScale":0},
-                            "nodeParent":15,
-                            "label":"RigidBody",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":17,
-                            "child":[
-                                ]
-                        }]
                 }]
         },
         {
@@ -585,7 +543,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,redButton",
-                    "props":{"y":1077,"x":243,"width":124,"texture":"candy/红色糖果.png","name":"redButton","height":109},
+                    "props":{"y":1048,"x":243,"width":124,"texture":"candy/红色糖果.png","name":"redButton","height":109},
                     "nodeParent":62,
                     "label":"redButton",
                     "isOpen":true,
@@ -600,7 +558,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,yellowButton",
-                    "props":{"y":1077,"x":380,"width":126,"texture":"candy/黄色糖果.png","name":"yellowButton","height":109},
+                    "props":{"y":1048,"x":388,"width":126,"texture":"candy/黄色糖果.png","name":"yellowButton","height":109},
                     "nodeParent":62,
                     "label":"yellowButton",
                     "isOpen":true,
@@ -629,7 +587,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,blueButton",
-                    "props":{"y":1168,"x":380,"width":124,"texture":"candy/蓝色糖果.png","name":"blueButton","height":109},
+                    "props":{"y":1168,"x":388,"width":124,"texture":"candy/蓝色糖果.png","name":"blueButton","height":109},
                     "nodeParent":62,
                     "label":"blueButton",
                     "isDirectory":false,

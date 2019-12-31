@@ -31,6 +31,11 @@ export default class Candy extends Laya.Script {
     /**是否向下移动一格*/
     private moveAStep: boolean;
 
+    /**组数，他是属于哪一组的*/
+    private group: number;
+    /**是否已经被点击了*/
+    private selected: boolean;
+
     constructor() { super(); }
     onEnable(): void {
         this.initProperty();
@@ -45,7 +50,7 @@ export default class Candy extends Laya.Script {
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
         this.roleParent = this.mainSceneControl.roleParent;
         this.scoreLabel = this.mainSceneControl.scoreLabel;
-        this.selfSpeed = 6;
+        this.selfSpeed = 10;
 
         this.tab = this.mainSceneControl.candyCount;
         this.timerControl = 0;
@@ -57,6 +62,9 @@ export default class Candy extends Laya.Script {
         this.becomeEnemy = false;
 
         this.moveAStep;
+
+        this.selected = false;
+        this.group = null;
 
         this.self['Candy'] = this;
     }
@@ -202,7 +210,7 @@ export default class Candy extends Laya.Script {
         // 第一波10个糖果出厂控制，此刻不可点击
         this.timerControl += 0.1;
         if (this.timerControl < 18 && this.self.parent === this.mainSceneControl.candyParent) {
-            this.self.y += 3;
+            // this.self.y += 3;
         }
         // 飞到主角身上
         this.flyToRole();
