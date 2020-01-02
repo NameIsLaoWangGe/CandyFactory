@@ -48,6 +48,7 @@ export default class Enemy extends Laya.Script {
     private attackX: number;
     private attackY: number;
 
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -133,6 +134,13 @@ export default class Enemy extends Laya.Script {
         // 防御力
         let defense = this.propertyShow.getChildByName('defense') as Laya.Label;
         defense.text = "防御力: " + this.enemyProperty.defense;
+
+        //当敌人数量达到一定数量的时候，给敌人增加攻击力开关
+        // 需要有提示
+        let roleDefense = this.slefTagRole['Role'].role_property.defense;
+        if (this.mainSceneControl.enemyParent._children.length > 20 && this.enemyProperty.attackValue < roleDefense) {
+            this.enemyProperty.attackValue = roleDefense + 5;
+        }
     }
 
 
@@ -218,6 +226,7 @@ export default class Enemy extends Laya.Script {
     }
 
     onUpdate(): void {
+
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
             return;
