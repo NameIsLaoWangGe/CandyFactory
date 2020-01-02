@@ -39,6 +39,9 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:hintWord , tips:"属性飘字提示", type:Prefab}*/
     public hintWord: Laya.Prefab;
 
+    /** @prop {name:timer , tips:"计时器", type:Node}*/
+    public timer: Laya.Sprite;
+
     /**是否处于暂停状态*/
     private suspend: boolean;
 
@@ -93,6 +96,8 @@ export default class MainSceneControl extends Laya.Script {
     /**10个糖果固定位置*/
     private posArr_left: Array<Array<number>>;
     private posArr_right: Array<Array<number>>;
+    /**每次创建10个糖果他们的名称组合*/
+    private candyNameArr: Array<string>;
 
     constructor() { super(); }
 

@@ -16,6 +16,9 @@ export default class OperationButton extends Laya.Script {
     private operationSwitch: boolean;
     /**敌人*/
     private enemy: Laya.Prefab;
+    /**计时器*/
+    private timer: Laya.Sprite;
+    private timeSchedule: Laya.ProgressBar;
 
     /**连续点击糖果正确而不犯错的事件*/
     private rightCount: number;
@@ -23,6 +26,15 @@ export default class OperationButton extends Laya.Script {
     private clicksCount: number;
     /**每点两次后的糖果颜色名称*/
     private clicksNameArr: Array<string>;
+    /**正确糖果的名字*/
+    private rightName: Array<string>;
+    /**错误糖果的名字*/
+    private errorName: Array<string>;
+    /**糖果总名称合集*/
+    private candyNameArr: Array<string>;
+    /**糖果总名称合集*/
+    private alreadyGroup: Array<number>;
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -30,6 +42,7 @@ export default class OperationButton extends Laya.Script {
         this.buttonClink();
     }
 
+    /**初始化一些属性*/
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene;
@@ -40,6 +53,12 @@ export default class OperationButton extends Laya.Script {
         this.rightCount = 0;
         this.clicksCount = 0;
         this.clicksNameArr = [];
+        this.rightName = [];
+        this.errorName = [];
+        this.alreadyGroup = [];
+        this.candyNameArr = this.mainSceneControl.candyNameArr;
+        this.timer = this.mainSceneControl.timer;
+        this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
     }
 
     /**操作按钮的点击事件*/
@@ -81,6 +100,9 @@ export default class OperationButton extends Laya.Script {
         } else {
 
         }
+        if (this.clicksCount === 10) {
+            this.clickSettlement();
+        }
         event.currentTarget.scale(0.9, 0.9);
     }
 
@@ -89,6 +111,8 @@ export default class OperationButton extends Laya.Script {
     */
     clickOneCompareName(): void {
         let nameGroup = [];
+        let first_Name = null;
+        let second_Name = null;
         for (let i = 0; i < this.candyParent._children.length; i++) {
             let candy = this.candyParent._children[i];
             if (candy["Candy"].group === (this.clicksCount - 1) / 2) {//每点两次对应的糖果组
@@ -97,7 +121,12 @@ export default class OperationButton extends Laya.Script {
         }
         // 对比
         for (let i = 0; i < nameGroup.length; i++) {
-            if (nameGroup[i] === this.clicksNameArr[0]) {
+            if (this.clicksNameArr[0] === nameGroup[i].substring(0, 11)) {
+                if (i === 0) {
+                    first_Name = nameGroup[0];
+                } else if (i === 1) {
+                    second_Name = nameGroup[1];
+                }
             }
         }
     }
@@ -109,142 +138,64 @@ export default class OperationButton extends Laya.Script {
     clickTwoCompareName(): void {
         let nameArr = [];
         let first_i: number;
-        let i_02: number;
         for (let i = 0; i < this.candyParent._children.length; i++) {
             let candy = this.candyParent._children[i];
+
             if (candy["Candy"].group === (this.clicksCount - 2) / 2) {//每点两次对应的糖果组
                 nameArr.push(candy.name);
+                // 文字显示
                 if (nameArr.length >= 2) {
-                    nameArr[0] = nameArr[0].substring(0, 11);
-                    nameArr[1] = nameArr[1].substring(0, 11);
+                    let compareArr = [nameArr[0].substring(0, 11), nameArr[1].substring(0, 11)]
                     // 对比两个数组看看是否相等，排序，转成字符串方可对比；
-                    if (nameArr.sort().toString() === this.clicksNameArr.sort().toString()) {
-                        console.log("点对了");
-                        this.candyMove_Role(candy);
-                        this.candyMove_Role(this.candyParent._children[first_i]);
+                    if (compareArr.sort().toString() === this.clicksNameArr.sort().toString()) {
+                        let firstCandy = this.candyParent._children[first_i] as Laya.Sprite;
+                        let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
+                        let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
+                        label_01.text = '选对了';
+                        label_02.text = '选对了';
+                        // 正确的糖果名称保存
+                        this.rightName.push(nameArr[0], nameArr[1]);
                     } else {
-                        console.log('点错了！');
-                        this.candybecomeEnemy(candy);
-                        this.candybecomeEnemy(this.candyParent._children[first_i]);
+                        let firstCandy = this.candyParent._children[first_i] as Laya.Sprite;
+                        let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
+                        let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
+                        label_01.text = '选错了';
+                        label_02.text = '选错了';
+                        // 错误的糖果名保存
+                        this.errorName.push(nameArr[0], nameArr[1]);
                     }
-                } else if (nameArr.length === 1) {//循环到第一个的时候记录这个糖果的标签
+                    // 已经点过的糖果的组数
+                    this.alreadyGroup.push(candy["Candy"].group);
+                } else if (nameArr.length === 1) {//第一次循环到这个组的时候记录这个糖果的标签
                     first_i = i;
                 }
             }
         }
     }
 
-    /**糖果移动到主角规则*/
-    candyMove_Role(candy: Laya.Sprite): void {
-        // 第一个糖果移动
-        if (candy.x < Laya.stage.width / 2) {
-            candy["Candy"].candyTagRole = this.mainSceneControl.role_01;
-        } else {
-            candy["Candy"].candyTagRole = this.mainSceneControl.role_02;
-        }
-    }
-
-    /**玩法1点击事件*/
-    game1(event): void {
-        if (!this.operationSwitch) {
-            return;
-        }
-        if (this.candyParent._children.length > 0) {
-            let candy = this.candyParent._children[0] as Laya.Sprite;
-            let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-            // 名称切割
-            candy.name = candy.name.substring(0, 11);
-            let group = candy.name + event.currentTarget.name;
-            let matching_01 = 'redCandy___' + 'redButton';
-            let matching_02 = 'yellowCandy' + 'yellowButton';
-            let matching_03 = 'greenCandy_' + 'greenButton';
-            let matching_04 = 'blueCandy__' + 'blueButton';
-
-            if (group === matching_01 || group === matching_02 || group === matching_03 || group === matching_04) {
-                clicksLabel.text = (Number(clicksLabel.text) - 1).toString();
-                // 消除重置点击次数
-                if (Number(clicksLabel.text) === 0) {
-                    this.rightCount += 1;
-                    this.candyMove(candy);
-                    candy.removeSelf();
-                    this.createNewCandy();
-                    for (let i = 0; i < this.candyParent._children.length; i++) {
-                        // 下移一格
-                        this.candyParent._children[i]['Candy'].moveAStep = true;
-                    }
+    /**结算，当10个都点击完毕后，执行吃糖果活着是编程敌人的动画*/
+    clickSettlement(): void {
+        // 正确移动到主角处加属性
+        if (this.rightName !== []) {
+            for (let i = 0; i < this.rightName.length; i++) {
+                let candy = this.candyParent.getChildByName(this.rightName[i]) as Laya.Sprite;
+                if (candy.x < Laya.stage.width / 2) {
+                    candy['Candy'].candyTagRole = this.mainSceneControl.role_01;
+                } else {
+                    candy['Candy'].candyTagRole = this.mainSceneControl.role_02;
                 }
-            } else {
-                this.rightCount = 0;
+            }
+        }
+        // 错误的变成敌人
+        if (this.errorName !== []) {
+            for (let j = 0; j < this.errorName.length; j++) {
+                let candy = this.candyParent.getChildByName(this.errorName[j]) as Laya.Sprite;
                 this.candybecomeEnemy(candy);
-                candy.removeSelf();
-                this.createNewCandy();
-                for (let i = 0; i < this.candyParent._children.length; i++) {
-                    // 下移
-                    this.candyParent._children[i]['Candy'].moveRules();
-                }
             }
         }
-    }
-
-    /**在最后面重新生成一个糖果加入队列*/
-    createNewCandy(): void {
-        let candy = this.mainSceneControl.createCandy() as Laya.Sprite;
-        // 这里this.candyParent._children.length - 2，因为已经删除一个了
-        let y = this.candyParent._children[this.candyParent._children.length - 2].y;
-        candy.y = y - (candy['Candy'].spaceY + candy.height);
-        candy['Candy'].newCandy = true;
-        candy['Candy'].timerControl = 20;
-    }
-
-    /**复制一个糖果到移动节点并移动
-     *  @param candy 复制这个糖果
-    */
-    candyMove(candy: Laya.Sprite): void {
-        for (let i = 0; i < 2; i++) {
-            let copyCandy = this.copyTheCandy(candy);
-            if (i === 0) {
-                copyCandy['Candy'].candyTagRole = this.mainSceneControl.role_01;
-            } else {
-                copyCandy['Candy'].candyTagRole = this.mainSceneControl.role_02;
-            }
-        }
-    }
-
-    /**复制糖果
-     *  @param candy 复制这个糖果
-    */
-    copyTheCandy(candy: Laya.Sprite): Laya.Sprite {
-        let prefabCandy = this.mainSceneControl.candy;
-        let copyCandy = Laya.Pool.getItemByCreateFun('candy', prefabCandy.create, prefabCandy) as Laya.Sprite;
-        this.candyParent_Move.addChild(copyCandy);
-        copyCandy.x = candy.x;
-        copyCandy.y = candy.y;
-        let candyName = candy.name.substring(0, 11);
-        copyCandy.name = candyName;
-        let url_01 = 'candy/黄色糖果.png';
-        let url_02 = 'candy/红色糖果.png';
-        let url_03 = 'candy/蓝色糖果.png';
-        let url_04 = 'candy/绿色糖果.png';
-        let pic = (copyCandy.getChildByName('pic') as Laya.Sprite);
-        switch (candyName) {
-            case 'yellowCandy':
-                pic.loadImage(url_01);
-                break;
-            case 'redCandy___':
-                pic.loadImage(url_02);
-                break;
-            case 'blueCandy__':
-                pic.loadImage(url_03);
-                break;
-            case 'greenCandy_':
-                pic.loadImage(url_04);
-                break;
-            default:
-                break;
-        }
-        let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-        clicksLabel.text = '';
-        return copyCandy;
+        // 清空
+        this.rightName = [];
+        this.errorName = [];
     }
 
     /**点错后，糖果跳到地上变成1个敌人
@@ -282,44 +233,39 @@ export default class OperationButton extends Laya.Script {
         }, []), 0);
     }
 
-    //      /**点错后，糖果跳到地上变成2个敌人
-    //      * 这两个敌人是随机出生地点
-    //      * @param candy 复制这个糖果的信息
-    //     */
-    //    candybecomeEnemy_01(candy: Laya.Sprite, ): void {
-    //     for (let i = 0; i < 2; i++) {
-    //         let copyCandy = this.copyTheCandy(candy);
-    //         // 左右两个方向
-    //         let point;//固定圆心点
-    //         let direction;//左右，用来判断位置和enemyTarget
-    //         let enemyTarget;//攻击对象
-    //         // 最终位置
-    //         let moveX;
-    //         let moveY;
-    //         if (i === 0) {
-    //             direction = 'left';
-    //             enemyTarget = this.mainSceneControl.role_01;
-    //             point = new Laya.Point(copyCandy.x - 250, copyCandy.y);
-    //         } else {
-    //             direction = 'right';
-    //             enemyTarget = this.mainSceneControl.role_02;
-    //             point = new Laya.Point(copyCandy.x + 250, copyCandy.y);
-    //         }
-    //         // 随机取点函数
-    //         moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).x;
-    //         moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).y;
-
-    //         Laya.Tween.to(copyCandy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
-    //             // 触发预警并生成2个敌人
-    //             this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
-    //             this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
-    //             let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget, 'range');
-    //             enemy.pos(copyCandy.x, copyCandy.y);
-    //             copyCandy.removeSelf();
-    //         }, []), 0);
-    //     }
-    // }
-
+    /**计时器控制
+     * 当时间小于零的时候所有还没有点击的糖果直接变成敌人
+     * 并且结算，重置属性
+    */
+    timerControl(): void {
+        if (this.timeSchedule.value > 0) {
+            this.timeSchedule.value -= 0.005;
+        } else if (this.timeSchedule.value <= 0) {
+            // 没有点击过的全部变成敌人,减去点错的糖果，和
+            let groupArr = [0, 1, 2, 3, 4]
+            for (let i = 0; i < this.alreadyGroup.length; i++) {
+                for (let j = 0; j < groupArr.length; j++) {
+                    if (this.alreadyGroup[i] === groupArr[j]) {
+                        groupArr.shift();
+                    }
+                }
+            }
+            // 把没有点击的变成敌人
+            for (let k = 0; k < this.candyParent._children.length; k++) {
+                let candy = this.candyParent._children[k] as Laya.Sprite;
+                for (let l = 0; l < groupArr.length; l++) {
+                    if (candy["Candy"].group === groupArr[l]) {
+                        this.candybecomeEnemy(candy);
+                    }
+                }
+            }
+            // 点击过的结算
+            this.clickSettlement();
+            // 重置变量
+            this.alreadyGroup = [];
+            this.timeSchedule.value = 1;
+        }
+    }
 
     /**移动*/
     move(event): void {
@@ -353,12 +299,16 @@ export default class OperationButton extends Laya.Script {
         if (this.candyParent._children.length === 0) {
             this.clicksCount = 0;
             this.mainSceneControl.createWaveCandys();
+            this.timeSchedule.value = 1;
         }
 
         // 时间到了才可以进行操作
         if (this.mainSceneControl.timerControl > 200) {
             this.operationSwitch = true;
         }
+
+        //计时器
+        this.timerControl();
     }
 
     onDisable(): void {
