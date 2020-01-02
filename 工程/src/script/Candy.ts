@@ -88,12 +88,6 @@ export default class Candy extends Laya.Script {
         }, []), 0);
     }
 
-    /**跳到地上变成一个敌人*/
-    candybecomeEnemy(): void {
-        Laya.Tween.to(this.self, { x: this.self.x + 200 }, 50, null, Laya.Handler.create(this, function () {
-        }, []), 0);
-    }
-
     /**飞到主角身上增加主角属性
      * 并且播放属性增加动画
     */
@@ -121,54 +115,45 @@ export default class Candy extends Laya.Script {
 
     /**属性增加提示动画*/
     hintWordMove(): void {
-        for (let i = 0; i < 2; i++) {
-            let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
-            let role_01 = this.mainSceneControl.role_01 as Laya.Sprite;
-            let role_02 = this.mainSceneControl.role_02 as Laya.Sprite;
-            if (i === 0) {
-                if (role_01.parent === null) {
-                    this.self.removeSelf();
-                    return;
-                }
-                role_01.addChild(hintWord);
-            } else {
-                if (role_02.parent === null) {
-                    this.self.removeSelf();
-                    return;
-                }
-                role_02.addChild(hintWord);
-            }
-            hintWord.pos(0, -150);
-            let proPertyType: string;
-            let numberValue: number;
-            switch (this.self.name) {
-                case 'yellowCandy':
-                    proPertyType = '攻击里';
-                    numberValue = 10;
-                    break;
-                case 'redCandy___':
-                    proPertyType = '生命';
-                    numberValue = 5;
-                    break;
-                case 'blueCandy__':
-                    proPertyType = '公鸡速度';
-                    numberValue = 10;
-                    break;
-                case 'greenCandy_':
-                    proPertyType = '防御力';
-                    numberValue = 5;
-                    break;
-                default:
-            }
-
-            hintWord['HintWord'].initProperty(proPertyType, numberValue);
+        let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
+        let role_01 = this.mainSceneControl.role_01 as Laya.Sprite;
+        let role_02 = this.mainSceneControl.role_02 as Laya.Sprite;
+        if (this.candyTagRole.parent === null) {
+            this.self.removeSelf();
+            return;
         }
+        this.candyTagRole.addChild(hintWord);
+        hintWord.pos(0, -150);
+        let proPertyType: string;
+        let numberValue: number;
+        this.self.name = this.self.name.substring(0, 11);
+        switch (this.self.name) {
+            case 'yellowCandy':
+                proPertyType = '攻击里';
+                numberValue = 10;
+                break;
+            case 'redCandy___':
+                proPertyType = '生命';
+                numberValue = 5;
+                break;
+            case 'blueCandy__':
+                proPertyType = '公鸡速度';
+                numberValue = 10;
+                break;
+            case 'greenCandy_':
+                proPertyType = '防御力';
+                numberValue = 5;
+                break;
+            default:
+        }
+        hintWord['HintWord'].initProperty(proPertyType, numberValue);
     }
 
     /**根据糖果的种类增加主角属性规则
      * 并且播放增加属性文字提示动画
     */
     roleAddProperty(): void {
+        this.self.name = this.self.name.substring(0, 11);
         let role_01 = this.mainSceneControl.role_01;
         let role_02 = this.mainSceneControl.role_02;
         switch (this.self.name) {

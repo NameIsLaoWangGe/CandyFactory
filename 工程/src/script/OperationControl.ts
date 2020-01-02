@@ -76,17 +76,37 @@ export default class OperationButton extends Laya.Script {
         }
         // 两两对比判断之后清空这个数组，当点击次数是2的倍数时进行对比
         if (this.clicksCount % 2 === 0 && this.clicksCount >= 2) {
-            this.compareName();
+            this.clickTwoCompareName();
             this.clicksNameArr = [];//对比后清空
+        } else {
+
         }
         event.currentTarget.scale(0.9, 0.9);
     }
 
-    /**对比名称
+    /**点击一次的时候判断，如果这次点击和当前组糖果名称一个都不匹配那么这组直接变成敌人
+     * 如果有一个一样，那么给这个糖果添加一个点对的标记
+    */
+    clickOneCompareName(): void {
+        let nameGroup = [];
+        for (let i = 0; i < this.candyParent._children.length; i++) {
+            let candy = this.candyParent._children[i];
+            if (candy["Candy"].group === (this.clicksCount - 1) / 2) {//每点两次对应的糖果组
+                nameGroup.push(candy.name);
+            }
+        }
+        // 对比
+        for (let i = 0; i < nameGroup.length; i++) {
+            if (nameGroup[i] === this.clicksNameArr[0]) {
+            }
+        }
+    }
+
+    /**点击两次之后对比名称
      * 点击次数和组数都是固定的，分别是10次和5组
      *所以点击了2次对应的就是第0组，4次就是第1组......
     */
-    compareName(): void {
+    clickTwoCompareName(): void {
         let nameArr = [];
         let first_i: number;
         let i_02: number;
@@ -132,9 +152,9 @@ export default class OperationButton extends Laya.Script {
         if (this.candyParent._children.length > 0) {
             let candy = this.candyParent._children[0] as Laya.Sprite;
             let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-
-            let candyName = candy.name.substring(0, 11);
-            let group = candyName + event.currentTarget.name;
+            // 名称切割
+            candy.name = candy.name.substring(0, 11);
+            let group = candy.name + event.currentTarget.name;
             let matching_01 = 'redCandy___' + 'redButton';
             let matching_02 = 'yellowCandy' + 'yellowButton';
             let matching_03 = 'greenCandy_' + 'greenButton';
@@ -232,7 +252,6 @@ export default class OperationButton extends Laya.Script {
      * @param candy 这个糖果的信息
     */
     candybecomeEnemy(candy: Laya.Sprite, ): void {
-        let copyCandy = this.copyTheCandy(candy);
         // 左右两个方向
         let point;//固定圆心点
         let direction;//左右，用来判断位置和enemyTarget
@@ -243,23 +262,23 @@ export default class OperationButton extends Laya.Script {
         if (candy.x < Laya.stage.width / 2) {
             direction = 'left';
             enemyTarget = this.mainSceneControl.role_01;
-            point = new Laya.Point(copyCandy.x - 150, copyCandy.y);
+            point = new Laya.Point(candy.x - 150, candy.y);
         } else {
             direction = 'right';
             enemyTarget = this.mainSceneControl.role_02;
-            point = new Laya.Point(copyCandy.x + 150, copyCandy.y);
+            point = new Laya.Point(candy.x + 150, candy.y);
         }
         // 随机取点函数
         moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).x;
         moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).y;
 
-        Laya.Tween.to(copyCandy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
+        Laya.Tween.to(candy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
             // 触发主角预警并生成1个敌人
             this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
             this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
             let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget, 'range');
-            enemy.pos(copyCandy.x, copyCandy.y);
-            copyCandy.removeSelf();
+            enemy.pos(candy.x, candy.y);
+            candy.removeSelf();
         }, []), 0);
     }
 
@@ -324,10 +343,18 @@ export default class OperationButton extends Laya.Script {
     }
 
     onUpdate(): void {
+        // 主角全部死亡游戏结束
         if (this.mainSceneControl.roleParent._children.length === 0) {
             this.operationSwitch = false;
             return;
         }
+
+        // 如果糖果被点完了，那么重新生成10个糖果
+        if (this.candyParent._children.length === 0) {
+            this.clicksCount = 0;
+            this.mainSceneControl.createWaveCandys();
+        }
+
         // 时间到了才可以进行操作
         if (this.mainSceneControl.timerControl > 200) {
             this.operationSwitch = true;
