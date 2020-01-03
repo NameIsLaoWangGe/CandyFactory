@@ -13,7 +13,6 @@ P 8E35E482 属性标签.png
 P E53A10BF 帮手.png
 P 309B48E9 感应区域.png
 P 70BACA27 护盾糖果.png
-P 9D9CE0FC 敌人.png
 P 8F59C53F 敌人子弹.png
 P E23D833B 标签小.png
 R C84BAC03 流水台.png
@@ -22,10 +21,12 @@ P BE46424B 红色桶.png
 P 5F9DD46B 红色糖果.png
 P DF75AD09 继续游戏.png
 P ECB9BE79 绿色糖果.png
-R 2D77ED2D 背景图.png
+R 2B8C91C1 背景图.png
 P 3710B0BA 蓝色糖果.png
 P F16C659C 血条$bar.png
 P 8C1B9206 血条.png
+P 17742EB3 近战敌人.png
+P 8E163C40 远程敌人.png
 P 4AA67AF3 黄色桶.png
 P 4F0405D8 黄色糖果.png
 P 77E32D53 黑色糖果.png

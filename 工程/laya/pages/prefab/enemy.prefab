@@ -2,11 +2,11 @@
     "x":0,
     "type":"Sprite",
     "selectedBox":22,
-    "selecteID":35,
+    "selecteID":37,
     "searchKey":"Sprite,enemy",
     "props":{"y":60,"x":59,"width":120,"presetID":1,"preset":"laya/pages/prefab/enemy.prefab","pivotY":60,"pivotX":60,"name":"enemy","isPresetRoot":true,"height":120},
     "nodeParent":-1,
-    "maxID":36,
+    "maxID":38,
     "label":"enemy",
     "isOpen":true,
     "isDirectory":true,
@@ -14,20 +14,6 @@
     "hasChild":true,
     "compId":22,
     "child":[
-        {
-            "x":15,
-            "type":"Sprite",
-            "searchKey":"Sprite,pic",
-            "props":{"y":211,"x":93.5,"width":100,"texture":"candy/敌人.png","presetID":2,"preset":"laya/pages/prefab/enemy.prefab","pivotY":198,"pivotX":83,"name":"pic","height":100},
-            "nodeParent":22,
-            "label":"pic",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":23,
-            "child":[
-                ]
-        },
         {
             "x":15,
             "type":"Script",
@@ -42,6 +28,20 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":24,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite,pic",
+            "props":{"y":55,"x":64,"width":104,"texture":"candy/近战敌人.png","presetID":12,"preset":"laya/pages/prefab/enemy.prefab","pivotY":77,"pivotX":61,"name":"pic","height":154},
+            "nodeParent":22,
+            "label":"pic",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":37,
             "child":[
                 ]
         },

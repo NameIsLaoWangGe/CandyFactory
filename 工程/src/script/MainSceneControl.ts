@@ -356,7 +356,23 @@ export default class MainSceneControl extends Laya.Script {
             enemy['Enemy'].slefTagRole = tagRole;
             enemy['Enemy'].enemyType = type;
             enemy['Enemy'].randomAttackPoint();
+            // 皮肤
 
+            let newPic = new Laya.Sprite;
+            let url_01 = 'candy/近战敌人.png'
+            let url_02 = 'candy/远程敌人.png'
+            if (type === 'infighting') {
+                newPic.loadImage(url_01);
+            } else if (type === 'range') {
+                newPic.loadImage(url_02);
+            }
+            enemy.addChild(newPic);
+            newPic.pivotX = newPic.width / 2;
+            newPic.pivotY = newPic.height / 2;
+            newPic.pos(enemy.width / 2, enemy.height / 2);
+
+            let originalPic = enemy.getChildByName('pic') as Laya.Sprite;
+            originalPic.removeSelf();
             // 默认属性不可见
             let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;
             if (!this.suspend) {

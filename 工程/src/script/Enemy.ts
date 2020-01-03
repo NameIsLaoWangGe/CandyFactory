@@ -8,6 +8,8 @@ export default class Enemy extends Laya.Script {
     private selfHealth: Laya.ProgressBar;
     /**自己移动速度*/
     private selfSpeed: number;
+    /**皮肤*/
+    private pic: Laya.Sprite;
 
     /**所属场景*/
     private selfScene: Laya.Scene;
@@ -77,6 +79,8 @@ export default class Enemy extends Laya.Script {
         this.enemyBullet = this.mainSceneControl.enemyBullet as Laya.Prefab;
 
         this.self['Enemy'] = this;
+
+      
     }
 
     /**近战攻击的敌人攻击主角的时候，会随机在主角范围内停止然后攻击
