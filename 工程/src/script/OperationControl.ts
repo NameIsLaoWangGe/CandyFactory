@@ -36,6 +36,8 @@ export default class OperationButton extends Laya.Script {
     private alreadyGroup: Array<number>;
     /**分数*/
     private scoreLabel: Laya.Label;
+    /**结算开关,正在结算的时候关闭一切行为*/
+    private settleSwitch: boolean;
 
     constructor() { super(); }
 
@@ -63,6 +65,7 @@ export default class OperationButton extends Laya.Script {
         this.candyNameArr = this.mainSceneControl.candyNameArr;
         this.timer = this.mainSceneControl.timer;
         this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
+        this.settleSwitch = false;
     }
 
     /**操作按钮的点击事件*/
@@ -102,10 +105,8 @@ export default class OperationButton extends Laya.Script {
             default: break;
         }
         // 两两对比判断之后清空这个数组，当点击次数是2的倍数时进行对比
-        if (this.clicksCount % 2 === 0 && this.clicksCount >= 2) {//第二次点击对比
-            this.clickTwoCompareName();
-            this.clickHint();
-            this.clicksNameArr = [];//对比后清空
+        if (this.clicksCount % 2 === 0 && this.clicksCount >= 2) {
+            this.clickTwoCompareName();//第二次点击对比
         } else {
             this.clickOneCompareName();//第一次点击对比
         }
@@ -122,17 +123,16 @@ export default class OperationButton extends Laya.Script {
     */
     clickTwoCompareName(): void {
         let nameArr = [];
-        let first_i: number;
         for (let i = 0; i < this.candyParent._children.length; i++) {
             let candy = this.candyParent._children[i];
             if (candy["Candy"].group === (this.clicksCount - 2) / 2) {//每点两次对应的糖果组
                 nameArr.push(candy.name);
+                let firstCandy = this.candyParent.getChildByName(nameArr[0]) as Laya.Sprite;
                 // 文字显示
                 if (nameArr.length >= 2) {
                     let compareArr = [nameArr[0].substring(0, 11), nameArr[1].substring(0, 11)]
                     // 对比两个数组看看是否相等，排序，转成字符串方可对比；
                     if (compareArr.sort().toString() === this.clicksNameArr.sort().toString()) {
-                        let firstCandy = this.candyParent._children[first_i] as Laya.Sprite;
                         let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
                         let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
                         label_01.text = '选对了';
@@ -140,7 +140,6 @@ export default class OperationButton extends Laya.Script {
                         // 正确的糖果名称保存
                         this.rightName.push(nameArr[0], nameArr[1]);
                     } else {
-                        let firstCandy = this.candyParent._children[first_i] as Laya.Sprite;
                         let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
                         let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
                         label_01.text = '选错了';
@@ -150,11 +149,11 @@ export default class OperationButton extends Laya.Script {
                     }
                     // 已经点过的糖果的组数
                     this.alreadyGroup.push(candy["Candy"].group);
-                } else if (nameArr.length === 1) {//第一次循环到这个组的时候记录这个糖果的标签
-                    first_i = i;
                 }
             }
         }
+        this.clickHint();
+        this.clicksNameArr = [];//对比后清空
     }
 
     /**每点一次的时候判断点击是否正确，并且给予动画提示
@@ -165,25 +164,35 @@ export default class OperationButton extends Laya.Script {
      * 因为第二次点击的时候会补上标记
     */
     clickOneCompareName(): void {
-        let number = 0;
+        let nameArr = [];
+        let first_Name: string = null;
         for (let i = 0; i < this.candyParent._children.length; i++) {
             let candy = this.candyParent._children[i];
             if (candy["Candy"].group === (this.clicksCount - 1) / 2) {//每点一次对应的糖果组
                 if (candy.name.substring(0, 11) === this.clicksNameArr[0]) { //只判断一次，然后返回
                     let label_01 = candy.getChildByName('clicksLabel') as Laya.Label;
                     label_01.text = '选对了';
-                    return;
+                    break;
                 } else {
-                    number++;
+                    // number用于记录第几次循环，最多两次循环
+                    nameArr.push(candy.name);
+                    if (nameArr.length === 2) {
+                        // 当nameArr.length=2的时候说明一个都不对，那么直接结束本组
+                        let firstCandy = this.candyParent.getChildByName(nameArr[0]) as Laya.Sprite;
+                        let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
+                        let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
+                        label_01.text = '选错了';
+                        label_02.text = '选错了';
+                        //重新初始化下一组
+                        this.clicksNameArr = [];
+                        this.clicksCount++;
+                        this.errorName.push(nameArr[0], nameArr[1]);
+                        this.alreadyGroup.push(candy["Candy"].group);
+                        this.clickHint();
+                    }
                 }
             }
         }
-
-        // // 一个都不对，那么直接结束本组
-        // if (number === 2) {
-        //     this.clicksCount++;
-        //     this.clicksNameArr
-        // }
     }
 
     /**提示我应该点哪一组了
@@ -212,6 +221,7 @@ export default class OperationButton extends Laya.Script {
 
     /**结算，当10个都点击完毕后，执行吃糖果活着是编程敌人的动画*/
     settlement(): void {
+        this.settleSwitch = true;
         // 正确移动到主角处加属性
         if (this.rightName.length > 0) {
             for (let i = 0; i < this.rightName.length; i++) {
@@ -233,6 +243,9 @@ export default class OperationButton extends Laya.Script {
         // 清空
         this.rightName = [];
         this.errorName = [];
+        this.clicksCount = 0;
+        this.clicksNameArr = [];
+        this.alreadyGroup = [];
     }
 
     /**点错后，糖果跳到地上变成1个敌人
@@ -250,15 +263,15 @@ export default class OperationButton extends Laya.Script {
         if (candy.x < Laya.stage.width / 2) {
             direction = 'left';
             enemyTarget = this.mainSceneControl.role_01;
-            point = new Laya.Point(candy.x - 150, candy.y);
+            point = new Laya.Point(candy.x - 160, candy.y);
         } else {
             direction = 'right';
             enemyTarget = this.mainSceneControl.role_02;
-            point = new Laya.Point(candy.x + 150, candy.y);
+            point = new Laya.Point(candy.x + 160, candy.y);
         }
         // 随机取点函数
-        moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).x;
-        moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 50), point).y;
+        moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).x;
+        moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).y;
 
         Laya.Tween.to(candy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
             // 触发主角预警并生成1个敌人
@@ -275,9 +288,9 @@ export default class OperationButton extends Laya.Script {
      * 并且结算，重置属性
     */
     timerControl(): void {
-        if (this.timeSchedule.value > 0) {
+        if (this.timeSchedule.value > 0 && this.settleSwitch === false) {
             this.timeSchedule.value -= 0.002;
-        } else if (this.timeSchedule.value <= 0) {
+        } else if (this.timeSchedule.value <= 0 && this.settleSwitch === false) {
             // 没有点击过的全部变成敌人,减去点错的糖果，和
             let groupArr = [0, 1, 2, 3, 4]
             for (let i = 0; i < this.alreadyGroup.length; i++) {
@@ -298,10 +311,14 @@ export default class OperationButton extends Laya.Script {
             }
             // 点击过的结算
             this.settlement();
-            // 重置变量
-            this.alreadyGroup = [];
-            this.timeSchedule.value = 1;
         }
+    }
+    /**新建糖果，初始换属性*/
+    initCandy(): void {
+        this.mainSceneControl.createWaveCandys();
+        this.clickHint();
+        this.settleSwitch = false;
+        this.timeSchedule.value = 1;
     }
 
     /**移动*/
@@ -332,11 +349,13 @@ export default class OperationButton extends Laya.Script {
             return;
         }
 
+        //计时器
+        this.timerControl();
+
         // 如果糖果被点完了，那么重新生成10个糖果
         if (this.candyParent._children.length === 0) {
-            this.clicksCount = 0;
-            this.mainSceneControl.createWaveCandys();
-            this.timeSchedule.value = 1;
+            // 新建糖果
+            this.initCandy();
         }
 
         // 时间到了才可以进行操作
@@ -344,8 +363,6 @@ export default class OperationButton extends Laya.Script {
             this.operationSwitch = true;
         }
 
-        //计时器
-        this.timerControl();
     }
 
     onDisable(): void {

@@ -196,7 +196,9 @@ export default class Enemy extends Laya.Script {
         this.slefTagRole.addChild(hintWord);
         let proPertyType: string = '敌人掉血';
         let numberValue: number;
-        hintWord['HintWord'].initProperty(proPertyType, damage);
+        if (this.slefTagRole) {
+            hintWord['HintWord'].initProperty(proPertyType, damage);
+        }
     }
 
     /**远程攻击创建子弹*/
