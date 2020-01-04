@@ -39,6 +39,9 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:hintWord , tips:"属性飘字提示", type:Prefab}*/
     public hintWord: Laya.Prefab;
 
+    /** @prop {name:rewardWords , tips:"奖励提示语", type:Prefab}*/
+    public rewardWords: Laya.Prefab;
+
     /** @prop {name:timer , tips:"计时器", type:Node}*/
     public timer: Laya.Sprite;
 
@@ -359,7 +362,7 @@ export default class MainSceneControl extends Laya.Script {
             // 皮肤
 
             let pic = new Laya.Sprite;
-            pic.name ='pic'
+            pic.name = 'pic'
             let url_01 = 'candy/近战敌人.png'
             let url_02 = 'candy/远程敌人.png'
             if (type === 'infighting') {

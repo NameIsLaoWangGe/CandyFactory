@@ -18,6 +18,7 @@ export default class OperationButton extends Laya.Script {
     private enemy: Laya.Prefab;
     /**计时器*/
     private timer: Laya.Sprite;
+    /**计时器进度条*/
     private timeSchedule: Laya.ProgressBar;
 
     /**连续点击糖果正确而不犯错的事件*/
@@ -38,6 +39,9 @@ export default class OperationButton extends Laya.Script {
     private scoreLabel: Laya.Label;
     /**结算开关,正在结算的时候关闭一切行为*/
     private settleSwitch: boolean;
+    /**奖励提示文字*/
+    private rewardWords: Laya.Prefab;
+
 
     constructor() { super(); }
 
@@ -66,6 +70,7 @@ export default class OperationButton extends Laya.Script {
         this.timer = this.mainSceneControl.timer;
         this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
         this.settleSwitch = false;
+        this.rewardWords = this.mainSceneControl.rewardWords;
     }
 
     /**操作按钮的点击事件*/
@@ -242,6 +247,7 @@ export default class OperationButton extends Laya.Script {
                 this.candybecomeEnemy(candy);
             }
         }
+        this.additionAward();
         // 清空
         this.rightName = [];
         this.errorName = [];
@@ -249,6 +255,27 @@ export default class OperationButton extends Laya.Script {
         this.clicksNameArr = [];
         this.alreadyGroup = [];
     }
+
+    /**根据进度条剩余的时间给予奖励加成
+     * 分段给予不同的奖励
+    */
+    additionAward(): void {
+        if (this.timeSchedule.value > 0.7) {
+            this.creatRewardWords('神速！');
+        } else if (this.timeSchedule.value > 0.5) {
+            this.creatRewardWords('神速！');
+        } else if (this.timeSchedule.value > 0.3) {
+            this.creatRewardWords('神速！');
+        }
+    }
+    /**提示奖励文字的创建*/
+    creatRewardWords(word): void {
+        let rewardWords = Laya.Pool.getItemByCreateFun('rewardWords', this.rewardWords.create, this.rewardWords) as Laya.Sprite;
+        Laya.stage.addChild(rewardWords);
+        rewardWords['RewardWords'].initProperty(word);
+    }
+
+
 
     /**点错后，糖果跳到地上变成1个敌人
      * 这个敌人是随机在一个范围内出生

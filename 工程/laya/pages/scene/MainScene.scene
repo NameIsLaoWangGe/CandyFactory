@@ -2,11 +2,11 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
-    "selecteID":59,
+    "selecteID":94,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":94,
+    "maxID":95,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -63,7 +63,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -134,20 +134,6 @@
         {
             "x":15,
             "type":"Sprite",
-            "searchKey":"Sprite,bulletParent",
-            "props":{"y":0,"x":0,"name":"bulletParent"},
-            "nodeParent":2,
-            "label":"bulletParent",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":59,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Sprite",
             "searchKey":"Sprite,enemyParent",
             "props":{"y":0,"x":0,"name":"enemyParent"},
             "nodeParent":2,
@@ -156,6 +142,20 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":23,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Sprite",
+            "searchKey":"Sprite,bulletParent",
+            "props":{"y":0,"x":0,"name":"bulletParent"},
+            "nodeParent":2,
+            "label":"bulletParent",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":59,
             "child":[
                 ]
         },

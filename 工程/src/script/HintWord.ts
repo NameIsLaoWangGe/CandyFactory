@@ -13,7 +13,7 @@ export default class HintWord extends Laya.Script {
     onEnable(): void {
         this.self = this.owner as Laya.Sprite;
         this.self['HintWord'] = this;
-        this.self.alpha = 0;
+        this.self.alpha = 0;//出现的时候隐身，方便做动画
 
         this.addProperty = this.self.getChildByName('addProperty') as Laya.FontClip;
         this.addNumber = this.self.getChildByName('addNumber') as Laya.FontClip;
@@ -61,6 +61,7 @@ export default class HintWord extends Laya.Script {
         }
         this.hintWordMove();
     }
+    
     /**飘字动画时间线*/
     hintWordMove(): void {
         let timeLine = new Laya.TimeLine;

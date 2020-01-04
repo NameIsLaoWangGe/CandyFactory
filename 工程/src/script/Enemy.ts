@@ -190,10 +190,10 @@ export default class Enemy extends Laya.Script {
         } else {
             damage = 0;
         }
-        this.hintWordMove(damage);
+        this.createHintWord(damage);
     }
 
-    hintWordMove(damage: number): void {
+    createHintWord(damage: number): void {
         // 创建提示动画对象
         let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
         hintWord.pos(0, -150);

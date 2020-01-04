@@ -7,6 +7,7 @@ import Candy from "./script/Candy"
 import Enemy from "./script/Enemy"
 import EnemyBullet from "./script/EnemyBullet"
 import HintWord from "./script/HintWord"
+import RewardWords from "./script/RewardWords"
 import RoleBullet from "./script/RoleBullet"
 /*
 * 游戏初始化配置;
@@ -35,6 +36,7 @@ export default class GameConfig{
         reg("script/Enemy.ts",Enemy);
         reg("script/EnemyBullet.ts",EnemyBullet);
         reg("script/HintWord.ts",HintWord);
+        reg("script/RewardWords.ts",RewardWords);
         reg("script/RoleBullet.ts",RoleBullet);
     }
 }
