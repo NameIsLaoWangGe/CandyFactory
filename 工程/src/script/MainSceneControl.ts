@@ -5,8 +5,12 @@ export default class MainSceneControl extends Laya.Script {
     public candy: Laya.Prefab;
     /** @prop {name:candyParent, tips:"糖果父节点", type:Node}*/
     public candyParent: Laya.Sprite;
+    /** @prop {name:candy_Explode, tips:"糖果", type:Prefab}*/
+    public candy_Explode: Laya.Prefab;
     /** @prop {name:candyParent_Move, tips:"克隆糖果用来移动的父节点", type:Node}*/
-    public candyParent_Move: Laya.Sprite;
+    public candy_ExplodeParent: Laya.Sprite;
+    /** @prop {name:explode, tips:"制作爆炸动画的预制体", type:Prefab}*/
+    public explode: Laya.Prefab;
 
     /** @prop {name:roleParent, tips:"角色父节点", type:Node}*/
     public roleParent: Laya.Sprite;
@@ -288,6 +292,41 @@ export default class MainSceneControl extends Laya.Script {
         return candy;
     }
 
+    /**产生爆炸糖果*/
+    createExplodeCandy(name: string): Laya.Sprite {
+        // 通过对象池创建
+        let explodeCandy = Laya.Pool.getItemByCreateFun('candy_Explode', this.candy_Explode.create, this.candy_Explode) as Laya.Sprite;
+        // 随机创建一种颜色糖果
+        // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
+        let url_01 = 'candy/黄色糖果.png';
+        let url_02 = 'candy/红色糖果.png';
+        let url_03 = 'candy/蓝色糖果.png';
+        let url_04 = 'candy/绿色糖果.png';
+        let pic = (explodeCandy.getChildByName('pic') as Laya.Sprite);
+        switch (name.substring(0, 11)) {
+            case 'yellowCandy':
+                pic.loadImage(url_01);
+                break;
+            case 'redCandy___':
+                pic.loadImage(url_02);
+                break;
+            case 'blueCandy__':
+                pic.loadImage(url_03);
+                break;
+            case 'greenCandy_':
+                pic.loadImage(url_04);
+                break;
+            default:
+                break;
+        }
+        explodeCandy.pos(Laya.stage.width / 2, -100);
+        this.enemyParent.addChild(explodeCandy);
+        explodeCandy.rotation = 0;
+        this.candyCount++;
+        explodeCandy.name = name.substring(0, 11);
+        return explodeCandy;
+    }
+
     /**角色死亡复活状况*/
     roleDeathState(): void {
         // 角色死亡情况
@@ -410,7 +449,20 @@ export default class MainSceneControl extends Laya.Script {
         }
 
     }
-
+    
+    /*爆炸动画*/
+    explodeAni(x, y): void {
+        for (let i = 0; i < 15; i++) {
+            let explode = Laya.Pool.getItemByCreateFun('explode', this.explode.create, this.explode) as Laya.Sprite;
+            Laya.stage.addChild(explode);
+            explode.pos(x, y);
+            explode.scale(1, 1);
+            explode['Explode'].randomSpeed = Math.floor(Math.random() * 5) + 10;
+            explode['Explode'].initialAngle = Math.floor(Math.random() * 360);
+            explode['Explode'].scale = Math.floor(Math.random() * 0.6) + 0.5;
+            explode['Explode'].moveSwitch = true;
+        }
+    }
 
     /**属性刷新显示规则*/
     onUpdate(): void {
@@ -430,6 +482,7 @@ export default class MainSceneControl extends Laya.Script {
                 this.enemyTime_01 = nowTime;
                 this.enemyTagRole = this.role_01;
                 this.careatEnemy('left', this.role_01, 'infighting');
+                this.careatEnemy('left', this.role_01, 'range');
                 this.enemyTagRole = null;
             }
         }
@@ -440,6 +493,7 @@ export default class MainSceneControl extends Laya.Script {
                 this.enemyTime_02 = nowTime;
                 this.enemyTagRole = this.role_02;
                 this.careatEnemy('right', this.role_02, 'infighting');
+                this.careatEnemy('right', this.role_02, 'range');
                 this.enemyTagRole = null;
             }
         }

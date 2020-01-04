@@ -4,8 +4,10 @@ import Role from "./script/Role"
 import OperationControl from "./script/OperationControl"
 import Suspend from "./script/Suspend"
 import Candy from "./script/Candy"
+import Candy_Explode from "./script/Candy_Explode"
 import Enemy from "./script/Enemy"
 import EnemyBullet from "./script/EnemyBullet"
+import Explode from "./script/Explode"
 import HintWord from "./script/HintWord"
 import RewardWords from "./script/RewardWords"
 import RoleBullet from "./script/RoleBullet"
@@ -33,8 +35,10 @@ export default class GameConfig{
         reg("script/OperationControl.ts",OperationControl);
         reg("script/Suspend.ts",Suspend);
         reg("script/Candy.ts",Candy);
+        reg("script/Candy_Explode.ts",Candy_Explode);
         reg("script/Enemy.ts",Enemy);
         reg("script/EnemyBullet.ts",EnemyBullet);
+        reg("script/Explode.ts",Explode);
         reg("script/HintWord.ts",HintWord);
         reg("script/RewardWords.ts",RewardWords);
         reg("script/RoleBullet.ts",RoleBullet);

@@ -2,7 +2,7 @@ export default class HintWord extends Laya.Script {
     /**自己*/
     private self: Laya.Sprite;
     /**增加属性属性标签*/
-    private addProperty: Laya.FontClip;
+    private propertyType: Laya.FontClip;
     /**增加属性值属性值*/
     private addNumber: Laya.FontClip;
     /**减少属性值属性值*/
@@ -15,11 +15,11 @@ export default class HintWord extends Laya.Script {
         this.self['HintWord'] = this;
         this.self.alpha = 0;//出现的时候隐身，方便做动画
 
-        this.addProperty = this.self.getChildByName('addProperty') as Laya.FontClip;
+        this.propertyType = this.self.getChildByName('propertyType') as Laya.FontClip;
         this.addNumber = this.self.getChildByName('addNumber') as Laya.FontClip;
         this.subNumber = this.self.getChildByName('subNumber') as Laya.FontClip;
 
-        this.addProperty.value = null;
+        this.propertyType.value = null;
         this.addNumber.value = null;
         this.subNumber.value = null;
     }
@@ -29,39 +29,71 @@ export default class HintWord extends Laya.Script {
      * @param numberValue 属性值
      * */
     initProperty(propertyType: string, numberValue: number): void {
-        this.addProperty.value = propertyType;
+
         // 位置偏移，因为字符长度不一样
         switch (propertyType) {
+            // 属性增加
             case '公鸡速度':
-                this.addProperty.x -= 40;
+                this.propertyType.value = '公鸡速度';
+                this.propertyType.x -= 40;
                 this.addNumber.value = "+" + numberValue;
                 break;
             case '攻击里':
-                this.addProperty.x -= 20;
+                this.propertyType.value = '攻击里';
+                this.propertyType.x -= 20;
                 this.addNumber.x -= 20;
                 this.addNumber.value = "+" + numberValue;
                 break;
             case '生命':
+                this.propertyType.value = '生命';
                 this.addNumber.x -= 40;
                 this.addNumber.value = "+" + numberValue;
                 break;
             case '防御力':
-                this.addProperty.x -= 20;
+                this.propertyType.value = '防御力';
+                this.propertyType.x -= 20;
                 this.addNumber.x -= 20;
                 this.addNumber.value = "+" + numberValue;
                 break;
+
+            // 属性减少
+            case '减少公鸡速度':
+                this.propertyType.value = '公鸡速度';
+                this.subNumber.x -= 40;
+                this.subNumber.value = "-" + numberValue;
+                break;
+            case '减少攻击里':
+                this.propertyType.value = '攻击里';
+                this.propertyType.x -= 20;
+                this.subNumber.x -= 20;
+                this.subNumber.value = "-" + numberValue;
+                break;
+            case '减少生命':
+                this.propertyType.value = '生命';
+                this.subNumber.x -= 40;
+                this.subNumber.value = "-" + numberValue;
+                break;
+            case '减少防御力':
+                this.propertyType.value = '防御力';
+                this.propertyType.x -= 20;
+                this.subNumber.x -= 20;
+                this.subNumber.value = "-" + numberValue;
+                break;
+
+            // 敌我减血
             case '主角掉血':
                 this.subNumber.x -= 80;
                 this.subNumber.value = "-" + numberValue;
             case '敌人掉血':
                 this.subNumber.x -= 80;
                 this.subNumber.value = "-" + numberValue;
+
             default:
                 break;
         }
         this.hintWordMove();
     }
-    
+
     /**飘字动画时间线*/
     hintWordMove(): void {
         let timeLine = new Laya.TimeLine;

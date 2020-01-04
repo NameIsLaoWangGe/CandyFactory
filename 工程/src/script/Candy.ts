@@ -16,8 +16,6 @@ export default class Candy extends Laya.Script {
     private scoreLabel: Laya.Label;
     /**时间线*/
     private timerControl: number;
-    /**标记一下这是第几个糖果*/
-    private tab: number;
     /**每个糖果之间的间距*/
     private spaceY: number;
 
@@ -25,11 +23,6 @@ export default class Candy extends Laya.Script {
     private posYArr: Array<number>;
     /**属性飘字提示*/
     private hintWord: Laya.Prefab;
-
-    /**控制这个糖果是否变成敌人*/
-    private becomeEnemy: boolean;
-    /**是否向下移动一格*/
-    private moveAStep: boolean;
 
     /**组数，他是属于哪一组的*/
     private group: number;
@@ -39,7 +32,6 @@ export default class Candy extends Laya.Script {
     constructor() { super(); }
     onEnable(): void {
         this.initProperty();
-        this.locationInit();
     }
 
     /**初始化*/
@@ -51,33 +43,15 @@ export default class Candy extends Laya.Script {
         this.roleParent = this.mainSceneControl.roleParent;
         this.scoreLabel = this.mainSceneControl.scoreLabel;
         this.selfSpeed = 10;
-
-        this.tab = this.mainSceneControl.candyCount;
         this.timerControl = 0;
-
         this.spaceY = 5;
 
         this.hintWord = this.mainSceneControl.hintWord;
-
-        this.becomeEnemy = false;
-
-        this.moveAStep;
 
         this.selected = false;
         this.group = null;
 
         this.self['Candy'] = this;
-    }
-
-    /**初始位置初始化*/
-    locationInit(): void {
-        this.posYArr = [];
-        this.moveAStep = false;
-        this.self.y = - this.tab * (this.self.height + this.spaceY);
-        for (let i = 0; i < 10; i++) {
-            let y = -(this.self.height + this.spaceY) * i;
-            this.posYArr.push(y);
-        }
     }
 
     /**当第一个糖果被吃掉后的移动函数
@@ -199,11 +173,6 @@ export default class Candy extends Laya.Script {
         }
         // 飞到主角身上
         this.flyToRole();
-        // 下移一格
-        if (this.moveAStep) {
-            this.moveRules();
-            this.moveAStep = false;
-        }
     }
 
     onDisable(): void {

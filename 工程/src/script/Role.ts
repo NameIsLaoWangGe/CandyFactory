@@ -73,7 +73,7 @@ export default class Role extends Laya.Script {
             this.role_property = {
                 blood: 2000,
                 attackValue: 20,
-                attackSpeed: 500,
+                attackSpeed: 100,
                 defense: 15,
             };
         }
@@ -170,7 +170,9 @@ export default class Role extends Laya.Script {
         // 找出距离最近的
         distanceArr.sort(compare);
         if (distanceArr.length > 0) {
-            bullet['Bullet'].bulletTarget = enemyParent.getChildByName(distanceArr[0].name) as Laya.Sprite;
+            let target = enemyParent.getChildByName(distanceArr[0].name) as Laya.Sprite;
+            bullet['Bullet'].bulletTarget = target
+            bullet['Bullet'].bulletTargetName = target.name;
         }
     }
 

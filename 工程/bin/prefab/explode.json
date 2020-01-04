@@ -1,0 +1,1 @@
+{"type":"Sprite","props":{"y":0,"x":0,"width":50,"presetID":1,"name":"explode","isPresetRoot":true,"height":50},"compId":96,"child":[{"type":"Sprite","props":{"texture":"candy/蓝色爆炸单元.png","presetID":2,"name":"pic"},"compId":97},{"type":"Script","props":{"presetID":3,"runtime":"script/Explode.ts"},"compId":98}],"loadList":["candy/蓝色爆炸单元.png"],"loadList3D":[]}

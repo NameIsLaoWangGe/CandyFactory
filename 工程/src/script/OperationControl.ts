@@ -6,12 +6,12 @@ export default class OperationButton extends Laya.Script {
     private self: Laya.Sprite;
     /**所属场景*/
     private selfScene: Laya.Scene;
-    /**场景脚本组件*/
-    private mainSceneControl;
     /**糖果父节点*/
     private candyParent: Laya.Sprite;
-    /**克隆糖果用来移动的父节点*/
-    private candyParent_Move: Laya.Sprite;
+    /**爆炸糖果*/
+    private candy_Explode: Laya.Prefab;
+    /**爆炸糖果父节点*/
+    private candy_ExplodeParent: Laya.Sprite;
     /**操作开关*/
     private operationSwitch: boolean;
     /**敌人*/
@@ -21,8 +21,6 @@ export default class OperationButton extends Laya.Script {
     /**计时器进度条*/
     private timeSchedule: Laya.ProgressBar;
 
-    /**连续点击糖果正确而不犯错的事件*/
-    private rightCount: number;
     /**点击次数记录*/
     private clicksCount: number;
     /**每点两次后的糖果颜色名称*/
@@ -55,22 +53,23 @@ export default class OperationButton extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene;
-        this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);
-        this.candyParent = this.mainSceneControl.candyParent;
-        this.candyParent_Move = this.mainSceneControl.candyParent_Move;
         this.operationSwitch = true;
-        this.rightCount = 0;
         this.clicksCount = 0;
         this.clicksNameArr = [];
         this.rightName = [];
         this.errorName = [];
         this.alreadyGroup = [];
-        this.scoreLabel = this.mainSceneControl.scoreLabel;
-        this.candyNameArr = this.mainSceneControl.candyNameArr;
-        this.timer = this.mainSceneControl.timer;
+
+        this.candyParent = this.selfScene['MainSceneControl'].candyParent;
+        this.candy_Explode = this.selfScene['MainSceneControl'].candy_Explode
+        this.candy_ExplodeParent = this.selfScene['MainSceneControl'].candy_ExplodeParent;
+        this.scoreLabel = this.selfScene['MainSceneControl'].scoreLabel;
+        this.candyNameArr = this.selfScene['MainSceneControl'].candyNameArr;
+        this.timer = this.selfScene['MainSceneControl'].timer;
+        this.rewardWords = this.selfScene['MainSceneControl'].rewardWords;
+
         this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
         this.settleSwitch = false;
-        this.rewardWords = this.mainSceneControl.rewardWords;
     }
 
     /**操作按钮的点击事件*/
@@ -234,9 +233,9 @@ export default class OperationButton extends Laya.Script {
             for (let i = 0; i < this.rightName.length; i++) {
                 let candy = this.candyParent.getChildByName(this.rightName[i]) as Laya.Sprite;
                 if (candy.x < Laya.stage.width / 2) {
-                    candy['Candy'].candyTagRole = this.mainSceneControl.role_01;
+                    candy['Candy'].candyTagRole = this.selfScene['MainSceneControl'].role_01;
                 } else {
-                    candy['Candy'].candyTagRole = this.mainSceneControl.role_02;
+                    candy['Candy'].candyTagRole = this.selfScene['MainSceneControl'].role_02;
                 }
             }
         }
@@ -258,8 +257,12 @@ export default class OperationButton extends Laya.Script {
 
     /**根据进度条剩余的时间给予奖励加成
      * 分段给予不同的奖励
+     * 如果有一个点错了，都不会给予特殊奖励
     */
     additionAward(): void {
+        if (this.errorName.length > 0) {
+            return;
+        }
         if (this.timeSchedule.value > 0.7) {
             this.creatRewardWords('神速！');
         } else if (this.timeSchedule.value > 0.5) {
@@ -285,17 +288,17 @@ export default class OperationButton extends Laya.Script {
         // 左右两个方向
         let point;//固定圆心点
         let direction;//左右，用来判断位置和enemyTarget
-        let enemyTarget;//攻击对象
+        let explodeTarget;//攻击对象
         // 最终位置
         let moveX;
         let moveY;
         if (candy.x < Laya.stage.width / 2) {
             direction = 'left';
-            enemyTarget = this.mainSceneControl.role_01;
+            explodeTarget = this.selfScene['MainSceneControl'].role_01;
             point = new Laya.Point(candy.x - 160, candy.y);
         } else {
             direction = 'right';
-            enemyTarget = this.mainSceneControl.role_02;
+            explodeTarget = this.selfScene['MainSceneControl'].role_02;
             point = new Laya.Point(candy.x + 160, candy.y);
         }
         // 随机取点函数
@@ -303,11 +306,12 @@ export default class OperationButton extends Laya.Script {
         moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).y;
 
         Laya.Tween.to(candy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
-            // 触发主角预警并生成1个敌人
+            // 触发主角预警并生成1个爆炸糖果
             this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
             this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
-            let enemy = this.mainSceneControl.careatEnemy(direction, enemyTarget, 'range');
-            enemy.pos(candy.x, candy.y);
+            let explodeCandy = this.selfScene['MainSceneControl'].createExplodeCandy(candy.name);
+            explodeCandy.pos(candy.x, candy.y);
+            explodeCandy['Candy_Explode'].explodeTarget = explodeTarget;
             candy.removeSelf();
         }, []), 0);
     }
@@ -344,7 +348,7 @@ export default class OperationButton extends Laya.Script {
     }
     /**新建糖果，初始换属性*/
     initCandy(): void {
-        this.mainSceneControl.createWaveCandys();
+        this.selfScene['MainSceneControl'].createWaveCandys();
         this.clickHint();
         this.settleSwitch = false;
         this.timeSchedule.value = 1;
@@ -373,7 +377,7 @@ export default class OperationButton extends Laya.Script {
 
     onUpdate(): void {
         // 主角全部死亡游戏结束
-        if (this.mainSceneControl.roleParent._children.length === 0) {
+        if (this.selfScene['MainSceneControl'].roleParent._children.length === 0) {
             this.operationSwitch = false;
             return;
         }
@@ -388,7 +392,7 @@ export default class OperationButton extends Laya.Script {
         }
 
         // 时间到了才可以进行操作
-        if (this.mainSceneControl.timerControl > 200) {
+        if (this.selfScene['MainSceneControl'].timerControl > 200) {
             this.operationSwitch = true;
         }
 

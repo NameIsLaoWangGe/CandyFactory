@@ -79,12 +79,10 @@ export default class Enemy extends Laya.Script {
         this.enemyBullet = this.mainSceneControl.enemyBullet as Laya.Prefab;
 
         this.self['Enemy'] = this;
-
-
     }
 
     /**近战攻击的敌人攻击主角的时候，会随机在主角范围内停止然后攻击
-     * 这样做的好处是敌人不会重叠,并且这个坐标在主角的上方
+     * 远程攻击的敌人在主角的上面，他的y轴坐标比较高
      * 并且这个坐标在开始的时候执行一次
      * 更换主角的时候执行一次
      * */
@@ -97,7 +95,11 @@ export default class Enemy extends Laya.Script {
             difference = Math.floor(Math.random() * 50);
         }
         this.attackX = this.slefTagRole.x + difference;
-        this.attackY = this.slefTagRole.y - Math.floor(Math.random() * 50);
+        if (this.enemyType === 'infighting') {
+            this.attackY = this.slefTagRole.y - Math.floor(Math.random() * 50);
+        } else if ('range') {
+            this.attackY = this.slefTagRole.y - Math.floor(Math.random() * 50) - 500;
+        }
     }
 
     /**怪物等级包括的一些属性*/
@@ -151,7 +153,7 @@ export default class Enemy extends Laya.Script {
     /** 近战攻击的敌人第二阶段移动到主角位置，并且进入主角射程范围的移动规则
      * 加入被子弹击退效果
     */
-    enemyMove(): void {
+    infightingEnemyMove(): void {
         // x,y分别相减是两点连线向量
         // 向量计算并且归一化，向量长度为1。
         let point = new Laya.Point(this.attackX - this.self.x, this.attackY - this.self.y);
@@ -175,6 +177,18 @@ export default class Enemy extends Laya.Script {
             this.self.x += point.x * this.selfSpeed;
             this.self.y += point.y * this.selfSpeed;
         }
+    }
+
+    /**远程攻击的敌人移动
+     * 远程攻击敌人不会被击退
+    */
+    rangeEnemyMove(): void {
+        // 向量计算并且归一化，向量长度为1。
+        let point = new Laya.Point(this.attackX - this.self.x, this.attackY - this.self.y);
+        point.normalize();
+        //向量相加移动
+        this.self.x += point.x * this.selfSpeed;
+        this.self.y += point.y * this.selfSpeed;
     }
 
     /**怪物对主角造成伤害的公式
@@ -247,6 +261,7 @@ export default class Enemy extends Laya.Script {
             this.mainSceneControl.role_01['Role'].role_Warning = false;
             this.mainSceneControl.role_02['Role'].role_Warning = false;
             this.self.removeSelf();
+            this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y);
         }
         // 属性实时刷新
         this.enemyPropertyUpdate();
@@ -259,19 +274,30 @@ export default class Enemy extends Laya.Script {
         }
         //判断这个敌人是不是远程攻击，远程攻击的敌人暂时不会移动,会主动发射子弹进行攻击
         if (this.enemyType === 'range') {
-            let nowTime = Date.now();
-            if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
-                this.recordTime = nowTime;
-                // 血量判断，目标死亡后，会更换目标
-                if (this.slefTagRole['Role'].role_property.blood > 0) {
-                    this.creatBullet();
-                } else {
-                    this.replaceTarget();
+            // 远程移动
+            this.rangeEnemyMove();
+            // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
+            // 此时移动速度为零
+            let differenceX = Math.abs(this.self.x - this.attackX);
+            let differenceY = Math.abs(this.self.y - this.attackY);
+            if (differenceX < 10 && differenceY < 10) {
+                this.mainSceneControl.role_01['Role'].role_Warning = true;
+                this.mainSceneControl.role_02['Role'].role_Warning = true;
+                this.selfSpeed = 0;
+                let nowTime = Date.now();
+                if (nowTime - this.recordTime > this.enemyProperty.attackSpeed) {
+                    this.recordTime = nowTime;
+                    // 血量判断，目标死亡后，会更换目标
+                    if (this.slefTagRole['Role'].role_property.blood > 0) {
+                        this.creatBullet();
+                    } else {
+                        this.replaceTarget();
+                    }
                 }
             }
         } else if (this.enemyType === 'infighting') {
             // 近战移动
-            this.enemyMove();
+            this.infightingEnemyMove();
             // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
             // 此时移动速度为零
             let differenceX = Math.abs(this.self.x - this.attackX);
