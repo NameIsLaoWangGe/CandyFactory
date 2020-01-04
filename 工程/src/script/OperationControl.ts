@@ -77,14 +77,16 @@ export default class OperationButton extends Laya.Script {
             this.self._children[i].on(Laya.Event.MOUSE_OUT, this, this.out);
         }
     }
-
     /**判断按下的按钮和准备位置的糖果是否匹配;
      * 如果匹配，那么看下糖果上面写的几次点击次数，需要连续点击到这个次数才可以吃糖果
      * 如果次数没有达到，却点了另一种按钮，那么前面的次数会重置，并且出现一个怪物
      * 如果不匹配，说明点错了，糖果会跳到外面变成一个怪物,则出现一个怪物
      */
     down(event): void {
-        if (this.mainSceneControl.roleParent._children.length === 0) {
+        if (this.settleSwitch) {
+            return;
+        }
+        if (this.operationSwitch === false) {
             return;
         }
         this.clicksCount++;
@@ -323,20 +325,20 @@ export default class OperationButton extends Laya.Script {
 
     /**移动*/
     move(event): void {
-        if (!this.operationSwitch) {
+        if (!this.operationSwitch && this.settleSwitch) {
             return;
         }
     }
     /**抬起*/
     up(event): void {
-        if (!this.operationSwitch) {
+        if (!this.operationSwitch && this.settleSwitch) {
             return;
         }
         event.currentTarget.scale(1, 1);
     }
     /**出屏幕*/
     out(event): void {
-        if (!this.operationSwitch) {
+        if (!this.operationSwitch && this.settleSwitch) {
             return;
         }
         event.currentTarget.scale(1, 1);

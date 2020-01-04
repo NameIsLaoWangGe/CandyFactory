@@ -119,8 +119,8 @@ export default class MainSceneControl extends Laya.Script {
         this.enemyProperty = {
             blood: 200,
             attackValue: 15,
-            attackSpeed: 100,
-            defense: 10,
+            attackSpeed: 1000,
+            defense: 1,
             moveSpeed: 10,
             creatInterval: 5000
         }
@@ -358,21 +358,19 @@ export default class MainSceneControl extends Laya.Script {
             enemy['Enemy'].randomAttackPoint();
             // 皮肤
 
-            let newPic = new Laya.Sprite;
+            let pic = new Laya.Sprite;
+            pic.name ='pic'
             let url_01 = 'candy/近战敌人.png'
             let url_02 = 'candy/远程敌人.png'
             if (type === 'infighting') {
-                newPic.loadImage(url_01);
+                pic.loadImage(url_01);
             } else if (type === 'range') {
-                newPic.loadImage(url_02);
+                pic.loadImage(url_02);
             }
-            enemy.addChild(newPic);
-            newPic.pivotX = newPic.width / 2;
-            newPic.pivotY = newPic.height / 2;
-            newPic.pos(enemy.width / 2, enemy.height / 2);
-
-            let originalPic = enemy.getChildByName('pic') as Laya.Sprite;
-            originalPic.removeSelf();
+            enemy.addChild(pic);
+            pic.pivotX = pic.width / 2;
+            pic.pivotY = pic.height / 2;
+            pic.pos(enemy.width / 2, enemy.height / 2);
             // 默认属性不可见
             let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;
             if (!this.suspend) {

@@ -80,7 +80,7 @@ export default class Enemy extends Laya.Script {
 
         this.self['Enemy'] = this;
 
-      
+
     }
 
     /**近战攻击的敌人攻击主角的时候，会随机在主角范围内停止然后攻击
@@ -200,9 +200,10 @@ export default class Enemy extends Laya.Script {
         this.slefTagRole.addChild(hintWord);
         let proPertyType: string = '敌人掉血';
         let numberValue: number;
-        if (this.slefTagRole) {
-            hintWord['HintWord'].initProperty(proPertyType, damage);
+        if (!this.slefTagRole.parent) {
+            return;
         }
+        hintWord['HintWord'].initProperty(proPertyType, damage);
     }
 
     /**远程攻击创建子弹*/
@@ -294,6 +295,8 @@ export default class Enemy extends Laya.Script {
     }
 
     onDisable(): void {
+        let pic = this.self.getChildByName('pic') as Laya.Sprite;
+        pic.removeSelf();
         Laya.Pool.recover('enemy', this.self);
     }
 
