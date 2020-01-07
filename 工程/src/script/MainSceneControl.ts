@@ -126,7 +126,7 @@ export default class MainSceneControl extends Laya.Script {
         this.enemyProperty = {
             blood: 200,
             attackValue: 15,
-            attackSpeed: 1000,
+            attackSpeed: 500,
             defense: 1,
             moveSpeed: 10,
             creatInterval: 5000
@@ -447,20 +447,17 @@ export default class MainSceneControl extends Laya.Script {
                 this.enemyProperty.creatInterval -= 1;
             }
         }
-
     }
-    
+
     /*爆炸动画*/
-    explodeAni(x, y): void {
+    explodeAni(x, y, type): void {
         for (let i = 0; i < 15; i++) {
             let explode = Laya.Pool.getItemByCreateFun('explode', this.explode.create, this.explode) as Laya.Sprite;
             Laya.stage.addChild(explode);
             explode.pos(x, y);
-            explode.scale(1, 1);
-            explode['Explode'].randomSpeed = Math.floor(Math.random() * 5) + 10;
-            explode['Explode'].initialAngle = Math.floor(Math.random() * 360);
-            explode['Explode'].scale = Math.floor(Math.random() * 0.6) + 0.5;
-            explode['Explode'].moveSwitch = true;
+            // 类型
+            explode['Explode'].type = type;
+            explode['Explode'].initProperty(type);
         }
     }
 

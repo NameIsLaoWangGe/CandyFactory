@@ -261,7 +261,11 @@ export default class Enemy extends Laya.Script {
             this.mainSceneControl.role_01['Role'].role_Warning = false;
             this.mainSceneControl.role_02['Role'].role_Warning = false;
             this.self.removeSelf();
-            this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y);
+            if (this.enemyType === 'infighting') {
+                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'infighting');
+            } else {
+                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'range');
+            }
         }
         // 属性实时刷新
         this.enemyPropertyUpdate();

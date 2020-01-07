@@ -305,7 +305,7 @@ export default class OperationButton extends Laya.Script {
         moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).x;
         moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).y;
 
-        Laya.Tween.to(candy, { x: moveX, y: moveY }, 500, null, Laya.Handler.create(this, function () {
+        Laya.Tween.to(candy, { x: moveX, y: moveY }, 1000, null, Laya.Handler.create(this, function () {
             // 触发主角预警并生成1个爆炸糖果
             this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
             this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
