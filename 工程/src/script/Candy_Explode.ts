@@ -71,7 +71,7 @@ export default class Candy extends Laya.Script {
             let differenceY = Math.abs(this.self.y - this.explodeTarget.y);
             if (differenceX < 50 && differenceY < 50) {
                 this.self.removeSelf();
-                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y,'type');
+                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, this.self.name.substring(0, 11));
                 this.hintWordMove();
                 this.roleReduceProperty();
                 this.explodeTarget = null;
@@ -161,7 +161,7 @@ export default class Candy extends Laya.Script {
         // 死亡
         if (this.selfHealth.value <= 0) {
             this.self.removeSelf();
-            this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'type');
+            this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, this.self.name.substring(0, 11));
         }
         // 暂时做个旋转效果
         this.pic.rotation += 25;

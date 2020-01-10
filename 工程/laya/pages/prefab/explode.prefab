@@ -35,7 +35,7 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,img",
-            "props":{"skin":"candy/蓝色爆炸单元.png","presetID":4,"preset":"laya/pages/prefab/explode.prefab","name":"img"},
+            "props":{"y":25,"x":24,"width":41,"skin":"candy/特效/白色单元.png","presetID":4,"preset":"laya/pages/prefab/explode.prefab","pivotY":21,"pivotX":21,"name":"img","height":41},
             "nodeParent":96,
             "label":"img",
             "isDirectory":false,

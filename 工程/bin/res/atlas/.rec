@@ -1,38 +1,6 @@
 D .
 D candy
-P A7762784 不玩了！.png
-P A7E0C274 主角子弹.png
-P 3A231805 减属性.png
-P 24ECD02B 加血糖果.png
-P 21E46157 图片数字1.png
-P 7510FB77 复活糖果.png
-P A7E0C274 子弹.png
-P 05F75E52 对话框.png
-P C3F87774 属性战士框.png
-P 8E35E482 属性标签.png
-P E53A10BF 帮手.png
-P 309B48E9 感应区域.png
-P 70BACA27 护盾糖果.png
-P 69F1FE70 敌人子弹.png
-P E23D833B 标签小.png
-R C84BAC03 流水台.png
-R 29CAE12C 流水台中间线.png
-P F292A004 神速！.png
-P BE46424B 红色桶.png
-P 5F9DD46B 红色糖果.png
-P DF75AD09 继续游戏.png
-P ECB9BE79 绿色糖果.png
-R BB43F425 背景图.png
-P CC9AA04A 蓝色爆炸单元.png
-P 3710B0BA 蓝色糖果.png
-P F16C659C 血条$bar.png
-P 8C1B9206 血条.png
-P 17742EB3 近战敌人.png
-P 2896B1E0 远程敌人.png
-P 4AA67AF3 黄色桶.png
-P 8C5339D3 黄色爆炸单元.png
-P 4F0405D8 黄色糖果.png
-P 77E32D53 黑色糖果.png
+R D345406C 效果图.png
 D comp
 P 316AD948 btn_close.png
 P 5B258D17 button.png
@@ -72,3 +40,63 @@ P 0587871F vscroll$up.png
 P 5FD17798 vscroll.png
 P DDDDFB9E vslider$bar.png
 P 01BAE7F5 vslider.png
+D candy/ui
+P A7762784 不玩了！.png
+P 9168C324 分数牌.png
+P 05F75E52 对话框.png
+P 96FB9542 属性战士框.png
+P 594D9461 操作位置链接线.png
+R 902F0C7A 文字提示底.png
+P BF99D4A1 时间$bar.png
+P F69C7459 时间.png
+P D6840F32 时间装饰.png
+P F27E0E2A 暂停按钮.png
+P DF75AD09 继续游戏.png
+P F16C659C 血条$bar.png
+P 8C1B9206 血条.png
+P 6A224944 进度条白色高光.png
+D candy/主角
+P 23718715 主角1正面.png
+P 210C2D5B 主角1背面.png
+P B7A09B0C 主角2正面.png
+P F035F013 主角2背面.png
+P 0D587255 主角子弹.png
+P CCEAAF5D 子弹.png
+D candy/字体
+P 3A231805 减属性.png
+P 21E46157 图片数字1.png
+P 8E35E482 属性标签.png
+P E23D833B 标签小.png
+D candy/提示文字
+P B82A2BA2 太棒了.png
+P 6D2C76CD 干得漂亮.png
+P B10CCA4A 牛皮.png
+D candy/操作按钮
+P 5779E5A7 底座.png
+P 51CFB9FB 红色按钮.png
+P 46AEFE45 绿色按钮.png
+P 1AFE4869 蓝色按钮.png
+P 5F3A830D 黄色按钮.png
+D candy/敌人
+P E0F129CB 敌人子弹.png
+P 61BE88EF 近战敌人.png
+P 8CFD1E2D 远程敌人.png
+D candy/特效
+P E1581249 白色单元.png
+P 87DE7ED2 红色单元.png
+P E4145E2E 绿色单元.png
+P 47E31B6C 蓝色单元.png
+P 2A75C362 青色单元.png
+P DB8ABCB2 黄色单元.png
+P 69E3458C 黑色单元.png
+D candy/糖果
+P A78B5C03 红色糖果.png
+P 40E51153 绿色糖果.png
+P 76DA447F 蓝色糖果.png
+P 1F3C815D 黄色糖果.png
+D candy/糖果机器
+P 8068A284 提示.png
+R CC98E3DB 糖果制造机.png
+R 4DB30A6A 糖果陈列台.png
+D candy/背景图
+R 59CA962E 背景图.jpg

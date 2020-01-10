@@ -39,7 +39,8 @@ export default class OperationButton extends Laya.Script {
     private settleSwitch: boolean;
     /**奖励提示文字*/
     private rewardWords: Laya.Prefab;
-
+    /**新建糖果的开关*/
+    private createCandy: boolean;
 
     constructor() { super(); }
 
@@ -81,6 +82,7 @@ export default class OperationButton extends Laya.Script {
             this.self._children[i].on(Laya.Event.MOUSE_OUT, this, this.out);
         }
     }
+
     /**判断按下的按钮和准备位置的糖果是否匹配;
      * 如果匹配，那么看下糖果上面写的几次点击次数，需要连续点击到这个次数才可以吃糖果
      * 如果次数没有达到，却点了另一种按钮，那么前面的次数会重置，并且出现一个怪物
@@ -117,7 +119,7 @@ export default class OperationButton extends Laya.Script {
             this.clickOneCompareName();//第一次点击对比
         }
         // 点完结算
-        if (this.clicksCount === 10) {
+        if (this.clicksCount === this.selfScene['MainSceneControl'].startRow * 2) {
             this.settlement();
         }
         event.currentTarget.scale(0.9, 0.9);
@@ -264,11 +266,11 @@ export default class OperationButton extends Laya.Script {
             return;
         }
         if (this.timeSchedule.value > 0.7) {
-            this.creatRewardWords('神速！');
+            this.creatRewardWords('牛皮');
         } else if (this.timeSchedule.value > 0.5) {
-            this.creatRewardWords('神速！');
+            this.creatRewardWords('太棒了');
         } else if (this.timeSchedule.value > 0.3) {
-            this.creatRewardWords('神速！');
+            this.creatRewardWords('干得漂亮');
         }
     }
     /**提示奖励文字的创建*/

@@ -24,8 +24,8 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:background, tips:"背景图", type:Node}*/
     public background: Laya.Sprite;
-    /** @prop {name:assembly, tips:流水线, type:Node}*/
-    public assembly: Laya.Sprite;
+    /** @prop {name:machine, tips:流水线, type:Node}*/
+    public machine: Laya.Sprite;
 
     /** @prop {name:speakBoxParent, tips:"对话框父节点", type:Node}*/
     public speakBoxParent: Laya.Sprite;
@@ -48,6 +48,9 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:timer , tips:"计时器", type:Node}*/
     public timer: Laya.Sprite;
+
+    /** @prop {name:displays , tips:"陈列台", type:Node}*/
+    public displays: Laya.Sprite;
 
     /**是否处于暂停状态*/
     private suspend: boolean;
@@ -103,8 +106,10 @@ export default class MainSceneControl extends Laya.Script {
     /**10个糖果固定位置*/
     private posArr_left: Array<Array<number>>;
     private posArr_right: Array<Array<number>>;
-    /**每次创建10个糖果他们的名称组合*/
+    /**每次创建第一波糖果他们的名称组合*/
     private candyNameArr: Array<string>;
+    /**糖果的行数*/
+    private startRow: number;
 
     constructor() { super(); }
 
@@ -155,6 +160,7 @@ export default class MainSceneControl extends Laya.Script {
         this.owner['MainSceneControl'] = this;//脚本赋值
 
         this.suspend = false;
+        this.startRow = 4;
     }
 
     /**生成10个初始糖果
@@ -163,13 +169,13 @@ export default class MainSceneControl extends Laya.Script {
         this.posArr_left = [];
         this.posArr_right = [];
         let candyHeiht = 100;
-        let spacing = 10;
-        let startX_01 = Laya.stage.width / 2 - 70;
-        let startX_02 = Laya.stage.width / 2 + 70;
-        let startY = Laya.stage.width / 3;
+        let spacing = 2;
+        let startX_01 = Laya.stage.width / 2 - 42;
+        let startX_02 = Laya.stage.width / 2 + 58;
+        let startY = this.displays.y + 40;
         // 注意排布顺序，把第一个排到最前，所以返回来循环
         for (let i = 1; i >= 0; i--) {
-            for (let j = 4; j >= 0; j--) {
+            for (let j = this.startRow; j >= 0; j--) {
                 if (i === 0) {
                     let arr = [startX_01, startY + j * (candyHeiht + spacing)];
                     this.posArr_left.push(arr);
@@ -185,7 +191,7 @@ export default class MainSceneControl extends Laya.Script {
     createWaveCandys(): void {
         // 生成10个初始糖果
         for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < 5; j++) {
+            for (let j = 0; j < this.startRow; j++) {
                 let x;
                 let y;
                 let candy = this.createCandy();
@@ -211,8 +217,8 @@ export default class MainSceneControl extends Laya.Script {
         let pic_02 = (this.role_02.getChildByName('pic') as Laya.Sprite);
 
         // 随机更换皮肤
-        let imageUrl_01: string = 'candy/红色桶.png';
-        let imageUrl_02: string = 'candy/黄色桶.png';
+        let imageUrl_01: string = 'candy/主角/主角1背面.png';
+        let imageUrl_02: string = 'candy/主角/主角2背面.png';
         let randomNum = Math.floor(Math.random() * 2);
         if (randomNum === 0) {
             pic_01.loadImage(imageUrl_01);
@@ -257,10 +263,10 @@ export default class MainSceneControl extends Laya.Script {
         // 随机创建一种颜色糖果
         // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
         let randomNum = Math.floor(Math.random() * 4);
-        let url_01 = 'candy/黄色糖果.png';
-        let url_02 = 'candy/红色糖果.png';
-        let url_03 = 'candy/蓝色糖果.png';
-        let url_04 = 'candy/绿色糖果.png';
+        let url_01 = 'candy/糖果/黄色糖果.png';
+        let url_02 = 'candy/糖果/红色糖果.png';
+        let url_03 = 'candy/糖果/蓝色糖果.png';
+        let url_04 = 'candy/糖果/绿色糖果.png';
         let pic = (candy.getChildByName('pic') as Laya.Sprite);
         switch (randomNum) {
             case 0:
@@ -284,7 +290,8 @@ export default class MainSceneControl extends Laya.Script {
         }
         // 随机点击次数
         let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-        clicksLabel.text = (Math.floor(Math.random() * 0) + 1).toString();
+        // clicksLabel.text = (Math.floor(Math.random() * 0) + 1).toString();
+        clicksLabel.text = '';
         candy.pos(Laya.stage.width / 2, -100);
         this.candyParent.addChild(candy);
         candy.rotation = 0;
@@ -298,10 +305,10 @@ export default class MainSceneControl extends Laya.Script {
         let explodeCandy = Laya.Pool.getItemByCreateFun('candy_Explode', this.candy_Explode.create, this.candy_Explode) as Laya.Sprite;
         // 随机创建一种颜色糖果
         // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
-        let url_01 = 'candy/黄色糖果.png';
-        let url_02 = 'candy/红色糖果.png';
-        let url_03 = 'candy/蓝色糖果.png';
-        let url_04 = 'candy/绿色糖果.png';
+        let url_01 = 'candy/糖果/黄色糖果.png';
+        let url_02 = 'candy/糖果/红色糖果.png';
+        let url_03 = 'candy/糖果/蓝色糖果.png';
+        let url_04 = 'candy/糖果/绿色糖果.png';
         let pic = (explodeCandy.getChildByName('pic') as Laya.Sprite);
         switch (name.substring(0, 11)) {
             case 'yellowCandy':
@@ -402,8 +409,8 @@ export default class MainSceneControl extends Laya.Script {
 
             let pic = new Laya.Sprite;
             pic.name = 'pic'
-            let url_01 = 'candy/近战敌人.png'
-            let url_02 = 'candy/远程敌人.png'
+            let url_01 = 'candy/敌人/近战敌人.png'
+            let url_02 = 'candy/敌人/远程敌人.png'
             if (type === 'infighting') {
                 pic.loadImage(url_01);
             } else if (type === 'range') {

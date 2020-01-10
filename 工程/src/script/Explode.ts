@@ -47,12 +47,22 @@ export default class Explode extends Laya.Script {
         // 类型暂时只和颜色匹配
         switch (type) {
             case 'fighting':
-                this.img.skin = 'candy/蓝色爆炸单元.png';
+                this.img.skin = 'candy/特效/白色单元.png';
                 break;
             case 'range':
-                this.img.skin = 'candy/黄色爆炸单元.png';
+                this.img.skin = 'candy/特效/黑色单元.png';
                 break;
-            case '':
+            case 'redCandy___':
+                this.img.skin = 'candy/特效/红色单元.png';
+                break;
+            case 'greenCandy_':
+                this.img.skin = 'candy/特效/绿色单元.png';
+                break;
+            case 'blueCandy__':
+                this.img.skin = 'candy/特效/蓝色单元.png';
+                break;
+            case 'yellowCandy':
+                this.img.skin = 'candy/特效/黄色单元.png';
                 break;
             default:
                 break;
