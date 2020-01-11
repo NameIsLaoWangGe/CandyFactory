@@ -13,7 +13,7 @@ export default class Candy extends Laya.Script {
     /**主角的父节点*/
     private roleParent: Laya.Sprite;
     /**得分显示*/
-    private scoreLabel: Laya.Label;
+    private scoreLabel: Laya.FontClip;
     /**时间线*/
     private timerControl: number;
     /**每个糖果之间的间距*/

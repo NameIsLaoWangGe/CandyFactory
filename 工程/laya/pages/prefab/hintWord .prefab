@@ -2,11 +2,11 @@
     "x":0,
     "type":"Sprite",
     "selectedBox":86,
-    "selecteID":89,
+    "selecteID":94,
     "searchKey":"Sprite,hintWord ",
     "props":{"y":0,"x":0,"width":250,"presetID":1,"preset":"laya/pages/prefab/hintWord .prefab","name":"hintWord ","isPresetRoot":true,"height":50},
     "nodeParent":-1,
-    "maxID":94,
+    "maxID":95,
     "label":"hintWord ",
     "isOpen":true,
     "isDirectory":true,
@@ -54,6 +54,20 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":89,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"FontClip",
+            "searchKey":"FontClip,addScore",
+            "props":{"y":27,"x":113,"width":126,"value":"1000","skin":"candy/字体/分数：+01234567892.png","sheet":"+0123456789k","presetID":7,"preset":"laya/pages/prefab/hintWord .prefab","pivotY":26,"pivotX":63,"name":"addScore","height":51,"align":"center"},
+            "nodeParent":86,
+            "label":"addScore",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":94,
             "child":[
                 ]
         },

@@ -30,7 +30,7 @@ export default class Role extends Laya.Script {
     /**两个当前创建时间记录*/
     private nowTime: number;
     /**得分显示*/
-    public scoreLabel: Laya.Label;
+    public scoreLabel: Laya.FontClip;
 
     constructor() { super(); }
 

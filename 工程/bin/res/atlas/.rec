@@ -43,6 +43,7 @@ P 01BAE7F5 vslider.png
 D candy/ui
 P A7762784 不玩了！.png
 P 9168C324 分数牌.png
+P 9EDFB825 分数：.png
 P 05F75E52 对话框.png
 P 96FB9542 属性战士框.png
 P 594D9461 操作位置链接线.png
@@ -64,6 +65,7 @@ P 0D587255 主角子弹.png
 P CCEAAF5D 子弹.png
 D candy/字体
 P 3A231805 减属性.png
+P 56E93325 分数：+01234567892.png
 P 21E46157 图片数字1.png
 P 8E35E482 属性标签.png
 P E23D833B 标签小.png
@@ -82,6 +84,13 @@ P E0F129CB 敌人子弹.png
 P 61BE88EF 近战敌人.png
 P 8CFD1E2D 远程敌人.png
 D candy/特效
+P FCA3E281 烟花1.png
+P 3F921D8E 烟花2.png
+P 8A192B00 烟花3.png
+P 48885B5D 烟花4.png
+P D61532A1 烟花5.png
+P 1E2A5471 烟花6.png
+P 42BFC132 烟花7.png
 P E1581249 白色单元.png
 P 87DE7ED2 红色单元.png
 P E4145E2E 绿色单元.png

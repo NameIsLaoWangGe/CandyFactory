@@ -38,7 +38,7 @@ export default class MainSceneControl extends Laya.Script {
     public roleBullet: Laya.Prefab;
 
     /** @prop {name:scoreLabel, tips:‘得分’, type:Node}*/
-    public scoreLabel: Laya.Label;
+    public scoreLabel: Laya.FontClip;
 
     /** @prop {name:hintWord , tips:"属性飘字提示", type:Prefab}*/
     public hintWord: Laya.Prefab;
@@ -150,7 +150,7 @@ export default class MainSceneControl extends Laya.Script {
         this.creatOnOff = true;
         this.nameArr = [];
         this.candyCount = 0;
-        this.scoreLabel.text = '0';
+        this.scoreLabel.value = '0';
 
         this.rescueNum = 0;
         // 关闭多点触控
@@ -456,11 +456,17 @@ export default class MainSceneControl extends Laya.Script {
         }
     }
 
-    /*爆炸动画*/
-    explodeAni(x, y, type): void {
+    /**爆炸动画
+     * @param x 位置
+     * @param y
+     * @param type 类型 
+     * @param zOrder 层级
+    */
+    explodeAni(x, y, type, zOrder): void {
         for (let i = 0; i < 15; i++) {
             let explode = Laya.Pool.getItemByCreateFun('explode', this.explode.create, this.explode) as Laya.Sprite;
-            Laya.stage.addChild(explode);
+            this.owner.addChild(explode);
+            explode.zOrder = zOrder;
             explode.pos(x, y);
             // 类型
             explode['Explode'].type = type;

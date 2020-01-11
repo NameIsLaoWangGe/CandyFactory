@@ -34,7 +34,7 @@ export default class OperationButton extends Laya.Script {
     /**糖果总名称合集*/
     private alreadyGroup: Array<number>;
     /**分数*/
-    private scoreLabel: Laya.Label;
+    private scoreLabel: Laya.FontClip;
     /**结算开关,正在结算的时候关闭一切行为*/
     private settleSwitch: boolean;
     /**奖励提示文字*/
@@ -265,19 +265,19 @@ export default class OperationButton extends Laya.Script {
         if (this.errorName.length > 0) {
             return;
         }
-        if (this.timeSchedule.value > 0.7) {
-            this.creatRewardWords('牛皮');
-        } else if (this.timeSchedule.value > 0.5) {
-            this.creatRewardWords('太棒了');
-        } else if (this.timeSchedule.value > 0.3) {
+        if (this.timeSchedule.value > 0.8) {
             this.creatRewardWords('干得漂亮');
+        } else if (this.timeSchedule.value > 0.6) {
+            this.creatRewardWords('太棒了');
+        } else if (this.timeSchedule.value > 0.4) {
+            this.creatRewardWords('牛皮');
         }
     }
     /**提示奖励文字的创建*/
     creatRewardWords(word): void {
         let rewardWords = Laya.Pool.getItemByCreateFun('rewardWords', this.rewardWords.create, this.rewardWords) as Laya.Sprite;
-        Laya.stage.addChild(rewardWords);
-        rewardWords['RewardWords'].initProperty(word);
+        this.selfScene.addChild(rewardWords);
+        rewardWords['RewardWords'].createWordsAni(word);
     }
 
 

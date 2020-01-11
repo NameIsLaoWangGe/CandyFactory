@@ -11,8 +11,6 @@
 	"libVersion": "game",
 	"appid": "wx9170ca1ff6f31088",
 	"projectname": "layaWXTest",
-	"simulatorType": "wechat",
-	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,

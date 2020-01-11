@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":92,
-    "selecteID":93,
+    "selectedBox":2,
+    "selecteID":18,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":116,
+    "maxID":118,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -72,16 +72,44 @@
                 {
                     "x":30,
                     "type":"Sprite",
-                    "searchKey":"Sprite,排行榜",
-                    "props":{"y":123,"x":30,"texture":"candy/ui/分数牌.png","name":"排行榜"},
+                    "searchKey":"Sprite,分数牌",
+                    "props":{"y":123,"x":30,"width":192,"texture":"candy/ui/分数牌.png","name":"分数牌","height":340},
                     "nodeParent":18,
-                    "label":"排行榜",
-                    "isDirectory":false,
+                    "label":"分数牌",
+                    "isOpen":true,
+                    "isDirectory":true,
                     "isAniNode":true,
-                    "hasChild":false,
+                    "hasChild":true,
                     "compId":113,
                     "child":[
-                        ]
+                        {
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite",
+                            "props":{"y":24,"x":20,"texture":"candy/ui/分数：.png"},
+                            "nodeParent":113,
+                            "label":"Sprite",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":117,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"FontClip",
+                            "searchKey":"FontClip,scoreLabel",
+                            "props":{"y":31,"x":96,"value":"250","spaceX":-5,"skin":"candy/字体/分数：+01234567892.png","sheet":"+0123456789k","scaleY":0.5,"scaleX":0.5,"name":"scoreLabel","align":"left"},
+                            "nodeParent":113,
+                            "label":"scoreLabel",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":116,
+                            "child":[
+                                ]
+                        }]
                 },
                 {
                     "x":30,
@@ -134,7 +162,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:21","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","machine":"@node:18","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","explode":"@Prefab:prefab/explode.prefab","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","displays":"@node:110","candy_Explode":"@Prefab:prefab/candy_Explode.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:116","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","machine":"@node:18","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","explode":"@Prefab:prefab/explode.prefab","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","displays":"@node:110","candy_Explode":"@Prefab:prefab/candy_Explode.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -560,33 +588,6 @@
             "compId":53,
             "child":[
                 ]
-        },
-        {
-            "x":15,
-            "type":"Sprite",
-            "searchKey":"Sprite,score",
-            "props":{"name":"score"},
-            "nodeParent":2,
-            "label":"score",
-            "isOpen":false,
-            "isDirectory":true,
-            "isAniNode":true,
-            "hasChild":true,
-            "compId":20,
-            "child":[
-                {
-                    "type":"Label",
-                    "searchKey":"Label,scoreLabel",
-                    "props":{"y":149,"x":71,"width":112,"text":"label","name":"scoreLabel","height":34,"fontSize":30,"color":"#ffffff"},
-                    "nodeParent":20,
-                    "label":"scoreLabel",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":21,
-                    "child":[
-                        ]
-                }]
         },
         {
             "x":15,

@@ -30,7 +30,7 @@ export default class Enemy extends Laya.Script {
     private recordTime: number;
 
     /**分数*/
-    private scoreLabel: Laya.Label;
+    private scoreLabel: Laya.FontClip;
     /**当前属性*/
     private enemyProperty: any;
     /**血量值显示的label*/
@@ -262,16 +262,16 @@ export default class Enemy extends Laya.Script {
             this.mainSceneControl.role_02['Role'].role_Warning = false;
             this.self.removeSelf();
             if (this.enemyType === 'infighting') {
-                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'infighting');
+                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'infighting', 100);
             } else {
-                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'range');
+                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'range', 100);
             }
         }
         // 属性实时刷新
         this.enemyPropertyUpdate();
         // 血量低于0死亡,并且增加分数,并且关闭主角攻击预警
         if (this.selfHealth.value <= 0) {
-            this.scoreLabel.text = (Number(this.scoreLabel.text) + 200).toString();
+            // this.scoreLabel.text = (Number(this.scoreLabel.text) + 200).toString();
             this.self.removeSelf();
             this.mainSceneControl.role_01['Role'].role_Warning = false;
             this.mainSceneControl.role_02['Role'].role_Warning = false;
