@@ -324,7 +324,7 @@ export default class OperationButton extends Laya.Script {
     */
     timerControl(): void {
         if (this.timeSchedule.value > 0 && this.settleSwitch === false) {
-            this.timeSchedule.value -= 0.002;
+            this.timeSchedule.value -= 0.0002;
         } else if (this.timeSchedule.value <= 0 && this.settleSwitch === false) {
             // 没有点击过的全部变成敌人,减去点错的糖果，和
             let groupArr = [0, 1, 2, 3, 4]
