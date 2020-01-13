@@ -50,6 +50,10 @@ export default class Enemy extends Laya.Script {
     private attackX: number;
     private attackY: number;
 
+    /**骨骼动画模板*/
+    private templet: Laya.Templet;
+    /**骨骼动画*/
+    private skeleton: Laya.Skeleton;
 
     constructor() { super(); }
 
@@ -79,6 +83,36 @@ export default class Enemy extends Laya.Script {
         this.enemyBullet = this.mainSceneControl.enemyBullet as Laya.Prefab;
 
         this.self['Enemy'] = this;
+        this.skeleton = this.self.getChildByName('enemy_Infighting') as Laya.Skeleton;
+        this.self.addChild(this.skeleton);
+        this.skeleton.play('move', true);
+    }
+
+    /**创建骨骼动画皮肤*/
+    createBoneAni(): void {
+        //创建动画模板
+        this.templet = new Laya.Templet();
+        this.templet.on(Laya.Event.COMPLETE, this, this.parseComplete);
+        this.templet.on(Laya.Event.ERROR, this, this.onError);
+        if (this.enemyType === 'fighting') {
+            this.templet.loadAni("candy/敌人/fightingEnemy.sk");
+        } else {
+            this.templet.loadAni("candy/敌人/fightingEnemy.sk");
+        }
+    }
+
+    onError(): void {
+        console.log('骨骼动画加载错误');
+    }
+    parseComplete(): void {
+        // 播放敌人动画
+        var skeleton: Laya.Skeleton;
+        this.skeleton = this.templet.buildArmature(0);//模板0
+        this.skeleton.play('move', true);
+        this.skeleton.playbackRate(1);
+        this.self.addChild(this.skeleton);
+        this.skeleton.x = 50;
+        this.skeleton.y = 100;
     }
 
     /**近战攻击的敌人攻击主角的时候，会随机在主角范围内停止然后攻击
@@ -247,7 +281,6 @@ export default class Enemy extends Laya.Script {
     }
 
     onUpdate(): void {
-
         // 主角全部死亡则停止移动
         if (this.roleParent._children.length === 0) {
             return;
@@ -262,9 +295,9 @@ export default class Enemy extends Laya.Script {
             this.mainSceneControl.role_02['Role'].role_Warning = false;
             this.self.removeSelf();
             if (this.enemyType === 'infighting') {
-                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'infighting', 100);
+                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, 'infighting', 15, 100);
             } else {
-                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, 'range', 100);
+                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, 'range', 15, 100);
             }
         }
         // 属性实时刷新
@@ -325,8 +358,6 @@ export default class Enemy extends Laya.Script {
     }
 
     onDisable(): void {
-        let pic = this.self.getChildByName('pic') as Laya.Sprite;
-        pic.removeSelf();
         Laya.Pool.recover('enemy', this.self);
     }
 

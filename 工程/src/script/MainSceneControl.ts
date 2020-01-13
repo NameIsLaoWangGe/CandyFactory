@@ -17,6 +17,8 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:enemy, tips:"敌人", type:Prefab}*/
     public enemy: Laya.Prefab;
+    /** @prop {name:enemy_Infighting, tips:"近战敌人", type:Prefab}*/
+    public enemy_Infighting: Laya.Prefab;
     /** @prop {name:enemyParent, tips:"敌人父节点", type:Node}*/
     public enemyParent: Laya.Sprite;
     /** @prop {name:enemyBullet, tips:"敌人子弹预制体", type:Prefab}*/
@@ -24,8 +26,6 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:background, tips:"背景图", type:Node}*/
     public background: Laya.Sprite;
-    /** @prop {name:machine, tips:流水线, type:Node}*/
-    public machine: Laya.Sprite;
 
     /** @prop {name:speakBoxParent, tips:"对话框父节点", type:Node}*/
     public speakBoxParent: Laya.Sprite;
@@ -110,6 +110,10 @@ export default class MainSceneControl extends Laya.Script {
     private candyNameArr: Array<string>;
     /**糖果的行数*/
     private startRow: number;
+    /**自己*/
+    private self: Laya.Sprite;
+    /**所属场景*/
+    private selfScene: Laya.Scene;
 
     constructor() { super(); }
 
@@ -385,7 +389,12 @@ export default class MainSceneControl extends Laya.Script {
     careatEnemy(mode: string, tagRole: Laya.Sprite, type: string): Laya.Sprite {
         this.enemyCount++;
         if (tagRole !== null) {
-            let enemy = Laya.Pool.getItemByCreateFun('enemy', this.enemy.create, this.enemy) as Laya.Sprite;
+            let enemy;
+            if (type === 'infighting') {
+                enemy = Laya.Pool.getItemByCreateFun('enemy_Infighting', this.enemy_Infighting.create, this.enemy_Infighting) as Laya.Sprite;
+            } else if (type === 'range') {
+                enemy = Laya.Pool.getItemByCreateFun('enemy_Infighting', this.enemy_Infighting.create, this.enemy_Infighting) as Laya.Sprite;
+            }
             this.enemyParent.addChild(enemy);
             enemy.name = 'enemy' + this.enemyCount;//名称唯一
             enemy.pivotX = enemy.width / 2;
@@ -405,21 +414,6 @@ export default class MainSceneControl extends Laya.Script {
             enemy['Enemy'].slefTagRole = tagRole;
             enemy['Enemy'].enemyType = type;
             enemy['Enemy'].randomAttackPoint();
-            // 皮肤
-
-            let pic = new Laya.Sprite;
-            pic.name = 'pic'
-            let url_01 = 'candy/敌人/近战敌人.png'
-            let url_02 = 'candy/敌人/远程敌人.png'
-            if (type === 'infighting') {
-                pic.loadImage(url_01);
-            } else if (type === 'range') {
-                pic.loadImage(url_02);
-            }
-            enemy.addChild(pic);
-            pic.pivotX = pic.width / 2;
-            pic.pivotY = pic.height / 2;
-            pic.pos(enemy.width / 2, enemy.height / 2);
             // 默认属性不可见
             let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;
             if (!this.suspend) {
@@ -457,15 +451,17 @@ export default class MainSceneControl extends Laya.Script {
     }
 
     /**爆炸动画
+     * @param parent 父节点
      * @param x 位置
      * @param y
      * @param type 类型 
+     * @param shul 数量 
      * @param zOrder 层级
     */
-    explodeAni(x, y, type, zOrder): void {
-        for (let i = 0; i < 15; i++) {
+    explodeAni(parent, x, y, type, number, zOrder): void {
+        for (let i = 0; i < number; i++) {
             let explode = Laya.Pool.getItemByCreateFun('explode', this.explode.create, this.explode) as Laya.Sprite;
-            this.owner.addChild(explode);
+            parent.addChild(explode);
             explode.zOrder = zOrder;
             explode.pos(x, y);
             // 类型
@@ -507,6 +503,7 @@ export default class MainSceneControl extends Laya.Script {
                 this.enemyTagRole = null;
             }
         }
+
     }
 
     onDisable(): void {

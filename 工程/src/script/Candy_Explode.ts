@@ -71,7 +71,7 @@ export default class Candy extends Laya.Script {
             let differenceY = Math.abs(this.self.y - this.explodeTarget.y);
             if (differenceX < 50 && differenceY < 50) {
                 this.self.removeSelf();
-                this.selfScene['MainSceneControl'].explodeAni(this.self.x, this.self.y, this.self.name.substring(0, 11), 100);
+                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, this.self.name.substring(0, 11), 15, 100);
                 this.hintWordMove();
                 this.roleReduceProperty();
                 this.explodeTarget = null;

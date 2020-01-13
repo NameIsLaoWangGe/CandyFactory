@@ -98,7 +98,7 @@ export default class RewardWords extends Laya.Script {
         let baseboard = new Laya.Image;
         baseboard.skin = 'candy/ui/文字提示底.png';
         this.selfScene.addChild(baseboard);
-        baseboard.pos(Laya.stage.width / 2, this.locationY);
+        baseboard.pos(-800, this.locationY);
         baseboard.anchorX = 0.5;
         baseboard.anchorY = 0.5;
         baseboard.alpha = 0;
@@ -108,8 +108,8 @@ export default class RewardWords extends Laya.Script {
         this.self.zOrder = 110;
         // 底板动画
         let timeLine_baseboard_01 = new Laya.TimeLine;
-        timeLine_baseboard_01.addLabel('overturn_01', 0).to(baseboard, { scaleX: 0.3, scaleY: 0.3, rotation: 90, alpha: 0.5 }, 200, null, 0)
-            .addLabel('overturn_02', 0).to(baseboard, { scaleX: 1, scaleY: 1, rotation: 360, alpha: 1 }, 200, null, 0)
+        timeLine_baseboard_01
+            .addLabel('overturn_01', 0).to(baseboard, { scaleX: 1, scaleY: 1, x: Laya.stage.width / 2, rotation: 360, alpha: 1 }, 400, null, 0)
         timeLine_baseboard_01.play('overturn_01', false);
         timeLine_baseboard_01.on(Laya.Event.COMPLETE, this, function () {
             this.letOffFireworks();
@@ -117,7 +117,7 @@ export default class RewardWords extends Laya.Script {
             let timeLine_baseboard_02 = new Laya.TimeLine;
             timeLine_baseboard_02
                 .addLabel('pause', 0).to(baseboard, {}, standingTime, null, 0)
-                .addLabel('vanish_01', 0).to(baseboard, { scaleX: 0.2, scaleY: 0.2, rotation: -360, alpha: 0 }, 650, Laya.Ease.circInOut, 0)
+                .addLabel('vanish_01', 0).to(baseboard, { scaleX: 0.2, scaleY: 0.2, x: 800, rotation: -360, alpha: 0 }, 650, Laya.Ease.circInOut, 0)
             timeLine_baseboard_02.play('pause', false);
             timeLine_baseboard_02.on(Laya.Event.COMPLETE, this, function () {
                 baseboard.removeSelf();
@@ -148,13 +148,13 @@ export default class RewardWords extends Laya.Script {
         let delayed = 0;
         switch (this.wordsType) {
             case '牛皮':
-                count = 6;
+                count = 5;
                 break;
             case '太棒了':
-                count = 8;
+                count = 7;
                 break;
             case '干得漂亮':
-                count = 12;
+                count = 10;
                 break;
             default:
                 count = 6;
@@ -169,7 +169,7 @@ export default class RewardWords extends Laya.Script {
                 } else {
                     locationX_01 = Laya.stage.width / 2 - 50 - randomX;
                 }
-                this.selfScene['MainSceneControl'].explodeAni(locationX_01, this.locationY, 'fireworks', 105);
+                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, locationX_01, this.locationY, 'fireworks', 20, 105);
             })
             delayed += 15;
         }
@@ -180,7 +180,7 @@ export default class RewardWords extends Laya.Script {
         let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
         this.selfScene.addChild(hintWord);
         hintWord.zOrder = 110;
-        hintWord.pos(Laya.stage.width / 2, this.locationY - 100);
+        hintWord.pos(Laya.stage.width / 2, this.locationY);
         let proPertyType: string = '增加分数';
         hintWord['HintWord'].initProperty(proPertyType, this.addScoreNumber);
     }

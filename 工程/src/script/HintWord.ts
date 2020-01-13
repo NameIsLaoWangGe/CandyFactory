@@ -143,7 +143,6 @@ export default class HintWord extends Laya.Script {
         let stageX = this.scoreLabel.x + scoreLabel_p.x + scoreLabel_p_p.x;
         let stageY = this.scoreLabel.y + scoreLabel_p.y + scoreLabel_p_p.y;
 
-
         let timeLine = new Laya.TimeLine;
         timeLine.addLabel('appear', 0).to(this.self, { y: this.self.y - 60, alpha: 1 }, 100, null, 0)
             .addLabel('pause', 0).to(this.self, { y: this.self.y - 120 }, 600, null, 0)

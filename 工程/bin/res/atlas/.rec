@@ -53,8 +53,8 @@ P F69C7459 时间.png
 P D6840F32 时间装饰.png
 P F27E0E2A 暂停按钮.png
 P DF75AD09 继续游戏.png
-P F16C659C 血条$bar.png
-P 8C1B9206 血条.png
+P DC8B2C2C 血条$bar.png
+P CAADDFEC 血条.png
 P 6A224944 进度条白色高光.png
 D candy/主角
 P 23718715 主角1正面.png
@@ -80,10 +80,22 @@ P 46AEFE45 绿色按钮.png
 P 1AFE4869 蓝色按钮.png
 P 5F3A830D 黄色按钮.png
 D candy/敌人
+R 96155E5C fightingEnemy.png
+R 99A6B194 fightingEnemy.sk
+R 79B6726B fightingEnemy_ske.json
+R AE0E4659 fightingEnemy_tex.json
+P 96155E5C fightingEnemy_tex.png
 P E0F129CB 敌人子弹.png
 P 61BE88EF 近战敌人.png
 P 8CFD1E2D 远程敌人.png
 D candy/特效
+P 39E9925F 星星1.png
+P 1996D45F 星星2.png
+P B9597B1B 星星3.png
+P 6437BB88 星星4.png
+P 21ADEE2D 星星5.png
+P E9360A9C 星星6.png
+P 4A6A7321 星星7.png
 P FCA3E281 烟花1.png
 P 3F921D8E 烟花2.png
 P 8A192B00 烟花3.png
@@ -105,7 +117,9 @@ P 76DA447F 蓝色糖果.png
 P 1F3C815D 黄色糖果.png
 D candy/糖果机器
 P 8068A284 提示.png
-R CC98E3DB 糖果制造机.png
+P 1D1B0797 短指针.png
+R 88439B04 糖果制造机.png
 R 4DB30A6A 糖果陈列台.png
+P E4AB60C7 长指针.png
 D candy/背景图
 R 59CA962E 背景图.jpg

@@ -2,11 +2,11 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
-    "selecteID":18,
+    "selecteID":125,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":118,
+    "maxID":126,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -45,10 +45,10 @@
         {
             "x":15,
             "type":"Sprite",
-            "searchKey":"Sprite,machine",
-            "props":{"y":0,"x":0,"width":751,"name":"machine","height":1067},
+            "searchKey":"Sprite,assembly",
+            "props":{"y":0,"x":0,"width":751,"name":"assembly","height":1067},
             "nodeParent":2,
-            "label":"machine",
+            "label":"assembly",
             "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
@@ -59,7 +59,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,机器",
-                    "props":{"y":-61,"x":10,"texture":"candy/糖果机器/糖果制造机.png","name":"机器"},
+                    "props":{"y":-87,"x":10,"width":725,"texture":"candy/糖果机器/糖果制造机.png","name":"机器","height":522},
                     "nodeParent":18,
                     "label":"机器",
                     "isDirectory":false,
@@ -153,6 +153,38 @@
                     "compId":102,
                     "child":[
                         ]
+                },
+                {
+                    "x":30,
+                    "type":"Script",
+                    "switchAble":true,
+                    "source":"src/script/Assembly.ts",
+                    "searchKey":"Script,Assembly",
+                    "removeAble":true,
+                    "props":{"shortPointer":"@node:123","machine":"@node:109","LongPointer":"@node:119"},
+                    "nodeParent":18,
+                    "label":"Assembly",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":118,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite,longPointer",
+                    "props":{"y":305,"x":641,"width":5,"texture":"candy/糖果机器/长指针.png","pivotY":15,"pivotX":2.5,"name":"longPointer","height":18},
+                    "nodeParent":18,
+                    "label":"longPointer",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":119,
+                    "child":[
+                        ]
                 }]
         },
         {
@@ -162,7 +194,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:116","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","machine":"@node:18","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","explode":"@Prefab:prefab/explode.prefab","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","displays":"@node:110","candy_Explode":"@Prefab:prefab/candy_Explode.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"y":2,"x":0,"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:116","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","machine":"@node:109","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","explode":"@Prefab:prefab/explode.prefab","enemy_Infighting":"@Prefab:prefab/enemy_Infighting.prefab","enemy_Fighting":"@Prefab:prefab/enemy_Fighting.prefab","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","displays":"@node:110","candy_Explode":"@Prefab:prefab/candy_Explode.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -294,13 +326,14 @@
             "props":{"y":-8,"x":0,"width":750,"var":"roleParent","name":"roleParent","mouseThrough":true,"height":1334,"alpha":1},
             "nodeParent":2,
             "label":"roleParent",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":12,
             "child":[
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,role_02,role_02",
                     "props":{"y":926,"x":640,"width":102,"var":"role_02","pivotY":56,"pivotX":51,"name":"role_02","height":139},
@@ -313,6 +346,7 @@
                     "compId":24,
                     "child":[
                         {
+                            "x":45,
                             "type":"Sprite",
                             "searchKey":"Sprite,pic",
                             "props":{"y":-13,"x":-15,"texture":"candy/主角/主角2背面.png","name":"pic"},
@@ -327,6 +361,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/script/Role.ts",
@@ -343,9 +378,10 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"ProgressBar",
                             "searchKey":"ProgressBar,health",
-                            "props":{"y":-38,"x":-32.5,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,13,0,13","name":"health"},
+                            "props":{"y":-23,"x":51,"width":106,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,13,0,13","pivotX":53,"name":"health","height":20},
                             "nodeParent":24,
                             "label":"health",
                             "isOpen":true,
@@ -355,9 +391,10 @@
                             "compId":40,
                             "child":[
                                 {
+                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,bloodLabel",
-                                    "props":{"y":16,"x":84.5,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
+                                    "props":{"y":9,"x":54,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
                                     "nodeParent":40,
                                     "label":"bloodLabel",
                                     "isDirectory":false,
@@ -369,6 +406,7 @@
                                 }]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,propertyShow",
                             "props":{"y":-175,"x":-43,"width":194,"skin":"candy/ui/属性战士框.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},
@@ -381,6 +419,7 @@
                             "compId":70,
                             "child":[
                                 {
+                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,blood",
                                     "props":{"y":13,"x":22.5,"width":149,"text":"blood","name":"blood","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -394,6 +433,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,attackValue",
                                     "props":{"y":38,"x":22,"width":149,"text":"attackValue","name":"attackValue","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -408,6 +448,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,attackSpeed",
                                     "props":{"y":67,"x":24,"width":149,"text":"attackSpeed","name":"attackSpeed","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -422,6 +463,7 @@
                                         ]
                                 },
                                 {
+                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,defense",
                                     "props":{"y":91,"x":24,"width":149,"text":"defense","name":"defense","height":25,"fontSize":23,"font":"Microsoft YaHei","color":"#ffffff"},
@@ -438,6 +480,7 @@
                         }]
                 },
                 {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,role_01,role_01",
                     "props":{"y":961,"x":104,"width":123,"var":"role_01","pivotY":80,"pivotX":62,"name":"role_01","height":145},
@@ -450,6 +493,7 @@
                     "compId":25,
                     "child":[
                         {
+                            "x":45,
                             "type":"Sprite",
                             "searchKey":"Sprite,pic",
                             "props":{"y":86,"x":64.5,"width":129,"texture":"candy/主角/主角1背面.png","pivotY":118,"pivotX":65,"name":"pic","height":184},
@@ -464,12 +508,13 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Script",
                             "switchAble":true,
                             "source":"src/script/Role.ts",
                             "searchKey":"Script,Role",
                             "removeAble":true,
-                            "props":{"y":0,"x":0,"roleBullet":"@Prefab:prefab/roleBullet.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
+                            "props":{"y":-1,"x":0,"roleBullet":"@Prefab:prefab/roleBullet.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab"},
                             "nodeParent":25,
                             "label":"Role",
                             "isDirectory":false,
@@ -480,9 +525,10 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"ProgressBar",
                             "searchKey":"ProgressBar,health",
-                            "props":{"y":-60,"x":-19,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,13,0,13","name":"health"},
+                            "props":{"y":-38,"x":7.5,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,13,0,13","name":"health"},
                             "nodeParent":25,
                             "label":"health",
                             "isOpen":true,
@@ -492,11 +538,13 @@
                             "compId":41,
                             "child":[
                                 {
+                                    "x":60,
                                     "type":"Label",
                                     "searchKey":"Label,bloodLabel",
-                                    "props":{"y":16,"x":85.5,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
+                                    "props":{"y":8,"x":55,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
                                     "nodeParent":41,
                                     "label":"bloodLabel",
+                                    "isOpen":false,
                                     "isDirectory":false,
                                     "isAniNode":true,
                                     "hasChild":false,
@@ -506,6 +554,7 @@
                                 }]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,propertyShow",
                             "props":{"y":-191,"x":-31.5,"width":194,"skin":"candy/ui/属性战士框.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},

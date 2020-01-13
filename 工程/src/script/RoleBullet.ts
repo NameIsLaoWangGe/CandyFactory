@@ -119,7 +119,7 @@ export default class Bullet extends Laya.Script {
             damage = 0;
         }
         // 飘字
-        this.hintWordMove(enemy, damage);
+        // this.hintWordMove(enemy, damage);
         // 触发击退
         enemy['Enemy'].repelTimer = 2;
     }
