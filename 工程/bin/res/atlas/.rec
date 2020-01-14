@@ -53,12 +53,12 @@ P F69C7459 时间.png
 P D6840F32 时间装饰.png
 P F27E0E2A 暂停按钮.png
 P DF75AD09 继续游戏.png
-P DC8B2C2C 血条$bar.png
-P CAADDFEC 血条.png
+P 2453072E 血条$bar.png
+P B69A9929 血条.png
 P 6A224944 进度条白色高光.png
 D candy/主角
-P 23718715 主角1正面.png
-P 210C2D5B 主角1背面.png
+R 2EBE3003 role_01.png
+R E4BCF7D0 role_01.sk
 P B7A09B0C 主角2正面.png
 P F035F013 主角2背面.png
 P 0D587255 主角子弹.png
@@ -82,9 +82,8 @@ P 5F3A830D 黄色按钮.png
 D candy/敌人
 R 96155E5C fightingEnemy.png
 R 99A6B194 fightingEnemy.sk
-R 79B6726B fightingEnemy_ske.json
-R AE0E4659 fightingEnemy_tex.json
-P 96155E5C fightingEnemy_tex.png
+R D8000630 rangeEnemy.png
+R C34EAAB5 rangeEnemy.sk
 P E0F129CB 敌人子弹.png
 P 61BE88EF 近战敌人.png
 P 8CFD1E2D 远程敌人.png

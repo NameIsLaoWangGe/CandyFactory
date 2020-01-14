@@ -32,13 +32,19 @@ export default class Role extends Laya.Script {
     /**得分显示*/
     public scoreLabel: Laya.FontClip;
 
+    /**骨骼动画模板*/
+    private templet: Laya.Templet;
+    /**骨骼动画*/
+    private skeleton: Laya.Skeleton;
     constructor() { super(); }
 
     onEnable(): void {
         this.initProperty();
         this.bucketClink();
         this.rolePropertySet();
+        this.createBoneAni();
     }
+
     /**初始化*/
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
@@ -57,6 +63,37 @@ export default class Role extends Laya.Script {
         this.nowTime = Date.now();
     }
 
+    /**创建骨骼动画皮肤*/
+    createBoneAni(): void {
+        //创建动画模板
+        this.templet = new Laya.Templet();
+        this.templet.on(Laya.Event.COMPLETE, this, this.parseComplete);
+        this.templet.on(Laya.Event.ERROR, this, this.onError);
+        if (this.self.name === 'role_01') {
+            this.templet.loadAni("candy/主角/role_01.sk");
+        } else if (this.self.name === 'role_02') {
+            this.templet.loadAni("candy/主角/role_01.sk");
+        }
+    }
+
+    onError(): void {
+        console.log('骨骼动画加载错误');
+    }
+    parseComplete(): void {
+        // 播放敌人动画
+        var skeleton: Laya.Skeleton;
+        this.skeleton = this.templet.buildArmature(0);//模板0
+        this.self.addChild(this.skeleton);
+        this.skeleton.play('speak', true);
+        if (this.self.name === 'role_01') {
+            this.skeleton.x = 60;
+            this.skeleton.y = 72;
+        } else if (this.self.name === 'role_02') {
+            this.skeleton.x = 60;
+            this.skeleton.y = 72;
+        }
+    }
+
     /**主角的属性
      *两个主角属性分别计算
      *四个属性依次是，生命值，子弹攻击力，子弹发射频率和弹道速度，防御能力
@@ -65,14 +102,14 @@ export default class Role extends Laya.Script {
         if (this.self.name === 'role_01') {
             this.role_property = {
                 blood: 2000,
-                attackValue: 20,
+                attackValue: 100,
                 attackSpeed: 100,
                 defense: 15,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
                 blood: 2000,
-                attackValue: 20,
+                attackValue: 100,
                 attackSpeed: 100,
                 defense: 15,
             };
@@ -124,10 +161,27 @@ export default class Role extends Laya.Script {
         this.self.scale(1, 1);
     }
 
+    /**播放速度相对攻击速度进行调整
+        * 当播放间隔低于500后进行调整
+       */
+    playSpeedAdjust(): void {
+        // 播放速度调整
+        let playSpeed;
+        if ((500 - this.role_property.attackSpeed) / 500 > 0) {
+            playSpeed = 1 + (500 - this.role_property.attackSpeed) / 500;
+        } else {
+            playSpeed = 1;
+        }
+        this.skeleton.playbackRate(playSpeed);
+    }
+
     /**创建主角子弹
      * 主角1位置的子弹
     */
     careatBullet() {
+        this.skeleton.play('attack', false);
+        this.playSpeedAdjust();
+        console.log(this.role_Warning);
         let bullet = Laya.Pool.getItemByCreateFun('roleBullet', this.roleBullet.create, this.roleBullet) as Laya.Sprite;
         this.bulletParent.addChild(bullet);
         bullet.pos(this.self.x, this.self.y);

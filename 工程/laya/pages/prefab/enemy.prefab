@@ -2,11 +2,11 @@
     "x":0,
     "type":"Sprite",
     "selectedBox":22,
-    "selecteID":25,
+    "selecteID":41,
     "searchKey":"Sprite,enemy",
     "props":{"y":60,"x":59,"width":120,"presetID":1,"preset":"laya/pages/prefab/enemy.prefab","pivotY":60,"pivotX":60,"name":"enemy","isPresetRoot":true,"height":120},
     "nodeParent":-1,
-    "maxID":38,
+    "maxID":42,
     "label":"enemy",
     "isOpen":true,
     "isDirectory":true,
@@ -45,7 +45,6 @@
             "compId":25,
             "child":[
                 {
-                    "x":30,
                     "type":"Label",
                     "searchKey":"Label,bloodLabel",
                     "props":{"y":10,"x":55,"width":136,"valign":"middle","text":"label","presetID":5,"preset":"laya/pages/prefab/enemy.prefab","pivotY":10,"pivotX":68,"name":"bloodLabel","height":20,"fontSize":20,"align":"center"},
