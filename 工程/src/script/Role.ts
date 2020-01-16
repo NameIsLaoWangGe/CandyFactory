@@ -72,7 +72,7 @@ export default class Role extends Laya.Script {
         if (this.self.name === 'role_01') {
             this.templet.loadAni("candy/主角/role_01.sk");
         } else if (this.self.name === 'role_02') {
-            this.templet.loadAni("candy/主角/role_01.sk");
+            this.templet.loadAni("candy/主角/role_02.sk");
         }
     }
 
@@ -101,6 +101,9 @@ export default class Role extends Laya.Script {
             if (e.name === 'hitOut') {
                 this.createBullet();
             }
+        });
+        this.skeleton.on(Laya.Event.COMPLETE, this, function (e) {
+            console.log(e);
         });
     }
 
@@ -253,10 +256,12 @@ export default class Role extends Laya.Script {
         this.updateProperty();
         //创建子弹
         let nowTime = Date.now();
-        if (nowTime - this.nowTime > this.role_property.attackSpeed) {
-            if (this.role_Warning && this.skeleton) {
-                this.onsetAttack();
-                this.nowTime = nowTime;
+        if (this.skeleton && this.role_Warning) {
+            if (nowTime - this.nowTime > this.role_property.attackSpeed) {
+                if (this.role_Warning) {
+                    this.onsetAttack();
+                    this.nowTime = nowTime;
+                }
             }
         }
     }

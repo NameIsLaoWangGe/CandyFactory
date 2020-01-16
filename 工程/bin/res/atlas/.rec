@@ -59,8 +59,8 @@ P 6A224944 进度条白色高光.png
 D candy/主角
 R D9F5117B role_01.png
 R BD236AFA role_01.sk
-P B7A09B0C 主角2正面.png
-P F035F013 主角2背面.png
+R 616CCB8D role_02.png
+R 4F0D18B8 role_02.sk
 P 0D587255 主角子弹.png
 P CCEAAF5D 子弹.png
 D candy/字体

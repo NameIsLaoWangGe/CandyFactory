@@ -52,6 +52,9 @@ export default class MainSceneControl extends Laya.Script {
     /** @prop {name:displays , tips:"陈列台", type:Node}*/
     public displays: Laya.Sprite;
 
+    /** @prop {name:operating , tips:"操作节点", type:Node}*/
+    public operating: Laya.Sprite;
+
     /**是否处于暂停状态*/
     private suspend: boolean;
 
@@ -127,7 +130,8 @@ export default class MainSceneControl extends Laya.Script {
         // this.roletInit();
         this.roleSpeakBoxs();
         this.candyPosInit();
-        this.createWaveCandys();
+        // this.createWaveCandys();
+        this.candyMoveToDisplay();
     }
 
     /**场景初始化*/
@@ -190,13 +194,13 @@ export default class MainSceneControl extends Laya.Script {
         let startX_02 = Laya.stage.width / 2 + 58;
         let startY = this.displays.y + 40;
         // 注意排布顺序，把第一个排到最前，所以返回来循环
-        for (let i = 1; i >= 0; i--) {
-            for (let j = this.startRow; j >= 0; j--) {
-                if (i === 0) {
-                    let arr = [startX_01, startY + j * (candyHeiht + spacing)];
+        for (let i = this.startRow; i > 0; i--) {
+            for (let j = 0; j < 2; j++) {
+                if (j === 0) {
+                    let arr = [startX_01, startY + i * (candyHeiht + spacing)];
                     this.posArr_left.push(arr);
-                } else if (i === 1) {
-                    let arr = [startX_02, startY + j * (candyHeiht + spacing)];
+                } else if (j === 1) {
+                    let arr = [startX_02, startY + i * (candyHeiht + spacing)];
                     this.posArr_right.push(arr);
                 }
             }
@@ -222,6 +226,43 @@ export default class MainSceneControl extends Laya.Script {
                 candy.y = y;
                 candy['Candy'].group = j;
             }
+        }
+    }
+
+    /**糖果移动到操作台的动画
+     * 4次，每次2个移动
+     * 倒过来遍历
+    */
+    candyMoveToDisplay(): void {
+        let delayed = 10;
+        let candyHeiht = 100;
+        let spacing = 2;
+        let startX_01 = Laya.stage.width / 2 - 42;
+        let startX_02 = Laya.stage.width / 2 + 58;
+        let startY = this.displays.y + 40;
+
+        for (let i = this.startRow; i > 0; i--) {
+            Laya.timer.frameOnce(delayed, this, function () {
+                for (let j = 0; j < 2; j++) {
+                    let candy = this.createCandy();
+                    candy['Candy'].group = i;
+                    if (j === 0) {
+                        candy.pos(this.displays.x + 150, this.displays.y);
+                        Laya.Tween.to(candy, { x: startX_01, y: startY + i * (candyHeiht + spacing) }, 500, null, Laya.Handler.create(this, function () {
+
+                        }));
+                    } else {
+                        candy.pos(this.displays.x - 150, this.displays.y);
+                        Laya.Tween.to(candy, { x: startX_02, y: startY + i * (candyHeiht + spacing) }, 500, null, Laya.Handler.create(this, function () {
+                            // 结束之后初始化操作提示，要保持在这个动画之后
+                            if (i === 1 && j === 1) {
+                                this.operating['OperationControl'].clickHint();
+                            }
+                        }));
+                    }
+                }
+            })
+            delayed += 50;
         }
     }
 
@@ -349,7 +390,6 @@ export default class MainSceneControl extends Laya.Script {
             }
         }
     }
-
 
 
     /**角色死亡复活状况*/

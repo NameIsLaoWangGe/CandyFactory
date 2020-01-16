@@ -47,7 +47,6 @@ export default class OperationButton extends Laya.Script {
     onEnable(): void {
         this.initProperty();
         this.buttonClink();
-        this.clickHint();
     }
 
     /**初始化一些属性*/
@@ -71,6 +70,7 @@ export default class OperationButton extends Laya.Script {
 
         this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
         this.settleSwitch = false;
+        this.self['OperationControl'] = this;
     }
 
     /**操作按钮的点击事件*/
@@ -350,7 +350,7 @@ export default class OperationButton extends Laya.Script {
     }
     /**新建糖果，初始换属性*/
     initCandy(): void {
-        this.selfScene['MainSceneControl'].createWaveCandys();
+        this.selfScene['MainSceneControl'].candyMoveToDisplay();
         this.clickHint();
         this.settleSwitch = false;
         this.timeSchedule.value = 1;
@@ -390,7 +390,7 @@ export default class OperationButton extends Laya.Script {
         // 如果糖果被点完了，那么重新生成10个糖果
         if (this.candyParent._children.length === 0) {
             // 新建糖果
-            this.initCandy();
+            // this.initCandy();
         }
 
         // 时间到了才可以进行操作
