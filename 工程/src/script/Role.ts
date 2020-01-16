@@ -83,6 +83,7 @@ export default class Role extends Laya.Script {
         // 播放敌人动画
         var skeleton: Laya.Skeleton;
         this.skeleton = this.templet.buildArmature(0);//模板0
+        this.skeletonListen();
         this.self.addChild(this.skeleton);
         this.skeleton.play('speak', true);
         if (this.self.name === 'role_01') {
@@ -94,6 +95,47 @@ export default class Role extends Laya.Script {
         }
     }
 
+    /**监听*/
+    skeletonListen(): void {
+        this.skeleton.on(Laya.Event.LABEL, this, function (e) {
+            if (e.name === 'hitOut') {
+                this.createBullet();
+            }
+        });
+    }
+
+    /**创建子弹*/
+    createBullet(): void {
+        let bullet = Laya.Pool.getItemByCreateFun('roleBullet', this.roleBullet.create, this.roleBullet) as Laya.Sprite;
+        this.bulletParent.addChild(bullet);
+        bullet.pos(this.self.x, this.self.y);
+        this.lockedBulletTarget(bullet);
+        bullet['Bullet'].belongRole = this.self;
+    }
+
+    /**播放速度相对攻击速度进行调整
+      * 当播放间隔低于500后进行调整
+     */
+    playSpeedAdjust(): void {
+        // 播放速度调整
+        let playSpeed;
+        if ((500 - this.role_property.attackSpeed) / 500 > 0) {
+            playSpeed = 1 + (500 - this.role_property.attackSpeed) / 500;
+        } else {
+            playSpeed = 1;
+        }
+        this.skeleton.playbackRate(playSpeed);
+    }
+
+    /**发动攻击
+     * 目前之发射子弹
+    */
+    onsetAttack() {
+        // 攻击播放一次
+        this.skeleton.play('attack', false);
+        this.playSpeedAdjust();
+    }
+
     /**主角的属性
      *两个主角属性分别计算
      *四个属性依次是，生命值，子弹攻击力，子弹发射频率和弹道速度，防御能力
@@ -103,14 +145,14 @@ export default class Role extends Laya.Script {
             this.role_property = {
                 blood: 2000,
                 attackValue: 100,
-                attackSpeed: 100,
+                attackSpeed: 200,
                 defense: 15,
             };
         } else if (this.self.name === 'role_02') {
             this.role_property = {
                 blood: 2000,
                 attackValue: 100,
-                attackSpeed: 100,
+                attackSpeed: 200,
                 defense: 15,
             };
         }
@@ -161,34 +203,6 @@ export default class Role extends Laya.Script {
         this.self.scale(1, 1);
     }
 
-    /**播放速度相对攻击速度进行调整
-        * 当播放间隔低于500后进行调整
-       */
-    playSpeedAdjust(): void {
-        // 播放速度调整
-        let playSpeed;
-        if ((500 - this.role_property.attackSpeed) / 500 > 0) {
-            playSpeed = 1 + (500 - this.role_property.attackSpeed) / 500;
-        } else {
-            playSpeed = 1;
-        }
-        this.skeleton.playbackRate(playSpeed);
-    }
-
-    /**创建主角子弹
-     * 主角1位置的子弹
-    */
-    careatBullet() {
-        this.skeleton.play('attack', false);
-        this.playSpeedAdjust();
-        console.log(this.role_Warning);
-        let bullet = Laya.Pool.getItemByCreateFun('roleBullet', this.roleBullet.create, this.roleBullet) as Laya.Sprite;
-        this.bulletParent.addChild(bullet);
-        bullet.pos(this.self.x, this.self.y);
-        this.lockedBulletTarget(bullet);
-        bullet['Bullet'].belongRole = this.self;
-    }
-
     /**锁定最近的那个敌人
     * 如果没有敌人，且屏幕上敌人存在，那么会锁定一个敌人
     * 左右判断原则是，如果是左边角色发射子弹，那么先观察左边有没有敌人，如果有那么优先攻击左边
@@ -237,12 +251,11 @@ export default class Role extends Laya.Script {
         }
         // 刷新属性
         this.updateProperty();
-
         //创建子弹
-        if (this.role_Warning) {
-            let nowTime = Date.now();
-            if (nowTime - this.nowTime > this.role_property.attackSpeed) {
-                this.careatBullet();
+        let nowTime = Date.now();
+        if (nowTime - this.nowTime > this.role_property.attackSpeed) {
+            if (this.role_Warning && this.skeleton) {
+                this.onsetAttack();
                 this.nowTime = nowTime;
             }
         }

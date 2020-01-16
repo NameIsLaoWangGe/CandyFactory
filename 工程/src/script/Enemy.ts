@@ -83,6 +83,9 @@ export default class Enemy extends Laya.Script {
         this.enemyBullet = this.mainSceneControl.enemyBullet as Laya.Prefab;
 
         this.self['Enemy'] = this;
+        if (this.skeleton) {
+            this.skeleton.removeSelf();
+        }
     }
 
     /**创建骨骼动画皮肤*/
@@ -106,6 +109,7 @@ export default class Enemy extends Laya.Script {
         // 播放敌人动画
         var skeleton: Laya.Skeleton;
         this.skeleton = this.templet.buildArmature(0);//模板0
+        this.skeletonListen();
         this.self.addChild(this.skeleton);
         //格式
         if (this.enemyType === 'infighting') {
@@ -132,6 +136,19 @@ export default class Enemy extends Laya.Script {
             }
             this.skeleton.playbackRate(1);
         }
+    }
+
+    /**监听*/
+    skeletonListen(): void {
+        this.skeleton.on(Laya.Event.LABEL, this, function (e) {
+            if (this.enemyType === 'infighting') {
+
+            } else if ('range') {
+                if (e.name === 'hitOut') {
+                    this.creatBullet();
+                }
+            }
+        });
     }
 
     /**近战攻击的敌人攻击主角的时候，会随机在主角范围内停止然后攻击
@@ -259,7 +276,7 @@ export default class Enemy extends Laya.Script {
         this.createHintWord(damage);
     }
 
-    /**创建提示，掉血文字*/ 
+    /**创建提示，掉血文字*/
     createHintWord(damage: number): void {
         // 创建提示动画对象
         let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;
@@ -313,6 +330,20 @@ export default class Enemy extends Laya.Script {
         this.skeleton.playbackRate(playSpeed);
     }
 
+    /**敌人死亡时的行为
+     * 关闭敌人预警
+     * 并且爆炸
+    */
+    enemyDeath(): void {
+        this.mainSceneControl.role_01['Role'].role_Warning = false;
+        this.mainSceneControl.role_02['Role'].role_Warning = false;
+        this.self.removeSelf();
+        if (this.enemyType === 'infighting') {
+            this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, 'infighting', 15, 100);
+        } else {
+            this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, 'range', 15, 100);
+        }
+    }
 
     onUpdate(): void {
         // 主角全部死亡则停止移动
@@ -323,20 +354,15 @@ export default class Enemy extends Laya.Script {
         if (this.slefTagRole === null) {
             return;
         }
-        // 血量低于0则死亡,并且关闭主角发射子弹预警
+        // 血量低于0则死亡,并且关闭主角发射子弹预警,并且停止下面行为
         if (this.enemyProperty.blood < 0) {
-            this.mainSceneControl.role_01['Role'].role_Warning = false;
-            this.mainSceneControl.role_02['Role'].role_Warning = false;
-            this.self.removeSelf();
-            if (this.enemyType === 'infighting') {
-                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, 'infighting', 15, 100);
-            } else {
-                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, 'range', 15, 100);
-            }
+            this.enemyDeath();
+            return;
         }
+
         // 属性实时刷新
         this.enemyPropertyUpdate();
-        
+
         //判断这个敌人是不是远程攻击，远程攻击的敌人暂时不会移动,会主动发射子弹进行攻击
         if (this.enemyType === 'range') {
             // 远程移动
@@ -357,11 +383,6 @@ export default class Enemy extends Laya.Script {
                         // 等上一个动画播放完毕
                         this.skeleton.play('attack', false);
                         this.playSpeedAdjust();
-                        this.skeleton.on(Laya.Event.LABEL, this, function (e) {
-                            if (e.name === 'hitOut') {
-                                this.creatBullet();
-                            }
-                        })
                     } else {
                         this.replaceTarget();
                     }
@@ -395,7 +416,6 @@ export default class Enemy extends Laya.Script {
     }
 
     onDisable(): void {
-        this.skeleton.removeSelf();
         Laya.Pool.recover('enemy', this.self);
     }
 

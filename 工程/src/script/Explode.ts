@@ -40,43 +40,30 @@ export default class Explode extends Laya.Script {
     /**初始化参数*/
     initProperty(type): void {
         this.effectsType = type;
-        if (this.effectsType === 'fireworks') {
-            this.fireworksProperty();
-        } else if (this.effectsType === 'smokeEffects') {
-            this.commonExplosionProperty();
-        } else {
-            this.commonExplosionProperty();
-        }
-        // 类型暂时只和颜色匹配
         switch (type) {
-            case 'fighting':
-                this.img.skin = 'candy/特效/白色单元.png';
-                break;
-            case 'range':
-                this.img.skin = 'candy/特效/黑色单元.png';
-                this.commonExplosionProperty();
-                break;
-            case 'redCandy___':
-                this.img.skin = 'candy/特效/红色单元.png';
-                this.commonExplosionProperty();
-                break;
-            case 'greenCandy_':
-                this.img.skin = 'candy/特效/绿色单元.png';
-                this.commonExplosionProperty();
-                break;
-            case 'blueCandy__':
-                this.img.skin = 'candy/特效/蓝色单元.png';
-                this.commonExplosionProperty();
-                break;
-            case 'yellowCandy':
-                this.img.skin = 'candy/特效/黄色单元.png';
-                this.commonExplosionProperty();
-                break;
             case 'fireworks':
-                this.commonExplosionProperty();
+                this.fireworksProperty();
                 break;
             case 'smokeEffects':
                 this.smokeProperty();
+                break;
+            case 'infighting':
+                this.infightingProperty();
+                break;
+            case 'range':
+                this.rangeProperty();
+                break;
+            case 'redCandy___':
+                this.redCandyProperty();
+                break;
+            case 'greenCandy_':
+                this.greenCandyProperty();
+                break;
+            case 'blueCandy__':
+                this.blueCandyProperty();
+                break;
+            case 'yellowCandy':
+                this.yellowCandyProperty();
                 break;
             default:
                 break;
@@ -85,8 +72,9 @@ export default class Explode extends Laya.Script {
         this.img.pivotY = this.img.height / 2;
     }
 
-    /**普通爆炸属性*/
-    commonExplosionProperty(): void {
+
+    /**敌人和糖果通用*/
+    commonEnmeyAndCandy(): void {
         this.moveSwitch = true;
         this.randomSpeed = Math.floor(Math.random() * 5) + 10;
         this.initialAngle = Math.floor(Math.random() * 360);
@@ -97,29 +85,37 @@ export default class Explode extends Laya.Script {
         this.startAlpha = (Math.floor(Math.random() * 10) + 5) / 10;
         this.self.alpha = this.startAlpha;
         this.rotationD = Math.floor(Math.random() * 2) === 1 ? -20 : 20;
-        // 图片
-        switch (this.effectsType) {
-            case 'fighting':
-                this.img.skin = 'candy/特效/白色单元.png';
-                break;
-            case 'range':
-                this.img.skin = 'candy/特效/黑色单元.png';
-                break;
-            case 'redCandy___':
-                this.img.skin = 'candy/特效/红色单元.png';
-                break;
-            case 'greenCandy_':
-                this.img.skin = 'candy/特效/绿色单元.png';
-                break;
-            case 'blueCandy__':
-                this.img.skin = 'candy/特效/蓝色单元.png';
-                break;
-            case 'yellowCandy':
-                this.img.skin = 'candy/特效/黄色单元.png';
-                break;
-            default:
-                break;
-        }
+    }
+    /**近战敌人爆炸属性*/
+    infightingProperty(): void {
+        this.commonEnmeyAndCandy();
+        this.img.skin = 'candy/特效/白色单元.png';
+    }
+
+    /**远程敌人爆炸属性*/
+    rangeProperty(): void {
+        this.commonEnmeyAndCandy();
+        this.img.skin = 'candy/特效/黑色单元.png';
+    }
+    /**红色糖果*/
+    redCandyProperty(): void {
+        this.commonEnmeyAndCandy();
+        this.img.skin = 'candy/特效/红色单元.png';
+    }
+    /**黄色糖果*/
+    yellowCandyProperty(): void {
+        this.commonEnmeyAndCandy();
+        this.img.skin = 'candy/特效/黄色单元.png';
+    }
+    /**蓝色糖果*/
+    blueCandyProperty(): void {
+        this.commonEnmeyAndCandy();
+        this.img.skin = 'candy/特效/蓝色单元.png';
+    }
+    /**蓝色糖果*/
+    greenCandyProperty(): void {
+        this.commonEnmeyAndCandy();
+        this.img.skin = 'candy/特效/绿色单元.png';
     }
 
     /**烟花爆炸属性*/
@@ -162,7 +158,6 @@ export default class Explode extends Laya.Script {
                 break;
         }
     }
-
     /**烟囱烟雾属性*/
     smokeProperty(): void {
         this.moveSwitch = true;
@@ -174,18 +169,7 @@ export default class Explode extends Laya.Script {
         this.vinshTime = Math.floor(Math.random() * 5) + 2;
         this.startAlpha = 1;
         this.self.alpha = this.startAlpha;
-        // this.rotationD = Math.floor(Math.random() * 2) === 1 ? -10 : 10;
-
         this.img.skin = 'candy/特效/白色单元.png';
-    }
-    /**
-   * 通用子弹移动，按单一角度移动
-   * @param angle 角度
-   *  @param basedSpeed 基础速度
-   */
-    commonSpeedXYByAngle(angle, speed) {
-        this.self.x += tools.speedXYByAngle(angle, speed + this.accelerated).x;
-        this.self.y += tools.speedXYByAngle(angle, speed + this.accelerated).y;
     }
 
     /**移动规则*/
@@ -197,6 +181,16 @@ export default class Explode extends Laya.Script {
         } else {
             this.commonExplosion();
         }
+    }
+
+    /**
+   * 通用子弹移动，按单一角度移动
+   * @param angle 角度
+   *  @param basedSpeed 基础速度
+   */
+    commonSpeedXYByAngle(angle, speed) {
+        this.self.x += tools.speedXYByAngle(angle, speed + this.accelerated).x;
+        this.self.y += tools.speedXYByAngle(angle, speed + this.accelerated).y;
     }
 
     /**普通爆炸移动规则
@@ -267,5 +261,6 @@ export default class Explode extends Laya.Script {
     }
 
     onDisable(): void {
+        Laya.Pool.recover('explode', this.self);
     }
 }

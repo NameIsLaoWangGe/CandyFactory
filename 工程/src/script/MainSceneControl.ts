@@ -520,7 +520,6 @@ export default class MainSceneControl extends Laya.Script {
                 this.enemyTagRole = null;
             }
         }
-
     }
 
     onDisable(): void {
