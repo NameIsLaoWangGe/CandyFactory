@@ -251,16 +251,19 @@ export default class MainSceneControl extends Laya.Script {
         let spacing = 2;
         let startX_02 = Laya.stage.width / 2 - 42;
         let startX_01 = Laya.stage.width / 2 + 58;
+        //最远的那个位置
         let startY = this.displays.y + 40 + 4 * (candyHeiht + spacing);
-
         for (let i = 0; i < this.startRow; i++) {
             Laya.timer.frameOnce(delayed, this, function () {
                 for (let j = 0; j < 2; j++) {
                     let candy = this.createCandy();
                     candy['Candy'].group = i;
+                    candy.zOrder = this.startRow - i;//层级
                     if (j === 0) {
                         // 出生位置
                         candy.pos(this.displays.x + 150, this.displays.y);
+                        candy.scaleX = 0;
+                        candy.scaleY = 0;
                         this.candyLaunch_01.play('launch', false);
                         // 移动到陈列台位置
                         let targetY = startY - i * (candyHeiht + spacing);
@@ -268,6 +271,8 @@ export default class MainSceneControl extends Laya.Script {
                     } else {
                         // 出生位置
                         candy.pos(this.displays.x - 150, this.displays.y);
+                        candy.scaleX = 0;
+                        candy.scaleY = 0;
                         this.candyLaunch_02.play('launch', false);
                         // 陈列台位置
                         // 移动到陈列台位置
@@ -276,24 +281,8 @@ export default class MainSceneControl extends Laya.Script {
                     }
                 }
             })
-            delayed += 50;
+            delayed += 15;
         }
-    }
-
-    /**糖果分组动画
-     * @param i 这是循环的组数
-    */
-    candyGroupAni(i): void {
-        let delayed = 10;
-        let candyHeiht = 100;
-        let spacing = 2;
-        let startX_02 = Laya.stage.width / 2 - 42;
-        let startX_01 = Laya.stage.width / 2 + 58;
-        let startY = this.displays.y + 40 + 4 * (candyHeiht + spacing);
-        
-        let candy = this.createCandy();
-        let targetY = startY - i * (candyHeiht + spacing);
-        this.candyFlipTheAni(candy, startX_01, targetY);
     }
 
     /**糖果翻转动画时间线
@@ -302,8 +291,17 @@ export default class MainSceneControl extends Laya.Script {
      * @param targetY 目标y位置
     */
     candyFlipTheAni(candy, targetX, targetY): void {
-        Laya.Tween.to(candy, { x: targetX, y: targetY }, 1000, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
-        }),10);
+        // 第一步放大
+        Laya.Tween.to(candy, { scaleX: 1, scaleY: 1 }, 250, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
+            // 第二步位移
+            Laya.Tween.to(candy, { x: targetX, y: targetY }, 500, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
+                if (candy['Candy'].group === 3) {
+                    this.operating['OperationControl'].operateSwitch = true;
+                    this.operating['OperationControl'].clickHint();
+                }
+            }), 0);
+        }), 10);
+
     }
 
     /**产生糖果*/

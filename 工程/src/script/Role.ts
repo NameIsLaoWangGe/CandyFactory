@@ -119,7 +119,6 @@ export default class Role extends Laya.Script {
         }
         this.lockedBulletTarget(bullet);
         bullet['Bullet'].belongRole = this.self;
-        console.log(this.bulletParent._children.length);
     }
 
     /**播放速度相对攻击速度进行调整
