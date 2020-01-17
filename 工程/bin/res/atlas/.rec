@@ -52,17 +52,19 @@ P BF99D4A1 时间$bar.png
 P F69C7459 时间.png
 P D6840F32 时间装饰.png
 P F27E0E2A 暂停按钮.png
+P 546EE85A 正确提示.png
 P DF75AD09 继续游戏.png
 P 2453072E 血条$bar.png
 P B69A9929 血条.png
 P 6A224944 进度条白色高光.png
+P F7111ECD 错误提示.png
 D candy/主角
 R D9F5117B role_01.png
 R BD236AFA role_01.sk
 R 616CCB8D role_02.png
 R 4F0D18B8 role_02.sk
-P 0D587255 主角子弹.png
-P CCEAAF5D 子弹.png
+P CCEAAF5D 主角1子弹.png
+P 762828AC 主角2子弹.png
 D candy/字体
 P 3A231805 减属性.png
 P 56E93325 分数：+01234567892.png
@@ -115,10 +117,13 @@ P 40E51153 绿色糖果.png
 P 76DA447F 蓝色糖果.png
 P 1F3C815D 黄色糖果.png
 D candy/糖果机器
+R 8AC490EA candyLaunch.png
+R 9CEAC674 candyLaunch.sk
 P 8068A284 提示.png
 P 1D1B0797 短指针.png
 R 88439B04 糖果制造机.png
-R 4DB30A6A 糖果陈列台.png
+R 7D9D0422 糖果陈列台.png
 P E4AB60C7 长指针.png
+R 995383EE 陈列台影子.png
 D candy/背景图
 R 59CA962E 背景图.jpg

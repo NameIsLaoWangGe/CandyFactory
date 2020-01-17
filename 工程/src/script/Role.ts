@@ -81,7 +81,6 @@ export default class Role extends Laya.Script {
     }
     parseComplete(): void {
         // 播放敌人动画
-        var skeleton: Laya.Skeleton;
         this.skeleton = this.templet.buildArmature(0);//模板0
         this.skeletonListen();
         this.self.addChild(this.skeleton);
@@ -112,8 +111,15 @@ export default class Role extends Laya.Script {
         let bullet = Laya.Pool.getItemByCreateFun('roleBullet', this.roleBullet.create, this.roleBullet) as Laya.Sprite;
         this.bulletParent.addChild(bullet);
         bullet.pos(this.self.x, this.self.y);
+        let pic = bullet.getChildByName('pic') as Laya.Image;
+        if (this.self.name === 'role_01') {
+            pic.skin = 'candy/主角/主角1子弹.png';
+        } else if (this.self.name === 'role_02') {
+            pic.skin = 'candy/主角/主角2子弹.png';
+        }
         this.lockedBulletTarget(bullet);
         bullet['Bullet'].belongRole = this.self;
+        console.log(this.bulletParent._children.length);
     }
 
     /**播放速度相对攻击速度进行调整

@@ -50,17 +50,14 @@ export default class MainSceneControl extends Laya.Script {
     public timer: Laya.Sprite;
 
     /** @prop {name:displays , tips:"陈列台", type:Node}*/
-    public displays: Laya.Sprite;
+    public displays: Laya.Image;
 
     /** @prop {name:operating , tips:"操作节点", type:Node}*/
     public operating: Laya.Sprite;
 
-    /**是否处于暂停状态*/
-    private suspend: boolean;
+    /** @prop {name:assembly, tips:"流水线", type:Node}*/
+    public assembly: Laya.Sprite;
 
-    // /**两个主角*/
-    // private role_01: Laya.Sprite;
-    // private role_02: Laya.Sprite;
 
     /** @prop {name:role_01 , tips:"主角1", type:Node}*/
     public role_01: Laya.Sprite;
@@ -122,15 +119,22 @@ export default class MainSceneControl extends Laya.Script {
     private self: Laya.Sprite;
     /**所属场景*/
     private selfScene: Laya.Scene;
+    /**是否处于暂停状态*/
+    private suspend: boolean;
+
+    /**左边糖果发射口*/
+    private launchTemp_01: Laya.Templet;
+    private candyLaunch_01: Laya.Skeleton;
+    /**右边糖果发射口*/
+    private launchTemp_02: Laya.Templet;
+    private candyLaunch_02: Laya.Skeleton;
 
     constructor() { super(); }
 
     onEnable(): void {
         this.initSecne();
-        // this.roletInit();
         this.roleSpeakBoxs();
         this.candyPosInit();
-        // this.createWaveCandys();
         this.candyMoveToDisplay();
     }
 
@@ -175,16 +179,46 @@ export default class MainSceneControl extends Laya.Script {
         this.suspend = false;
         this.startRow = 4;
 
-        // 预加载几个骨骼动画
-        Laya.loader.load([{ url: "candy/敌人/fightingEnemy.sk", type: Laya.Loader.BUFFER }, { url: "candy/敌人/fightingEnemy.png", type: Laya.Loader.IMAGE }], Laya.Handler.create(this, this.onComplete));
-        Laya.loader.load([{ url: "candy/敌人/rangeEnemy.sk", type: Laya.Loader.BUFFER }, { url: "candy/敌人/rangeEnemy.png", type: Laya.Loader.IMAGE }], Laya.Handler.create(this, this.onComplete));
+        this.createLaunchAni();
     }
-    onComplete(): void {
-        console.log('加载完成！');
+    /**两个发射口的骨骼动画*/
+    createLaunchAni(): void {
+        //创建动画模板1
+        this.launchTemp_01 = new Laya.Templet();
+        this.launchTemp_01.on(Laya.Event.COMPLETE, this, this.parseComplete_01);
+        this.launchTemp_01.on(Laya.Event.ERROR, this, this.onError);
+        this.launchTemp_01.loadAni("candy/糖果机器/candyLaunch.sk");
+        //创建动画模板2
+        this.launchTemp_02 = new Laya.Templet();
+        this.launchTemp_02.on(Laya.Event.COMPLETE, this, this.parseComplete_02);
+        this.launchTemp_02.on(Laya.Event.ERROR, this, this.onError);
+        this.launchTemp_02.loadAni("candy/糖果机器/candyLaunch.sk");
+    }
+    onError(): void {
+        console.log('骨骼动画加载错误');
+    }
+    parseComplete_01(): void {
+        // 播放敌人动画
+        this.candyLaunch_01 = this.assembly.getChildByName('candyLaunch_01') as Laya.Skeleton;//模板0
+        this.candyLaunch_01.play('static', false);
+        this.candyLaunch_01.on(Laya.Event.LABEL, this, this.candyLaunchListen);
+    }
+    parseComplete_02(): void {
+        // 播放敌人动画
+        this.candyLaunch_02 = this.assembly.getChildByName('candyLaunch_02') as Laya.Skeleton;//模板0
+        this.candyLaunch_02.play('static', false);
+        this.candyLaunch_01.on(Laya.Event.LABEL, this, this.candyLaunchListen);
     }
 
-    /**生成10个初始糖果
-     * 在固定的10个位置*/
+    /**发射口监听监听*/
+    candyLaunchListen(e): void {
+        if (e.name === 'launch') {
+            console.log('发射！');
+        }
+    }
+
+    /**生成8个初始糖果
+     * 在固定的8个位置*/
     candyPosInit(): void {
         this.posArr_left = [];
         this.posArr_right = [];
@@ -207,29 +241,7 @@ export default class MainSceneControl extends Laya.Script {
         }
     }
 
-    /**10个糖果排布动画*/
-    createWaveCandys(): void {
-        // 生成10个初始糖果
-        for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < this.startRow; j++) {
-                let x;
-                let y;
-                let candy = this.createCandy();
-                if (i === 0) {
-                    x = this.posArr_left[j][0];
-                    y = this.posArr_left[j][1];
-                } else if (i === 1) {
-                    x = this.posArr_right[j][0];
-                    y = this.posArr_right[j][1];
-                }
-                candy.x = x;
-                candy.y = y;
-                candy['Candy'].group = j;
-            }
-        }
-    }
-
-    /**糖果移动到操作台的动画
+    /**生产8个糖果移动到操作台的动画
      * 4次，每次2个移动
      * 倒过来遍历
     */
@@ -237,33 +249,61 @@ export default class MainSceneControl extends Laya.Script {
         let delayed = 10;
         let candyHeiht = 100;
         let spacing = 2;
-        let startX_01 = Laya.stage.width / 2 - 42;
-        let startX_02 = Laya.stage.width / 2 + 58;
-        let startY = this.displays.y + 40;
+        let startX_02 = Laya.stage.width / 2 - 42;
+        let startX_01 = Laya.stage.width / 2 + 58;
+        let startY = this.displays.y + 40 + 4 * (candyHeiht + spacing);
 
-        for (let i = this.startRow; i > 0; i--) {
+        for (let i = 0; i < this.startRow; i++) {
             Laya.timer.frameOnce(delayed, this, function () {
                 for (let j = 0; j < 2; j++) {
                     let candy = this.createCandy();
                     candy['Candy'].group = i;
                     if (j === 0) {
+                        // 出生位置
                         candy.pos(this.displays.x + 150, this.displays.y);
-                        Laya.Tween.to(candy, { x: startX_01, y: startY + i * (candyHeiht + spacing) }, 500, null, Laya.Handler.create(this, function () {
-
-                        }));
+                        this.candyLaunch_01.play('launch', false);
+                        // 移动到陈列台位置
+                        let targetY = startY - i * (candyHeiht + spacing);
+                        this.candyFlipTheAni(candy, startX_01, targetY);
                     } else {
+                        // 出生位置
                         candy.pos(this.displays.x - 150, this.displays.y);
-                        Laya.Tween.to(candy, { x: startX_02, y: startY + i * (candyHeiht + spacing) }, 500, null, Laya.Handler.create(this, function () {
-                            // 结束之后初始化操作提示，要保持在这个动画之后
-                            if (i === 1 && j === 1) {
-                                this.operating['OperationControl'].clickHint();
-                            }
-                        }));
+                        this.candyLaunch_02.play('launch', false);
+                        // 陈列台位置
+                        // 移动到陈列台位置
+                        let targetY = startY - i * (candyHeiht + spacing);
+                        this.candyFlipTheAni(candy, startX_02, targetY);
                     }
                 }
             })
             delayed += 50;
         }
+    }
+
+    /**糖果分组动画
+     * @param i 这是循环的组数
+    */
+    candyGroupAni(i): void {
+        let delayed = 10;
+        let candyHeiht = 100;
+        let spacing = 2;
+        let startX_02 = Laya.stage.width / 2 - 42;
+        let startX_01 = Laya.stage.width / 2 + 58;
+        let startY = this.displays.y + 40 + 4 * (candyHeiht + spacing);
+        
+        let candy = this.createCandy();
+        let targetY = startY - i * (candyHeiht + spacing);
+        this.candyFlipTheAni(candy, startX_01, targetY);
+    }
+
+    /**糖果翻转动画时间线
+     * @param candy 当前糖果
+     * @param targetX 目标x位置
+     * @param targetY 目标y位置
+    */
+    candyFlipTheAni(candy, targetX, targetY): void {
+        Laya.Tween.to(candy, { x: targetX, y: targetY }, 1000, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
+        }),10);
     }
 
     /**产生糖果*/
@@ -300,9 +340,10 @@ export default class MainSceneControl extends Laya.Script {
         }
         // 随机点击次数
         let clicksLabel = candy.getChildByName('clicksLabel') as Laya.Label;
-        // clicksLabel.text = (Math.floor(Math.random() * 0) + 1).toString();
         clicksLabel.text = '';
         candy.pos(Laya.stage.width / 2, -100);
+        candy.pivotX = candy.width / 2;
+        candy.pivotY = candy.height / 2;
         this.candyParent.addChild(candy);
         candy.rotation = 0;
         this.candyCount++;

@@ -141,17 +141,13 @@ export default class OperationButton extends Laya.Script {
                     let compareArr = [nameArr[0].substring(0, 11), nameArr[1].substring(0, 11)]
                     // 对比两个数组看看是否相等，排序，转成字符串方可对比；
                     if (compareArr.sort().toString() === this.clicksNameArr.sort().toString()) {
-                        let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
-                        let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
-                        label_01.text = '选对了';
-                        label_02.text = '选对了';
+                        this.rightAndWrongShow('right', firstCandy);
+                        this.rightAndWrongShow('right', candy);
                         // 正确的糖果名称保存
                         this.rightName.push(nameArr[0], nameArr[1]);
                     } else {
-                        let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
-                        let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
-                        label_01.text = '选错了';
-                        label_02.text = '选错了';
+                        this.rightAndWrongShow('wrong', firstCandy);
+                        this.rightAndWrongShow('wrong', candy);
                         // 错误的糖果名保存
                         this.errorName.push(nameArr[0], nameArr[1]);
                     }
@@ -178,8 +174,7 @@ export default class OperationButton extends Laya.Script {
             let candy = this.candyParent._children[i];
             if (candy["Candy"].group === (this.clicksCount - 1) / 2) {//每点一次对应的糖果组
                 if (candy.name.substring(0, 11) === this.clicksNameArr[0]) { //只判断一次，然后返回
-                    let label_01 = candy.getChildByName('clicksLabel') as Laya.Label;
-                    label_01.text = '选对了';
+                    this.rightAndWrongShow('right', candy);
                     break;
                 } else {
                     // number用于记录第几次循环，最多两次循环
@@ -187,10 +182,8 @@ export default class OperationButton extends Laya.Script {
                     if (nameArr.length === 2) {
                         // 当nameArr.length=2的时候说明一个都不对，那么直接结束本组
                         let firstCandy = this.candyParent.getChildByName(nameArr[0]) as Laya.Sprite;
-                        let label_01 = firstCandy.getChildByName('clicksLabel') as Laya.Label;
-                        let label_02 = candy.getChildByName('clicksLabel') as Laya.Label;
-                        label_01.text = '选错了';
-                        label_02.text = '选错了';
+                        this.rightAndWrongShow('wrong', firstCandy);
+                        this.rightAndWrongShow('wrong', candy);
                         //重新初始化下一组
                         this.clicksNameArr = [];
                         this.clicksCount++;
@@ -200,6 +193,30 @@ export default class OperationButton extends Laya.Script {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     *  点击正确和错误的显示
+     * @param rightAndWrong 正确还是错误
+     * @param candy 当前判断点击的糖果
+    */
+    rightAndWrongShow(rightAndWrong, candy): void {
+        let img = new Laya.Image();
+        if (rightAndWrong == 'right') {
+            img.skin = 'candy/ui/正确提示.png';
+        } else if (rightAndWrong == 'wrong') {
+            img.skin = 'candy/ui/错误提示.png';
+        } else {
+            return;
+        }
+        img.pivotX = img.width / 2;
+        img.pivotY = img.height / 2;
+        candy.addChild(img);
+        if (candy.x < Laya.stage.width / 2) {
+            img.pos(-20, 50);
+        } else {
+            img.pos(20 + candy.width, 50);
         }
     }
 
@@ -279,8 +296,6 @@ export default class OperationButton extends Laya.Script {
         this.selfScene.addChild(rewardWords);
         rewardWords['RewardWords'].createWordsAni(word);
     }
-
-
 
     /**点错后，糖果跳到地上变成1个敌人
      * 这个敌人是随机在一个范围内出生

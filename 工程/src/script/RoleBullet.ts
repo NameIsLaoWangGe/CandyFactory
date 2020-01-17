@@ -65,10 +65,15 @@ export default class Bullet extends Laya.Script {
             this.self.x += point.x * this.selfSpeed;
             this.self.y += point.y * this.selfSpeed;
         } else {
+
             // 沿着自己当前和发射自己的主角方向移动
             let point = new Laya.Point(this.self.x - this.belongRole.x, this.self.y - this.belongRole.y);
             // 归一化，向量长度为1。
             point.normalize();
+            // 如果静止不动则消失
+            if (point.x === 0) {
+                this.self.removeSelf();
+            }
             //向量相加
             this.self.x += point.x * this.selfSpeed;
             this.self.y += point.y * this.selfSpeed;
