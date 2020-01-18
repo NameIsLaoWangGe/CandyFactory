@@ -226,7 +226,7 @@ export default class MainSceneControl extends Laya.Script {
         let spacing = 2;
         let startX_01 = Laya.stage.width / 2 - 42;
         let startX_02 = Laya.stage.width / 2 + 58;
-        let startY = this.displays.y + 40;
+        let startY = this.displays.y;
         // 注意排布顺序，把第一个排到最前，所以返回来循环
         for (let i = this.startRow; i > 0; i--) {
             for (let j = 0; j < 2; j++) {
@@ -252,7 +252,7 @@ export default class MainSceneControl extends Laya.Script {
         let startX_02 = Laya.stage.width / 2 - 42;
         let startX_01 = Laya.stage.width / 2 + 58;
         //最远的那个位置
-        let startY = this.displays.y + 40 + 4 * (candyHeiht + spacing);
+        let startY = this.displays.y + 4 * (candyHeiht + spacing) - 30;
         for (let i = 0; i < this.startRow; i++) {
             Laya.timer.frameOnce(delayed, this, function () {
                 for (let j = 0; j < 2; j++) {
@@ -261,19 +261,19 @@ export default class MainSceneControl extends Laya.Script {
                     candy.zOrder = this.startRow - i;//层级
                     if (j === 0) {
                         // 出生位置
-                        candy.pos(this.displays.x + 150, this.displays.y);
+                        candy.pos(this.displays.x + 150, this.displays.y - 50);
                         candy.scaleX = 0;
                         candy.scaleY = 0;
-                        this.candyLaunch_01.play('launch', false);
+                        this.candyLaunch_01.play('launchRgiht', false);
                         // 移动到陈列台位置
                         let targetY = startY - i * (candyHeiht + spacing);
                         this.candyFlipTheAni(candy, startX_01, targetY);
                     } else {
                         // 出生位置
-                        candy.pos(this.displays.x - 150, this.displays.y);
+                        candy.pos(this.displays.x - 150, this.displays.y - 50);
                         candy.scaleX = 0;
                         candy.scaleY = 0;
-                        this.candyLaunch_02.play('launch', false);
+                        this.candyLaunch_02.play('launchLeft', false);
                         // 陈列台位置
                         // 移动到陈列台位置
                         let targetY = startY - i * (candyHeiht + spacing);
@@ -315,23 +315,23 @@ export default class MainSceneControl extends Laya.Script {
         let url_02 = 'candy/糖果/红色糖果.png';
         let url_03 = 'candy/糖果/蓝色糖果.png';
         let url_04 = 'candy/糖果/绿色糖果.png';
-        let pic = (candy.getChildByName('pic') as Laya.Sprite);
+        let pic = (candy.getChildByName('pic') as Laya.Image);
         switch (randomNum) {
             case 0:
                 candy.name = 'yellowCandy' + this.candyCount;
-                pic.loadImage(url_01);
+                pic.skin = url_01;
                 break;
             case 1:
                 candy.name = 'redCandy___' + this.candyCount;
-                pic.loadImage(url_02);
+                pic.skin = url_02;
                 break;
             case 2:
                 candy.name = 'blueCandy__' + this.candyCount;
-                pic.loadImage(url_03);
+                pic.skin = url_03;
                 break;
             case 3:
                 candy.name = 'greenCandy_' + this.candyCount;
-                pic.loadImage(url_04);
+                pic.skin = url_04;
                 break;
             default:
                 break;
@@ -358,19 +358,18 @@ export default class MainSceneControl extends Laya.Script {
         let url_02 = 'candy/糖果/红色糖果.png';
         let url_03 = 'candy/糖果/蓝色糖果.png';
         let url_04 = 'candy/糖果/绿色糖果.png';
-        let pic = (explodeCandy.getChildByName('pic') as Laya.Sprite);
+        let pic = (explodeCandy.getChildByName('pic') as Laya.Image);
         switch (name.substring(0, 11)) {
             case 'yellowCandy':
-                pic.loadImage(url_01);
+                pic.skin = url_01;
                 break;
             case 'redCandy___':
-                pic.loadImage(url_02);
+                pic.skin = url_02;
                 break;
             case 'blueCandy__':
-                pic.loadImage(url_03);
-                break;
+                pic.skin = url_03;
             case 'greenCandy_':
-                pic.loadImage(url_04);
+                pic.skin = url_04;
                 break;
             default:
                 break;

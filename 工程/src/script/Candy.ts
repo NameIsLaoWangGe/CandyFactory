@@ -29,6 +29,11 @@ export default class Candy extends Laya.Script {
     /**是否已经被点击了*/
     private selected: boolean;
 
+    /**骨骼动画模板*/
+    private templet: Laya.Templet;
+    /**骨骼动画*/
+    private skeleton: Laya.Skeleton;
+
     constructor() { super(); }
     onEnable(): void {
         this.initProperty();
@@ -52,6 +57,44 @@ export default class Candy extends Laya.Script {
         this.group = null;
 
         this.self['Candy'] = this;
+        this.createBoneAni();
+    }
+
+    /**创建骨骼动画皮肤*/
+    createBoneAni(): void {
+        //创建动画模板
+        this.templet = new Laya.Templet();
+        this.templet.on(Laya.Event.COMPLETE, this, this.parseComplete);
+        this.templet.on(Laya.Event.ERROR, this, this.onError);
+        switch (this.self.name.substring(0, 11)) {
+            case 'yellowCandy':
+                break;
+            case 'redCandy___':
+                this.templet.loadAni("candy/糖果/redCandy.sk");
+                this.self.getChildByName('pic').removeSelf();
+                break;
+            case 'blueCandy__':
+                break;
+            case 'greenCandy_':
+                break;
+            default:
+                break;
+        }
+    }
+
+    onError(): void {
+        console.log('骨骼动画加载错误');
+    }
+
+    parseComplete(): void {
+        // 播放敌人动画
+        var skeleton: Laya.Skeleton;
+        this.skeleton = this.templet.buildArmature(0);//模板0
+        this.self.addChild(this.skeleton);
+        this.skeleton.play('turnAround', true);
+        this.skeleton.x = this.self.width / 2;
+        this.skeleton.y = this.self.height / 2;
+        this.skeleton.playbackRate(1);
     }
 
     /**当第一个糖果被吃掉后的移动函数
@@ -176,6 +219,9 @@ export default class Candy extends Laya.Script {
     }
 
     onDisable(): void {
+        if (this.skeleton) {
+            this.skeleton.removeSelf();
+        }
         // 清理动画
         Laya.Tween.clearAll(this);
         if (this.self.name === 'yellowCandy') {

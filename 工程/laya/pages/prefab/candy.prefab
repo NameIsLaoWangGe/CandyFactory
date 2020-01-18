@@ -2,11 +2,11 @@
     "x":0,
     "type":"Sprite",
     "selectedBox":8,
-    "selecteID":13,
+    "selecteID":18,
     "searchKey":"Sprite,candy",
     "props":{"y":50,"x":49,"width":100,"presetID":1,"preset":"laya/pages/prefab/candy.prefab","pivotY":50,"pivotX":50,"name":"candy","isPresetRoot":true,"height":100},
     "nodeParent":-1,
-    "maxID":14,
+    "maxID":19,
     "label":"candy",
     "isOpen":true,
     "isDirectory":true,
@@ -14,21 +14,6 @@
     "hasChild":true,
     "compId":8,
     "child":[
-        {
-            "x":15,
-            "type":"Sprite",
-            "searchKey":"Sprite,pic",
-            "props":{"y":50,"x":49,"width":82,"texture":"candy/糖果/红色糖果.png","presetID":2,"preset":"laya/pages/prefab/candy.prefab","pivotY":42,"pivotX":41,"name":"pic","height":84},
-            "nodeParent":8,
-            "label":"pic",
-            "isOpen":false,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":9,
-            "child":[
-                ]
-        },
         {
             "x":15,
             "type":"Script",
@@ -50,13 +35,42 @@
             "x":15,
             "type":"Label",
             "searchKey":"Label,clicksLabel",
-            "props":{"y":44,"x":54,"width":64,"valign":"middle","text":"1212","presetID":6,"preset":"laya/pages/prefab/candy.prefab","pivotY":17,"pivotX":32,"name":"clicksLabel","height":33,"fontSize":30,"align":"center"},
+            "props":{"y":43,"x":54,"width":64,"valign":"middle","text":"1212","presetID":6,"preset":"laya/pages/prefab/candy.prefab","pivotY":17,"pivotX":32,"name":"clicksLabel","height":33,"fontSize":30,"align":"center"},
             "nodeParent":8,
             "label":"clicksLabel",
             "isDirectory":false,
             "isAniNode":true,
             "hasChild":false,
             "compId":13,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,shadow",
+            "props":{"y":0,"x":-1,"skin":"candy/糖果/糖果影子.png","presetID":7,"preset":"laya/pages/prefab/candy.prefab","name":"shadow"},
+            "nodeParent":8,
+            "label":"shadow",
+            "isOpen":false,
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":14,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,pic",
+            "props":{"y":0,"x":1,"skin":"candy/糖果/红色糖果.png","presetID":8,"preset":"laya/pages/prefab/candy.prefab","name":"pic"},
+            "nodeParent":8,
+            "label":"pic",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":18,
             "child":[
                 ]
         }],

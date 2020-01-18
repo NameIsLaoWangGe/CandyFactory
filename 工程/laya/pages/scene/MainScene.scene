@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":24,
-    "selecteID":134,
+    "selectedBox":113,
+    "selecteID":116,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":136,
+    "maxID":143,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -31,10 +31,10 @@
         {
             "x":15,
             "type":"Sprite",
-            "searchKey":"Sprite",
-            "props":{"y":0,"x":0,"texture":"candy/效果图.png","alpha":0},
+            "searchKey":"Sprite,效果图",
+            "props":{"y":0,"x":0,"texture":"candy/效果图.png","name":"效果图","alpha":0},
             "nodeParent":2,
-            "label":"Sprite",
+            "label":"效果图",
             "isDirectory":false,
             "isAniNode":true,
             "hasChild":false,
@@ -57,17 +57,89 @@
             "child":[
                 {
                     "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,陈列台影子",
+                    "props":{"y":388,"x":207,"skin":"candy/糖果机器/陈列台影子.png","name":"陈列台影子"},
+                    "nodeParent":18,
+                    "label":"陈列台影子",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":141,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,机器",
-                    "props":{"y":-87,"x":10,"width":725,"texture":"candy/糖果机器/糖果制造机.png","name":"机器","height":522},
+                    "props":{"y":-62,"x":10,"texture":"candy/糖果机器/糖果制造机.png","name":"机器"},
                     "nodeParent":18,
                     "label":"机器",
                     "isDirectory":false,
                     "isAniNode":true,
                     "hasChild":false,
-                    "compId":109,
+                    "compId":142,
                     "child":[
                         ]
+                },
+                {
+                    "x":30,
+                    "type":"Sprite",
+                    "searchKey":"Sprite,timer",
+                    "props":{"y":-10,"x":0,"name":"timer"},
+                    "nodeParent":18,
+                    "label":"timer",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":92,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"ProgressBar",
+                            "searchKey":"ProgressBar,timeSchedule",
+                            "props":{"y":298,"x":316,"value":1,"skin":"candy/ui/时间.png","sizeGrid":"0,13,0,13","name":"timeSchedule"},
+                            "nodeParent":92,
+                            "label":"timeSchedule",
+                            "isOpen":false,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":140,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite,陈列台装饰",
+                            "props":{"zOrder":-10,"y":267,"x":258,"texture":"candy/ui/时间装饰.png","name":"陈列台装饰","alpha":1},
+                            "nodeParent":92,
+                            "label":"陈列台装饰",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":106,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite,进度条高光",
+                            "props":{"y":312,"x":321,"texture":"candy/ui/进度条白色高光.png","name":"进度条高光"},
+                            "nodeParent":92,
+                            "label":"进度条高光",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":104,
+                            "child":[
+                                ]
+                        }]
                 },
                 {
                     "x":30,
@@ -85,10 +157,10 @@
                         {
                             "x":45,
                             "type":"Sprite",
-                            "searchKey":"Sprite",
-                            "props":{"y":23,"x":20,"texture":"candy/ui/分数：.png"},
+                            "searchKey":"Sprite,分数字样",
+                            "props":{"y":23,"x":20,"texture":"candy/ui/分数：.png","name":"分数字样"},
                             "nodeParent":113,
-                            "label":"Sprite",
+                            "label":"分数字样",
                             "isDirectory":false,
                             "isAniNode":true,
                             "hasChild":false,
@@ -113,23 +185,9 @@
                 },
                 {
                     "x":30,
-                    "type":"Sprite",
-                    "searchKey":"Sprite",
-                    "props":{"y":381,"x":211.5,"texture":"candy/糖果机器/陈列台影子.png"},
-                    "nodeParent":18,
-                    "label":"Sprite",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":133,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
                     "type":"SkeletonPlayer",
                     "searchKey":"SkeletonPlayer,candyLaunch_01",
-                    "props":{"y":354,"x":228.5,"url":"candy/糖果机器/candyLaunch.sk","name":"candyLaunch_01"},
+                    "props":{"y":359,"x":225.5,"url":"candy/糖果机器/candyLaunch.sk","name":"candyLaunch_01"},
                     "nodeParent":18,
                     "label":"candyLaunch_01",
                     "isOpen":false,
@@ -144,7 +202,7 @@
                     "x":30,
                     "type":"SkeletonPlayer",
                     "searchKey":"SkeletonPlayer,candyLaunch_02",
-                    "props":{"y":354,"x":539,"url":"candy/糖果机器/candyLaunch.sk","name":"candyLaunch_02"},
+                    "props":{"y":358,"x":536,"url":"candy/糖果机器/candyLaunch.sk","name":"candyLaunch_02"},
                     "nodeParent":18,
                     "label":"candyLaunch_02",
                     "isOpen":true,
@@ -152,21 +210,6 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":131,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"Image",
-                    "searchKey":"Image,陈列台",
-                    "props":{"y":285,"x":385,"width":300,"skin":"candy/糖果机器/糖果陈列台.png","pivotX":150,"name":"陈列台","height":642},
-                    "nodeParent":18,
-                    "label":"陈列台",
-                    "isOpen":true,
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":132,
                     "child":[
                         ]
                 },
@@ -188,7 +231,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,按钮底",
-                    "props":{"y":1021,"x":135,"texture":"candy/操作按钮/底座.png","name":"按钮底","alpha":1},
+                    "props":{"y":1020,"x":135,"texture":"candy/操作按钮/底座.png","name":"按钮底","alpha":1},
                     "nodeParent":18,
                     "label":"按钮底",
                     "isOpen":true,
@@ -206,7 +249,7 @@
                     "source":"src/script/Assembly.ts",
                     "searchKey":"Script,Assembly",
                     "removeAble":true,
-                    "props":{"shortPointer":"@node:123","machine":"@node:109","LongPointer":"@node:119"},
+                    "props":{"y":-1,"x":0,"shortPointer":"@node:123","machine":"@node:142","LongPointer":"@node:119"},
                     "nodeParent":18,
                     "label":"Assembly",
                     "isDirectory":false,
@@ -220,7 +263,7 @@
                     "x":30,
                     "type":"Sprite",
                     "searchKey":"Sprite,longPointer",
-                    "props":{"y":305,"x":641,"width":5,"texture":"candy/糖果机器/长指针.png","pivotY":15,"pivotX":2.5,"name":"longPointer","height":18},
+                    "props":{"y":304,"x":641,"width":5,"texture":"candy/糖果机器/长指针.png","pivotY":15,"pivotX":2.5,"name":"longPointer","height":18},
                     "nodeParent":18,
                     "label":"longPointer",
                     "isOpen":true,
@@ -228,6 +271,20 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":119,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,陈列台",
+                    "props":{"y":384,"x":383,"width":273,"skin":"candy/糖果机器/糖果陈列台.png","pivotX":137,"name":"陈列台","height":552},
+                    "nodeParent":18,
+                    "label":"陈列台",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":139,
                     "child":[
                         ]
                 }]
@@ -239,7 +296,7 @@
             "source":"src/script/MainSceneControl.ts",
             "searchKey":"Script,MainSceneControl",
             "removeAble":true,
-            "props":{"y":2,"x":0,"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:116","role_02":"@node:24","role_01":"@node:25","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","operating":"@node:62","machine":"@node:109","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","explode":"@Prefab:prefab/explode.prefab","enemy_Infighting":"@Prefab:prefab/enemy_Infighting.prefab","enemy_Fighting":"@Prefab:prefab/enemy_Fighting.prefab","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","displays":"@node:132","candy_Explode":"@Prefab:prefab/candy_Explode.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
+            "props":{"y":2,"x":0,"timer":"@node:92","suspend":"@node:81","speakBoxParent":"@node:53","speakBox":"@Prefab:prefab/speakBox.prefab","scoreLabel":"@node:116","role_02":"@node:24","role_01":"@node:25","roleParent":"@node:12","roleBullet":"@Prefab:prefab/roleBullet.prefab","rewardWords":"@Prefab:prefab/rewardWords.prefab","operating":"@node:62","machine":"@node:109","induction":"@node:15","hintWord":"@Prefab:prefab/hintWord .prefab","friend":"@node:42","explode":"@Prefab:prefab/explode.prefab","enemy_Infighting":"@Prefab:prefab/enemy_Infighting.prefab","enemy_Fighting":"@Prefab:prefab/enemy_Fighting.prefab","enemyParent":"@node:23","enemyBullet":"@Prefab:prefab/enemyBullet.prefab","enemy":"@Prefab:prefab/enemy.prefab","displays":"@node:139","candy_Explode":"@Prefab:prefab/candy_Explode.prefab","candyParent_Move":"@node:85","candyParent":"@node:13","candy":"@Prefab:prefab/candy.prefab","bulletParent":"@node:59","bullet":"@Prefab:prefab/bullet.prefab","bucketParent":"@node:12","bucket":"@Prefab:prefab/bucket.prefab","background":"@node:4","assembly":"@node:18"},
             "nodeParent":2,
             "label":"MainSceneControl",
             "isDirectory":false,
@@ -248,63 +305,6 @@
             "compId":11,
             "child":[
                 ]
-        },
-        {
-            "x":15,
-            "type":"Sprite",
-            "searchKey":"Sprite,timer",
-            "props":{"y":-10,"x":0,"name":"timer"},
-            "nodeParent":2,
-            "label":"timer",
-            "isOpen":true,
-            "isDirectory":true,
-            "isAniNode":true,
-            "hasChild":true,
-            "compId":92,
-            "child":[
-                {
-                    "x":30,
-                    "type":"Sprite",
-                    "searchKey":"Sprite",
-                    "props":{"y":291,"x":265,"texture":"candy/ui/时间装饰.png","name":""},
-                    "nodeParent":92,
-                    "label":"Sprite",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":106,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"ProgressBar",
-                    "searchKey":"ProgressBar,timeSchedule",
-                    "props":{"y":297,"x":314,"width":144,"value":1,"skin":"candy/ui/时间.png","sizeGrid":"0,13,0,13","name":"timeSchedule","height":81,"alpha":1},
-                    "nodeParent":92,
-                    "label":"timeSchedule",
-                    "isOpen":true,
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":93,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"Sprite",
-                    "searchKey":"Sprite",
-                    "props":{"y":312,"x":321,"texture":"candy/ui/进度条白色高光.png"},
-                    "nodeParent":92,
-                    "label":"Sprite",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":104,
-                    "child":[
-                        ]
-                }]
         },
         {
             "x":15,

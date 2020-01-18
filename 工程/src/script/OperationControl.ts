@@ -202,7 +202,7 @@ export default class OperationButton extends Laya.Script {
         if (originImg) {
             originImg.removeSelf();
         }
-        
+
         // 重新显示一个提示
         let nowImg = new Laya.Image();
         if (rightAndWrong == 'right') {
@@ -215,17 +215,17 @@ export default class OperationButton extends Laya.Script {
         nowImg.pivotX = nowImg.width / 2;
         nowImg.pivotY = nowImg.height / 2;
         nowImg.name = 'img';
-        nowImg.scaleX = 0;
-        nowImg.scaleY = 0;
+        nowImg.scaleX = 1;
+        nowImg.scaleY = 1;
         candy.addChild(nowImg);
         if (candy.x < Laya.stage.width / 2) {
             nowImg.pos(-20, 50);
         } else {
             nowImg.pos(20 + candy.width, 50);
         }
-        // 出现动画
-        Laya.Tween.to(nowImg, { scaleX: 1, scaleY: 1 }, 100, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
-        }), 0);
+        // // 出现动画
+        // Laya.Tween.to(nowImg, { scaleX: 1, scaleY: 1 }, 100, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
+        // }), 0);
     }
 
     /**提示我应该点哪一组了
