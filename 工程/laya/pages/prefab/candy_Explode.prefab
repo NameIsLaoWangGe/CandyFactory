@@ -35,7 +35,7 @@
             "x":15,
             "type":"ProgressBar",
             "searchKey":"ProgressBar,health",
-            "props":{"y":-48,"x":-37.5,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,12,0,12","presetID":4,"preset":"laya/pages/prefab/candy_Explode.prefab","name":"health"},
+            "props":{"y":-29,"x":0,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,12,0,12","presetID":4,"preset":"laya/pages/prefab/candy_Explode.prefab","name":"health"},
             "nodeParent":95,
             "label":"health",
             "isDirectory":false,

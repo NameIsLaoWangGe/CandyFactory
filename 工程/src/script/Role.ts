@@ -49,6 +49,7 @@ export default class Role extends Laya.Script {
     initProperty(): void {
         this.self = this.owner as Laya.Sprite;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
+        this.selfHealth.value = 1;
         this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
         // 默认属性不可见
         this.propertyShow.alpha = 0;

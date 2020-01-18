@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":12,
-    "selecteID":25,
+    "selectedBox":24,
+    "selecteID":134,
     "searchKey":"Scene",
     "props":{"x":0,"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":134,
+    "maxID":136,
     "label":"Scene",
     "isOpen":true,
     "isDirectory":true,
@@ -409,37 +409,9 @@
                         },
                         {
                             "x":45,
-                            "type":"ProgressBar",
-                            "searchKey":"ProgressBar,health",
-                            "props":{"y":-29,"x":51,"width":106,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,13,0,13","pivotX":53,"name":"health","height":20},
-                            "nodeParent":24,
-                            "label":"health",
-                            "isOpen":true,
-                            "isDirectory":true,
-                            "isAniNode":true,
-                            "hasChild":true,
-                            "compId":40,
-                            "child":[
-                                {
-                                    "x":60,
-                                    "type":"Label",
-                                    "searchKey":"Label,bloodLabel",
-                                    "props":{"y":9,"x":54,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
-                                    "nodeParent":40,
-                                    "label":"bloodLabel",
-                                    "isDirectory":false,
-                                    "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":60,
-                                    "child":[
-                                        ]
-                                }]
-                        },
-                        {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,propertyShow",
-                            "props":{"y":-175,"x":-43,"width":194,"skin":"candy/ui/属性战士框.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},
+                            "props":{"y":-175,"x":-43,"width":194,"skin":"candy/ui/主角属性显示.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},
                             "nodeParent":24,
                             "label":"propertyShow",
                             "isOpen":true,
@@ -507,6 +479,34 @@
                                     "child":[
                                         ]
                                 }]
+                        },
+                        {
+                            "x":45,
+                            "type":"ProgressBar",
+                            "searchKey":"ProgressBar,health",
+                            "props":{"y":-32,"x":0,"skin":"candy/ui/血条.png","name":"health"},
+                            "nodeParent":24,
+                            "label":"health",
+                            "isOpen":true,
+                            "isDirectory":true,
+                            "isAniNode":true,
+                            "hasChild":true,
+                            "compId":134,
+                            "child":[
+                                {
+                                    "x":60,
+                                    "type":"Label",
+                                    "searchKey":"Label,bloodLabel",
+                                    "props":{"y":10,"x":51,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
+                                    "nodeParent":134,
+                                    "label":"bloodLabel",
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":60,
+                                    "child":[
+                                        ]
+                                }]
                         }]
                 },
                 {
@@ -541,38 +541,9 @@
                         },
                         {
                             "x":45,
-                            "type":"ProgressBar",
-                            "searchKey":"ProgressBar,health",
-                            "props":{"y":-38,"x":7.5,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,13,0,13","name":"health"},
-                            "nodeParent":25,
-                            "label":"health",
-                            "isOpen":true,
-                            "isDirectory":true,
-                            "isAniNode":true,
-                            "hasChild":true,
-                            "compId":41,
-                            "child":[
-                                {
-                                    "x":60,
-                                    "type":"Label",
-                                    "searchKey":"Label,bloodLabel",
-                                    "props":{"y":8,"x":55,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
-                                    "nodeParent":41,
-                                    "label":"bloodLabel",
-                                    "isOpen":false,
-                                    "isDirectory":false,
-                                    "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":61,
-                                    "child":[
-                                        ]
-                                }]
-                        },
-                        {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,propertyShow",
-                            "props":{"y":-191,"x":-31.5,"width":194,"skin":"candy/ui/属性战士框.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},
+                            "props":{"y":-190,"x":-31.5,"width":194,"skin":"candy/ui/主角属性显示.png","sizeGrid":"38,34,48,48","name":"propertyShow","height":126},
                             "nodeParent":25,
                             "label":"propertyShow",
                             "isOpen":false,
@@ -636,6 +607,35 @@
                                     "child":[
                                         ]
                                 }]
+                        },
+                        {
+                            "x":45,
+                            "type":"ProgressBar",
+                            "searchKey":"ProgressBar,health",
+                            "props":{"y":-38,"x":7.5,"skin":"candy/ui/血条.png","name":"health"},
+                            "nodeParent":25,
+                            "label":"health",
+                            "isOpen":true,
+                            "isDirectory":true,
+                            "isAniNode":true,
+                            "hasChild":true,
+                            "compId":135,
+                            "child":[
+                                {
+                                    "x":60,
+                                    "type":"Label",
+                                    "searchKey":"Label,bloodLabel",
+                                    "props":{"y":9.5,"x":51,"width":126,"valign":"middle","text":"label","pivotY":12,"pivotX":63,"name":"bloodLabel","height":24,"fontSize":20,"align":"center"},
+                                    "nodeParent":135,
+                                    "label":"bloodLabel",
+                                    "isOpen":false,
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":61,
+                                    "child":[
+                                        ]
+                                }]
                         }]
                 }]
         },
@@ -643,7 +643,7 @@
             "x":15,
             "type":"Sprite",
             "searchKey":"Sprite,speakBoxParent",
-            "props":{"y":0,"x":0,"name":"speakBoxParent"},
+            "props":{"y":1,"x":0,"name":"speakBoxParent"},
             "nodeParent":2,
             "label":"speakBoxParent",
             "isDirectory":false,

@@ -69,6 +69,7 @@ export default class Enemy extends Laya.Script {
         this.mainSceneControl = this.selfScene.getComponent(MainSceneControl);//场景脚本组件
         this.roleParent = this.mainSceneControl.roleParent;
         this.selfHealth = this.self.getChildByName('health') as Laya.ProgressBar;
+        this.selfHealth.value = 1;
         this.selfSpeed = 3.5;
         this.propertyShow = this.self.getChildByName('propertyShow') as Laya.Image;
 

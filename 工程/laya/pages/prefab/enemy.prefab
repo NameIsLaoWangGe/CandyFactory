@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Sprite",
-    "selectedBox":22,
-    "selecteID":25,
+    "selectedBox":44,
+    "selecteID":28,
     "searchKey":"Sprite,enemy",
     "props":{"y":60,"x":59,"width":120,"presetID":1,"preset":"laya/pages/prefab/enemy.prefab","pivotY":60,"pivotX":60,"name":"enemy","isPresetRoot":true,"height":120,"drawCallOptimize":true},
     "nodeParent":-1,
-    "maxID":43,
+    "maxID":45,
     "label":"enemy",
     "isOpen":true,
     "isDirectory":true,
@@ -33,36 +33,9 @@
         },
         {
             "x":15,
-            "type":"ProgressBar",
-            "searchKey":"ProgressBar,health",
-            "props":{"y":-28,"x":63,"width":106,"value":1,"skin":"candy/ui/血条.png","sizeGrid":"0,12,0,12","presetID":4,"preset":"laya/pages/prefab/enemy.prefab","pivotX":53,"name":"health","height":20},
-            "nodeParent":22,
-            "label":"health",
-            "isOpen":false,
-            "isDirectory":true,
-            "isAniNode":true,
-            "hasChild":true,
-            "compId":25,
-            "child":[
-                {
-                    "type":"Label",
-                    "searchKey":"Label,bloodLabel",
-                    "props":{"y":10,"x":55,"width":136,"valign":"middle","text":"label","presetID":5,"preset":"laya/pages/prefab/enemy.prefab","pivotY":10,"pivotX":68,"name":"bloodLabel","height":20,"fontSize":20,"align":"center"},
-                    "nodeParent":25,
-                    "label":"bloodLabel",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":28,
-                    "child":[
-                        ]
-                }]
-        },
-        {
-            "x":15,
             "type":"Image",
             "searchKey":"Image,propertyShow",
-            "props":{"y":-171,"x":-37,"width":194,"skin":"candy/ui/属性战士框.png","sizeGrid":"38,34,48,48","presetID":6,"preset":"laya/pages/prefab/enemy.prefab","name":"propertyShow","height":126},
+            "props":{"y":-171,"x":-37,"width":194,"skin":"candy/ui/敌人属性显示.png","sizeGrid":"38,34,48,48","presetID":6,"preset":"laya/pages/prefab/enemy.prefab","name":"propertyShow","height":126},
             "nodeParent":22,
             "label":"propertyShow",
             "isOpen":true,
@@ -127,6 +100,35 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":33,
+                    "child":[
+                        ]
+                }]
+        },
+        {
+            "x":15,
+            "type":"ProgressBar",
+            "searchKey":"ProgressBar,health",
+            "props":{"y":-26,"x":10,"skin":"candy/ui/血条.png","presetID":11,"preset":"laya/pages/prefab/enemy.prefab","name":"health"},
+            "nodeParent":22,
+            "label":"health",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":44,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,bloodLabel",
+                    "props":{"y":10.5,"x":50,"width":136,"valign":"middle","text":"label","presetID":5,"preset":"laya/pages/prefab/enemy.prefab","pivotY":10,"pivotX":68,"name":"bloodLabel","height":20,"fontSize":20,"align":"center"},
+                    "nodeParent":44,
+                    "label":"bloodLabel",
+                    "isOpen":false,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":28,
                     "child":[
                         ]
                 }]
