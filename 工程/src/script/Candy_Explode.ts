@@ -48,7 +48,9 @@ export default class Candy extends Laya.Script {
         this.spaceY = 5;
 
         this.hintWord = this.selfScene['MainSceneControl'].hintWord;
-
+        // 开启敌人预警
+        this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
+        this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
         this.self['Candy_Explode'] = this;
     }
 
@@ -74,6 +76,9 @@ export default class Candy extends Laya.Script {
                 this.selfScene['MainSceneControl'].explodeAni(this.selfScene, this.self.x, this.self.y, this.self.name.substring(0, 11), 15, 100);
                 this.hintWordMove();
                 this.roleReduceProperty();
+                // 关闭预警
+                this.selfScene['MainSceneControl'].role_01['Role'].role_Warning = true;
+                this.selfScene['MainSceneControl'].role_02['Role'].role_Warning = true;
                 this.explodeTarget = null;
             }
         }

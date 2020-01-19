@@ -107,6 +107,7 @@ P D61532A1 烟花5.png
 P 1E2A5471 烟花6.png
 P 42BFC132 烟花7.png
 P E1581249 白色单元.png
+P E80DAE40 白色单元_02.png
 P 87DE7ED2 红色单元.png
 P E4145E2E 绿色单元.png
 P 47E31B6C 蓝色单元.png
@@ -118,9 +119,13 @@ R 07F1A86C redCandy.png
 R 0F3A2C7C redCandy.sk
 P 409C94C6 糖果影子.png
 P DE0B069C 红色糖果.png
+P 72F7C216 红色糖果球.png
 P C04526AF 绿色糖果.png
+P 7BC6FD91 绿色糖果球.png
 P 943A23DB 蓝色糖果.png
+P BE375875 蓝色糖果球.png
 P F6E53DCD 黄色糖果.png
+P 5A403804 黄色糖果球.png
 D candy/糖果机器
 R 45DE6847 candyLaunch.png
 R 7965F074 candyLaunch.sk

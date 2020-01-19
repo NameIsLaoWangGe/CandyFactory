@@ -57,7 +57,7 @@ export default class Candy extends Laya.Script {
         this.group = null;
 
         this.self['Candy'] = this;
-        this.createBoneAni();
+        // this.createBoneAni();
     }
 
     /**创建骨骼动画皮肤*/

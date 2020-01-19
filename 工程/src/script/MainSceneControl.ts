@@ -134,7 +134,6 @@ export default class MainSceneControl extends Laya.Script {
     onEnable(): void {
         this.initSecne();
         this.roleSpeakBoxs();
-        this.candyPosInit();
         this.candyMoveToDisplay();
     }
 
@@ -217,30 +216,6 @@ export default class MainSceneControl extends Laya.Script {
         }
     }
 
-    /**生成8个初始糖果
-     * 在固定的8个位置*/
-    candyPosInit(): void {
-        this.posArr_left = [];
-        this.posArr_right = [];
-        let candyHeiht = 100;
-        let spacing = 2;
-        let startX_01 = Laya.stage.width / 2 - 42;
-        let startX_02 = Laya.stage.width / 2 + 58;
-        let startY = this.displays.y;
-        // 注意排布顺序，把第一个排到最前，所以返回来循环
-        for (let i = this.startRow; i > 0; i--) {
-            for (let j = 0; j < 2; j++) {
-                if (j === 0) {
-                    let arr = [startX_01, startY + i * (candyHeiht + spacing)];
-                    this.posArr_left.push(arr);
-                } else if (j === 1) {
-                    let arr = [startX_02, startY + i * (candyHeiht + spacing)];
-                    this.posArr_right.push(arr);
-                }
-            }
-        }
-    }
-
     /**生产8个糖果移动到操作台的动画
      * 4次，每次2个移动
      * 倒过来遍历
@@ -261,7 +236,7 @@ export default class MainSceneControl extends Laya.Script {
                     candy.zOrder = this.startRow - i;//层级
                     if (j === 0) {
                         // 出生位置
-                        candy.pos(this.displays.x + 150, this.displays.y - 50);
+                        candy.pos(this.displays.x + 160, this.displays.y - 50);
                         candy.scaleX = 0;
                         candy.scaleY = 0;
                         this.candyLaunch_01.play('launchRgiht', false);
@@ -270,9 +245,9 @@ export default class MainSceneControl extends Laya.Script {
                         this.candyFlipTheAni(candy, startX_01, targetY);
                     } else {
                         // 出生位置
-                        candy.pos(this.displays.x - 150, this.displays.y - 50);
-                        candy.scaleX = 0;
-                        candy.scaleY = 0;
+                        candy.pos(this.displays.x - 160, this.displays.y - 50);
+                        candy.scaleX = 0.5;
+                        candy.scaleY = 0.5;
                         this.candyLaunch_02.play('launchLeft', false);
                         // 陈列台位置
                         // 移动到陈列台位置
@@ -285,23 +260,76 @@ export default class MainSceneControl extends Laya.Script {
         }
     }
 
-    /**糖果翻转动画时间线
+    /**糖果发射动画时间线
      * @param candy 当前糖果
      * @param targetX 目标x位置
      * @param targetY 目标y位置
     */
     candyFlipTheAni(candy, targetX, targetY): void {
+        // 基础时间参数，动画的时间会随着位置边近而缩小
+        let timePar = 500 - candy['Candy'].group * 100;
+        // 糖果本身
         // 第一步放大
-        Laya.Tween.to(candy, { scaleX: 1, scaleY: 1 }, 250, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
-            // 第二步位移
-            Laya.Tween.to(candy, { x: targetX, y: targetY }, 500, Laya.Ease.expoIn, Laya.Handler.create(this, function () {
-                if (candy['Candy'].group === 3) {
-                    this.operating['OperationControl'].operateSwitch = true;
-                    this.operating['OperationControl'].clickHint();
-                }
+        Laya.Tween.to(candy, { scaleX: 0.8, scaleY: 0.8, y: candy.y - 30 }, timePar / 2, null, Laya.Handler.create(this, function () {
+            // 第二步飞天,位置是目标位置的一半
+            let HalfX;
+            let distancePer = 3;
+            if (candy.x > Laya.stage.width / 2) {
+                HalfX = candy.x - (candy.x - targetX) / distancePer;
+            } else {
+                HalfX = candy.x + (targetX - candy.x) / distancePer;
+            }
+            let HalfY = candy.y + (targetY - candy.y) / distancePer;
+            Laya.Tween.to(candy, { x: HalfX, y: HalfY, scaleX: 1.3, scaleY: 1.3 }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+                // 第三步降落
+                Laya.Tween.to(candy, { x: targetX, y: targetY, scaleX: 1, scaleY: 1 }, timePar, null, Laya.Handler.create(this, function () {
+                    this.replaceCandyMap(candy);
+                    if (candy['Candy'].group === 3) {
+                        this.operating['OperationControl'].operateSwitch = true;
+                        this.operating['OperationControl'].clickHint();
+                    }
+                }), 0);
             }), 0);
         }), 10);
 
+        // 糖果的影子处理
+        let shadow = candy.getChildByName('shadow') as Laya.Image;
+        // 第一步放大
+        Laya.Tween.to(shadow, {}, timePar / 2, null, Laya.Handler.create(this, function () {
+            // 第二步和糖果拉开距离
+            Laya.Tween.to(shadow, { x: - 50, scaleX: 0.5, scaleY: 0.5, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+                // 第三步降落
+                Laya.Tween.to(shadow, { x: 0, scaleX: 1, scaleY: 1 }, timePar, null, Laya.Handler.create(this, function () {
+                }), 0);
+            }), 0);
+        }), 10);
+    }
+
+    /**替换不同糖果贴图*/
+    replaceCandyMap(candy): void {
+        let url_01 = 'candy/糖果/黄色糖果.png';
+        let url_02 = 'candy/糖果/红色糖果.png';
+        let url_03 = 'candy/糖果/蓝色糖果.png';
+        let url_04 = 'candy/糖果/绿色糖果.png';
+        let pic = (candy.getChildByName('pic') as Laya.Image);
+        let x = candy.x +
+            this.explodeAni(this.owner, candy.x, candy.y, 'disappear', 8, 1000);
+        switch (candy.name.substring(0, 11)) {
+            case 'yellowCandy':
+                pic.skin = url_01;
+                break;
+            case 'redCandy___':
+                pic.skin = url_02;
+                break;
+            case 'blueCandy__':
+                pic.skin = url_03;
+                break;
+            case 'greenCandy_':
+                pic.skin = url_04;
+                break;
+            default:
+                break;
+        }
     }
 
     /**产生糖果*/
@@ -311,10 +339,10 @@ export default class MainSceneControl extends Laya.Script {
         // 随机创建一种颜色糖果
         // 糖果的名称结构是11位字符串加上索引值，方便查找，并且这样使他们的名称唯一
         let randomNum = Math.floor(Math.random() * 4);
-        let url_01 = 'candy/糖果/黄色糖果.png';
-        let url_02 = 'candy/糖果/红色糖果.png';
-        let url_03 = 'candy/糖果/蓝色糖果.png';
-        let url_04 = 'candy/糖果/绿色糖果.png';
+        let url_01 = 'candy/糖果/黄色糖果球.png';
+        let url_02 = 'candy/糖果/红色糖果球.png';
+        let url_03 = 'candy/糖果/蓝色糖果球.png';
+        let url_04 = 'candy/糖果/绿色糖果球.png';
         let pic = (candy.getChildByName('pic') as Laya.Image);
         switch (randomNum) {
             case 0:
@@ -428,7 +456,6 @@ export default class MainSceneControl extends Laya.Script {
             }
         }
     }
-
 
     /**角色死亡复活状况*/
     roleDeathState(): void {
