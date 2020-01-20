@@ -35,8 +35,6 @@ export default class OperationButton extends Laya.Script {
     private alreadyGroup: Array<number>;
     /**分数*/
     private scoreLabel: Laya.FontClip;
-    // /**是否可以操作*/
-    // private operateOnOff: boolean;
     /**奖励提示文字*/
     private rewardWords: Laya.Prefab;
     /**新建糖果的开关*/
@@ -261,8 +259,10 @@ export default class OperationButton extends Laya.Script {
                 let candy = this.candyParent.getChildByName(this.rightName[i]) as Laya.Sprite;
                 if (candy.x < Laya.stage.width / 2) {
                     candy['Candy'].candyTagRole = this.selfScene['MainSceneControl'].role_01;
+                    candy['Candy'].candyFlyToRole();
                 } else {
                     candy['Candy'].candyTagRole = this.selfScene['MainSceneControl'].role_02;
+                    candy['Candy'].candyFlyToRole();
                 }
             }
         }
@@ -281,8 +281,9 @@ export default class OperationButton extends Laya.Script {
         this.clicksNameArr = [];
         this.alreadyGroup = [];
 
-        // 延时出现下一波糖果
-        this.initCandy();
+        //准备发射糖果
+        this.selfScene['MainSceneControl'].candyLaunch_01.play('prepare', false);
+        this.selfScene['MainSceneControl'].candyLaunch_02.play('prepare', false);
     }
 
     /**新建糖果，初始换属性*/
@@ -351,7 +352,7 @@ export default class OperationButton extends Laya.Script {
      * 这个敌人是随机在一个范围内出生
      * @param candy 这个糖果的信息
     */
-    candybecomeEnemy(candy: Laya.Sprite, ): void {
+    candybecomeEnemy(candy: Laya.Sprite): void {
         // 左右两个方向
         let point;//固定圆心点
         let direction;//左右，用来判断位置和enemyTarget
@@ -371,7 +372,11 @@ export default class OperationButton extends Laya.Script {
         // 随机取点函数
         moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).x;
         moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).y;
-
+        // 播放翻转动画
+        if (candy['Candy'].skeleton) {
+            candy['Candy'].skeleton.play('turnLeft', true);
+            candy['Candy'].skeleton.playbackRate(1);
+        }
         Laya.Tween.to(candy, { x: moveX, y: moveY }, 1000, null, Laya.Handler.create(this, function () {
             // 生成1个爆炸糖果
             let explodeCandy = this.selfScene['MainSceneControl'].createExplodeCandy(candy.name);
@@ -400,10 +405,8 @@ export default class OperationButton extends Laya.Script {
             this.operateSwitch = false;
             return;
         }
-
         //计时器
         this.timerControl();
-
     }
 
     onDisable(): void {

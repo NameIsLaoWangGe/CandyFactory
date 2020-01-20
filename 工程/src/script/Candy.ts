@@ -57,7 +57,7 @@ export default class Candy extends Laya.Script {
         this.group = null;
 
         this.self['Candy'] = this;
-        // this.createBoneAni();
+        this.createBoneAni();
     }
 
     /**创建骨骼动画皮肤*/
@@ -71,7 +71,7 @@ export default class Candy extends Laya.Script {
                 break;
             case 'redCandy___':
                 this.templet.loadAni("candy/糖果/redCandy.sk");
-                this.self.getChildByName('pic').removeSelf();
+                (this.self.getChildByName('pic') as Laya.Image).alpha = 0;
                 break;
             case 'blueCandy__':
                 break;
@@ -91,8 +91,8 @@ export default class Candy extends Laya.Script {
         var skeleton: Laya.Skeleton;
         this.skeleton = this.templet.buildArmature(0);//模板0
         this.self.addChild(this.skeleton);
-        this.skeleton.play('turnAround', true);
-        this.skeleton.x = this.self.width / 2;
+        this.skeleton.play('static', true);
+        this.skeleton.x = this.self.width / 2 + 3;
         this.skeleton.y = this.self.height / 2;
         this.skeleton.playbackRate(1);
     }
@@ -106,28 +106,53 @@ export default class Candy extends Laya.Script {
     }
 
     /**飞到主角身上增加主角属性
-     * 并且播放属性增加动画
-    */
-    flyToRole(): void {
-        if (this.candyTagRole !== null) {
-            // x,y分别相减是两点连线向量
-            // 向量计算并且归一化，向量长度为1。
-            let point = new Laya.Point(this.candyTagRole.x - this.self.x, this.candyTagRole.y - this.self.y);
-            point.normalize();
-            //向量相加移动
-            this.self.x += point.x * this.selfSpeed;
-            this.self.y += point.y * this.selfSpeed;
-            // 到达对象位置后开启攻击开关进行攻击，攻击速度依照时间间隔而定
-            // 此时移动速度为零
-            let differenceX = Math.abs(this.self.x - this.candyTagRole.x);
-            let differenceY = Math.abs(this.self.y - this.candyTagRole.y);
-            if (differenceX < 50 && differenceY < 50) {
+    * 并且播放属性增加动画
+   */
+    candyFlyToRole(): void {
+        if (this.candyTagRole === null) {
+            return
+        }
+        // 播放上下翻转动画
+        if (this.skeleton) {
+            this.skeleton.play('turnDown', true);
+            this.skeleton.playbackRate(2);
+        }
+
+        // 基础时间参数，动画的时间会随着位置边近而缩小
+        let timePar = 500 + this.group * 100;
+        let targetX;
+        let targetY = this.candyTagRole.y;
+        // x轴的位置偏移
+        targetX = this.candyTagRole.x - 50;
+        // 糖果本身
+        // 第一步放大
+        let HalfX;
+        let distancePer = 3;
+        if (this.self.x > Laya.stage.width / 2) {
+            HalfX = this.self.x - (this.self.x - targetX) / distancePer;
+        } else {
+            HalfX = this.self.x + (targetX - this.self.x) / distancePer;
+        }
+        let HalfY = this.self.y + (this.candyTagRole.y - this.self.y) / distancePer;
+
+        Laya.Tween.to(this.self, { x: HalfX, y: HalfY, scaleX: 1.5, scaleY: 1.5 }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+            // 第三步降落
+            Laya.Tween.to(this.self, { x: targetX, y: this.candyTagRole.y, scaleX: 0.8, scaleY: 0.8 }, timePar, null, Laya.Handler.create(this, function () {
                 this.self.removeSelf();
                 this.hintWordMove();
                 this.roleAddProperty();
                 this.candyTagRole = null;
-            }
-        }
+            }), 0);
+        }), 0);
+
+        // 糖果的影子处理
+        let shadow = this.self.getChildByName('shadow') as Laya.Image;
+        // 第一步放大
+        Laya.Tween.to(shadow, { x: - 50, scaleX: 0.8, scaleY: 0.8, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+            // 第二部回归
+            Laya.Tween.to(shadow, { x: -60, scaleX: 0.7, scaleY: 0.7 }, timePar, null, Laya.Handler.create(this, function () {
+            }), 0);
+        }), 0);
     }
 
     /**属性增加提示动画*/
@@ -214,8 +239,8 @@ export default class Candy extends Laya.Script {
         if (this.timerControl < 18 && this.self.parent === this.mainSceneControl.candyParent) {
             // this.self.y += 3;
         }
-        // 飞到主角身上
-        this.flyToRole();
+        // // 飞到主角身上
+        // this.flyToRole();
     }
 
     onDisable(): void {

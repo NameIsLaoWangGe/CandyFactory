@@ -48,6 +48,8 @@ export default class MainSceneControl extends Laya.Script {
 
     /** @prop {name:timer , tips:"计时器", type:Node}*/
     public timer: Laya.Sprite;
+    /**时间进度条*/
+    private timeSchedule: Laya.ProgressBar;
 
     /** @prop {name:displays , tips:"陈列台", type:Node}*/
     public displays: Laya.Image;
@@ -129,6 +131,7 @@ export default class MainSceneControl extends Laya.Script {
     private launchTemp_02: Laya.Templet;
     private candyLaunch_02: Laya.Skeleton;
 
+
     constructor() { super(); }
 
     onEnable(): void {
@@ -168,6 +171,8 @@ export default class MainSceneControl extends Laya.Script {
         this.candyCount = 0;
         this.scoreLabel.value = '0';
 
+        this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
+
         this.rescueNum = 0;
         // 关闭多点触控
         Laya.MouseManager.multiTouchEnabled = false;
@@ -197,22 +202,34 @@ export default class MainSceneControl extends Laya.Script {
         console.log('骨骼动画加载错误');
     }
     parseComplete_01(): void {
-        // 播放敌人动画
+        // 静止
         this.candyLaunch_01 = this.assembly.getChildByName('candyLaunch_01') as Laya.Skeleton;//模板0
         this.candyLaunch_01.play('static', false);
-        this.candyLaunch_01.on(Laya.Event.LABEL, this, this.candyLaunchListen);
+        this.candyLaunch_01.on(Laya.Event.LABEL, this, this.candyLaunchListen_01);
     }
     parseComplete_02(): void {
-        // 播放敌人动画
+        // 静止
         this.candyLaunch_02 = this.assembly.getChildByName('candyLaunch_02') as Laya.Skeleton;//模板0
         this.candyLaunch_02.play('static', false);
-        this.candyLaunch_01.on(Laya.Event.LABEL, this, this.candyLaunchListen);
+        this.candyLaunch_02.on(Laya.Event.LABEL, this, this.candyLaunchListen_02);
     }
 
-    /**发射口监听监听*/
-    candyLaunchListen(e): void {
+    /**发射口监听监听1
+     * 分开监听，因为有写操作只会执行一次
+    */
+    candyLaunchListen_01(e): void {
         if (e.name === 'launch') {
             console.log('发射！');
+        } else if (e.name === 'getReady') {
+            this.candyMoveToDisplay();
+            this.timeSchedule.value = 1;
+        }
+    }
+    /**发射口监听监听1*/
+    candyLaunchListen_02(e): void {
+        if (e.name === 'launch') {
+            console.log('发射！');
+        } else if (e.name === 'getReady') {
         }
     }
 
@@ -239,7 +256,7 @@ export default class MainSceneControl extends Laya.Script {
                         candy.pos(this.displays.x + 160, this.displays.y - 50);
                         candy.scaleX = 0;
                         candy.scaleY = 0;
-                        this.candyLaunch_01.play('launchRgiht', false);
+                        this.candyLaunch_01.play('launchLeft', false);
                         // 移动到陈列台位置
                         let targetY = startY - i * (candyHeiht + spacing);
                         this.candyFlipTheAni(candy, startX_01, targetY);
@@ -248,7 +265,7 @@ export default class MainSceneControl extends Laya.Script {
                         candy.pos(this.displays.x - 160, this.displays.y - 50);
                         candy.scaleX = 0.5;
                         candy.scaleY = 0.5;
-                        this.candyLaunch_02.play('launchLeft', false);
+                        this.candyLaunch_02.play('launchRight', false);
                         // 陈列台位置
                         // 移动到陈列台位置
                         let targetY = startY - i * (candyHeiht + spacing);
@@ -273,7 +290,7 @@ export default class MainSceneControl extends Laya.Script {
         Laya.Tween.to(candy, { scaleX: 0.8, scaleY: 0.8, y: candy.y - 30 }, timePar / 2, null, Laya.Handler.create(this, function () {
             // 第二步飞天,位置是目标位置的一半
             let HalfX;
-            let distancePer = 3;
+            let distancePer = 3;//在这个距离等分处飞到最高处
             if (candy.x > Laya.stage.width / 2) {
                 HalfX = candy.x - (candy.x - targetX) / distancePer;
             } else {
@@ -287,6 +304,8 @@ export default class MainSceneControl extends Laya.Script {
                     if (candy['Candy'].group === 3) {
                         this.operating['OperationControl'].operateSwitch = true;
                         this.operating['OperationControl'].clickHint();
+                        this.launchNum = 0;
+                        this.launchSwitch = false;
                     }
                 }), 0);
             }), 0);
@@ -312,8 +331,7 @@ export default class MainSceneControl extends Laya.Script {
         let url_03 = 'candy/糖果/蓝色糖果.png';
         let url_04 = 'candy/糖果/绿色糖果.png';
         let pic = (candy.getChildByName('pic') as Laya.Image);
-        let x = candy.x +
-            this.explodeAni(this.owner, candy.x, candy.y, 'disappear', 8, 1000);
+        this.explodeAni(this.owner, candy.x, candy.y, 'disappear', 8, 1000);
         switch (candy.name.substring(0, 11)) {
             case 'yellowCandy':
                 pic.skin = url_01;

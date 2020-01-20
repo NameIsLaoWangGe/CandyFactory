@@ -121,19 +121,19 @@ export default class Assembly extends Laya.Script {
     */
     timerShake() {
         if (this.timeSchedule.value > 0 && this.timeSchedule.value <= 0.15) {
-            this.RshakeInterval = 30;
+            this.RshakeInterval = 40;
             this.RshakesTre = 2;
         } else if (this.timeSchedule.value > 0.15 && this.timeSchedule.value <= 0.4) {
-            this.RshakeInterval = 40;
+            this.RshakeInterval = 50;
             this.RshakesTre = 1.5;
         } else if (this.timeSchedule.value > 0.4 && this.timeSchedule.value <= 0.7) {
-            this.RshakeInterval = 50;
+            this.RshakeInterval = 60;
             this.RshakesTre = 1;
         } else if (this.timeSchedule.value > 0.7 && this.timeSchedule.value <= 1) {
-            this.RshakeInterval = 60;
+            this.RshakeInterval = 70;
             this.RshakesTre = 0.5;
         } else {
-            this.RshakeInterval = 60;
+            this.RshakeInterval = 70;
             this.RshakesTre = 0.5;
         }
 
