@@ -15,22 +15,44 @@ export default class Assembly extends Laya.Script {
     /**烟囱烟雾特效当前产生时间记录*/
     private smokeTime: number;
 
-    /**抖动频率，机器会按一定的时间抖动，这个时间间隔可能是随机的*/
-    private shakeInterval: number;
-    /**抖动事件记录*/
-    private shakeTime: number;
-    /**抖动开关*/
-    private shakeSwitch: boolean;
+    /**位移抖动频率，机器会按一定的时间抖动，这个时间间隔可能是随机的*/
+    private MshakeInterval: number;
+    /**位移抖动事件记录*/
+    private MshakeTime: number;
+    /**位移抖动开关*/
+    private MshakeSwitch: boolean;
+    /**位移抖动强度控制*/
+    private MshakesTre: number;
+    /**位移抖动方向记录*/
+    private MDirection: string;
+
+    /**角度抖动频率，机器会按一定的时间抖动，这个时间间隔可能是随机的*/
+    private RshakeInterval: number;
+    /**角度抖动事件记录*/
+    private RshakeTime: number;
+    /**角度抖动开关*/
+    private RshakeSwitch: boolean;
+    /**角度抖动强度控制*/
+    private RshakesTre: number;
+    /**角度抖动方向记录*/
+    private RDirection: string;
+
     /**时间线*/
     private timeLine: number;
-    /**方向记录*/
-    private moveDirection: string;
-    /**初始位置*/
-    private initialPX: number;
+    /**Machine初始位置*/
+    private initialPX_Machine: number;
+
     /**抖动次数*/
     private launchNum: number;
     /**当前这次抖动的时间*/
     private launchSwitch: boolean;
+
+    /**时间进度*/
+    private timer: Laya.Sprite;
+    /**进度条*/
+    private timeSchedule: Laya.ProgressBar;
+    /**时间抖动次数*/
+    private timerShakeNum: number;
 
     constructor() { super(); }
 
@@ -40,68 +62,106 @@ export default class Assembly extends Laya.Script {
         this.smokeSwitch = true;
         this.smokeTime = Date.now();
         this.smokeInterval = 500;
-        this.initialPX = this.machine.x;
-        // 随机方向
-        this.moveDirection = Math.random() * 2 === 1 ? 'left' : 'right';
-        this.shakeInterval = 30;
-        this.shakeTime = Date.now();
-        this.timeLine = 0;
+        this.initialPX_Machine = this.machine.x;
+
+        // 位移抖动参数
+        this.MDirection = Math.random() * 2 === 1 ? 'left' : 'right';
+        this.MshakeInterval = 30;
+        this.MshakeTime = Date.now();
+        this.MshakesTre = 1;
+        this.MshakeSwitch = true;
+
+        // 角度抖动参数
+        this.RshakeInterval = 30;
+        this.RshakeTime = Date.now();
+        this.RshakesTre = 2;
+        this.RDirection = Math.random() * 2 === 1 ? 'left' : 'right';
+        this.RshakeSwitch = true;
+
         // 抖动函数
         this.launchNum = 0;
         this.launchSwitch = true;
-        this.shakeLaunchCandy();
+
+        this.timer = this.owner.getChildByName('timer') as Laya.Sprite;
+        this.timeSchedule = this.timer.getChildByName('timeSchedule') as Laya.ProgressBar;
+        this.timerShakeNum = 0;
     }
 
-    //普通抖动
-    commonShake() {
-        if (this.shakeSwitch) {
+    /**位移抖动
+    * @param target 目标
+    */
+    moveShake(target) {
+        if (this.MshakeSwitch) {
             let nowTime = Date.now();
-            if (nowTime - this.shakeTime > this.shakeInterval) {
-                this.shakeTime = nowTime;
-                if (this.moveDirection === "left") {
-                    this.machine.x -= 1;
-                    if (this.machine.x < this.initialPX) {
-                        this.moveDirection = "right";
+            if (nowTime - this.MshakeTime > this.MshakeInterval) {
+                this.MshakeTime = nowTime;
+                // 判断目标是什么,然后对比他原来的位置
+                let initialPX;//target初始位置
+                if (target === this.machine) {
+                    initialPX = this.initialPX_Machine;
+                }
+                let shakeX = this.MshakesTre;//强度
+                if (this.MDirection === "left") {
+                    target.x -= this.MshakesTre;
+                    if (this.machine.x < initialPX) {
+                        this.MDirection = "right";
                     }
-                } else if (this.moveDirection === "right") {
-                    this.machine.x += 1;
-                    if (this.machine.x > this.initialPX) {
-                        this.moveDirection = "left";
+                } else if (this.MDirection === "right") {
+                    target.x += this.MshakesTre;
+                    if (this.machine.x > initialPX) {
+                        this.MDirection = "left";
                     }
                 }
             }
         }
     }
 
-    //机器抖动预备发射糖果的行为
-    shakeLaunchCandy(): void {
-        this.shakeMethod(this.machine);
-    }
-
-    /**抖动函数*/
-    shakeMethod(target): void {
-        if (this.launchSwitch === false) {
-            return;
+    /**时间抖动抖动
+     * 根据进度条的时间来给不同的抖动频率和抖动速度
+    */
+    timerShake() {
+        if (this.timeSchedule.value > 0 && this.timeSchedule.value <= 0.15) {
+            this.RshakeInterval = 30;
+            this.RshakesTre = 2;
+        } else if (this.timeSchedule.value > 0.15 && this.timeSchedule.value <= 0.4) {
+            this.RshakeInterval = 40;
+            this.RshakesTre = 1.5;
+        } else if (this.timeSchedule.value > 0.4 && this.timeSchedule.value <= 0.7) {
+            this.RshakeInterval = 50;
+            this.RshakesTre = 1;
+        } else if (this.timeSchedule.value > 0.7 && this.timeSchedule.value <= 1) {
+            this.RshakeInterval = 60;
+            this.RshakesTre = 0.5;
+        } else {
+            this.RshakeInterval = 60;
+            this.RshakesTre = 0.5;
         }
-        let direction = this.launchNum % 2 === 0 ? 1 : -1;
-        // 第三步降落
-        Laya.Tween.to(target, { x: this.initialPX - direction }, 30, null, Laya.Handler.create(this, function () {
-            this.launchNum++;
-            if (this.launchNum >= 50) {
-                this.launchSwitch = false;
-                this.launchNum = 0;
-            } else {
-                this.shakeMethod(target);
-            }
-        }), 0);
-    }
 
-    /**进度条的抖动行为，当进度条的时间大于于0.7的时候，轻微抖动，当大于0.9的时候抖动加强*/
+        if (this.RshakeSwitch) {
+            let nowTime = Date.now();
+            if (nowTime - this.RshakeTime > this.RshakeInterval) {
+                this.RshakeTime = nowTime;
+                // 目标判断
+                if (this.RDirection === "left") {
+                    this.timer.rotation = -this.RshakesTre;
+                    if (this.timer.rotation < 0) {
+                        this.RDirection = "right";
+                    }
+                } else if (this.RDirection === "right") {
+                    this.timer.rotation = this.RshakesTre;
+                    if (this.timer.rotation > 0) {
+                        this.RDirection = "left";
+                    }
+                }
+            }
+        }
+    }
 
     onUpdate(): void {
         this.timeLine++;
         // 烟囱烟雾特效
         if (this.smokeSwitch) {
+            1
             let nowTime = Date.now();
             if (nowTime - this.smokeTime > this.smokeInterval) {
                 // 重置时间
@@ -116,6 +176,10 @@ export default class Assembly extends Laya.Script {
 
         // 指针动作
         this.LongPointer.rotation += 10;
+        this.moveShake(this.machine);
+
+        //进度条抖动
+        this.timerShake();
     }
 
     onDisable(): void {

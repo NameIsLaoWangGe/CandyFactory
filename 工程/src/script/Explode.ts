@@ -248,6 +248,7 @@ export default class Explode extends Laya.Script {
         this.rotationD = Math.floor(Math.random() * 2) === 1 ? -5 : 5;
         // 图片
         this.img.skin = 'candy/特效/白色单元.png';
+        this.img.rotation = this.initialAngle - 90;
         let number = Math.floor(Math.random() * 2);
         switch (number) {
             case 0:
@@ -263,7 +264,6 @@ export default class Explode extends Laya.Script {
 
     /**变身消失动画移动*/
     disappearEffects(): void {
-        this.img.rotation += this.rotationD;
         this.accelerated += 0.01;
         if (this.timer > 0 && this.timer <= 15) {
             this.commonSpeedXYByAngle(this.initialAngle, this.randomSpeed);

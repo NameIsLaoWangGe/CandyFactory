@@ -52,13 +52,14 @@ P 4861FB87 敌人属性显示.png
 R 902F0C7A 文字提示底.png
 P 4CAD90AC 时间$bar.png
 P D6602089 时间.png
-P 0DC4ADAF 时间装饰.png
 P F27E0E2A 暂停按钮.png
 P 546EE85A 正确提示.png
 P DF75AD09 继续游戏.png
 P E7BD7926 血条$bar.png
 P A7618FFB 血条.png
 P 8F5327DD 进度条白色高光.png
+P ADB0D4CF 进度条装饰1.png
+P BBE9EEDE 进度条装饰2.png
 P F7111ECD 错误提示.png
 D candy/主角
 R D9F5117B role_01.png
