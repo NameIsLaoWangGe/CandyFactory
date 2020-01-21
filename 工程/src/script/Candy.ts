@@ -124,8 +124,7 @@ export default class Candy extends Laya.Script {
         let targetY = this.candyTagRole.y;
         // x轴的位置偏移
         targetX = this.candyTagRole.x - 50;
-        // 糖果本身
-        // 第一步放大
+
         let HalfX;
         let distancePer = 3;
         if (this.self.x > Laya.stage.width / 2) {
@@ -134,9 +133,10 @@ export default class Candy extends Laya.Script {
             HalfX = this.self.x + (targetX - this.self.x) / distancePer;
         }
         let HalfY = this.self.y + (this.candyTagRole.y - this.self.y) / distancePer;
-
+        // 糖果本身
+        // 第一步放大
         Laya.Tween.to(this.self, { x: HalfX, y: HalfY, scaleX: 1.5, scaleY: 1.5 }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
-            // 第三步降落
+            // 第二步降落
             Laya.Tween.to(this.self, { x: targetX, y: this.candyTagRole.y, scaleX: 0.8, scaleY: 0.8 }, timePar, null, Laya.Handler.create(this, function () {
                 this.self.removeSelf();
                 this.hintWordMove();
@@ -147,13 +147,14 @@ export default class Candy extends Laya.Script {
 
         // 糖果的影子处理
         let shadow = this.self.getChildByName('shadow') as Laya.Image;
-        // 第一步放大
-        Laya.Tween.to(shadow, { x: - 50, scaleX: 0.8, scaleY: 0.8, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+        // 拉开距离并缩小
+        Laya.Tween.to(shadow, { x: - 30, y: 100, scaleX: 0.8, scaleY: 0.8, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
             // 第二部回归
-            Laya.Tween.to(shadow, { x: -60, scaleX: 0.7, scaleY: 0.7 }, timePar, null, Laya.Handler.create(this, function () {
+            Laya.Tween.to(shadow, { x: -10, y: 60, scaleX: 0.7, scaleY: 0.7 }, timePar, null, Laya.Handler.create(this, function () {
             }), 0);
         }), 0);
     }
+
 
     /**属性增加提示动画*/
     hintWordMove(): void {
@@ -206,14 +207,15 @@ export default class Candy extends Laya.Script {
                     role_02['Role'].role_property.attackValue += 10;
                 }
                 break;
+
             case 'redCandy___':
                 if (this.candyTagRole === role_01) {
                     role_01['Role'].role_property.blood += 5;
                 } else {
                     role_02['Role'].role_property.blood += 5;
                 }
-
                 break;
+
             case 'blueCandy__':
                 if (this.candyTagRole === role_01) {
                     role_01['Role'].role_property.attackSpeed += 10;
@@ -221,6 +223,7 @@ export default class Candy extends Laya.Script {
                     role_02['Role'].role_property.attackSpeed += 10;
                 }
                 break;
+
             case 'greenCandy_':
                 if (this.candyTagRole === role_01) {
                     role_01['Role'].role_property.defense += 5;
@@ -228,19 +231,14 @@ export default class Candy extends Laya.Script {
                     role_02['Role'].role_property.defense += 5;
                 }
                 break;
+
             default:
                 break;
         }
     }
 
     onUpdate(): void {
-        // 第一波10个糖果出厂控制，此刻不可点击
-        this.timerControl += 0.1;
-        if (this.timerControl < 18 && this.self.parent === this.mainSceneControl.candyParent) {
-            // this.self.y += 3;
-        }
-        // // 飞到主角身上
-        // this.flyToRole();
+
     }
 
     onDisable(): void {

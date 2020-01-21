@@ -84,6 +84,7 @@ export default class Candy extends Laya.Script {
         }
     }
 
+
     /**属性减少提示动画*/
     hintWordMove(): void {
         let hintWord = Laya.Pool.getItemByCreateFun('candy', this.hintWord.create, this.hintWord) as Laya.Sprite;

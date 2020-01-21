@@ -316,9 +316,9 @@ export default class MainSceneControl extends Laya.Script {
         // 第一步放大
         Laya.Tween.to(shadow, {}, timePar / 2, null, Laya.Handler.create(this, function () {
             // 第二步和糖果拉开距离
-            Laya.Tween.to(shadow, { x: - 50, scaleX: 0.5, scaleY: 0.5, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+            Laya.Tween.to(shadow, { x: -20, y: 100, scaleX: 0.5, scaleY: 0.5, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
                 // 第三步降落
-                Laya.Tween.to(shadow, { x: 0, scaleX: 1, scaleY: 1 }, timePar, null, Laya.Handler.create(this, function () {
+                Laya.Tween.to(shadow, { x: 0, y: 0, scaleX: 1, scaleY: 1 }, timePar, null, Laya.Handler.create(this, function () {
                 }), 0);
             }), 0);
         }), 10);

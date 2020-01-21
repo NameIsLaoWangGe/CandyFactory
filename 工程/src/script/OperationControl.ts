@@ -348,42 +348,72 @@ export default class OperationButton extends Laya.Script {
         rewardWords['RewardWords'].createWordsAni(word);
     }
 
-    /**点错后，糖果跳到地上变成1个敌人
-     * 这个敌人是随机在一个范围内出生
+    /**点错后，糖果跳到地上变成1爆炸糖果
      * @param candy 这个糖果的信息
     */
     candybecomeEnemy(candy: Laya.Sprite): void {
         // 左右两个方向
-        let point;//固定圆心点
-        let direction;//左右，用来判断位置和enemyTarget
+        let point;//固定地点
         let explodeTarget;//攻击对象
         // 最终位置
         let moveX;
         let moveY;
         if (candy.x < Laya.stage.width / 2) {
-            direction = 'left';
             explodeTarget = this.selfScene['MainSceneControl'].role_01;
             point = new Laya.Point(candy.x - 160, candy.y);
         } else {
-            direction = 'right';
             explodeTarget = this.selfScene['MainSceneControl'].role_02;
             point = new Laya.Point(candy.x + 160, candy.y);
         }
-        // 随机取点函数
-        moveX = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).x;
-        moveY = tools.getRoundPos(Math.random() * 360, Math.floor(Math.random() * 40), point).y;
         // 播放翻转动画
         if (candy['Candy'].skeleton) {
             candy['Candy'].skeleton.play('turnLeft', true);
             candy['Candy'].skeleton.playbackRate(1);
         }
-        Laya.Tween.to(candy, { x: moveX, y: moveY }, 1000, null, Laya.Handler.create(this, function () {
-            // 生成1个爆炸糖果
-            let explodeCandy = this.selfScene['MainSceneControl'].createExplodeCandy(candy.name);
-            explodeCandy.pos(candy.x, candy.y);
-            explodeCandy['Candy_Explode'].explodeTarget = explodeTarget;
-            candy.removeSelf();
+        this.flewToGround(candy, point, explodeTarget);
+    }
+    /**糖果飞到地上的动画
+     * @param candy 糖果
+     * @param targetP 目标点
+     * @param explodeTarget 被爆炸的目标
+    */
+    flewToGround(candy, targetP, explodeTarget): void {
+        // 糖果本身
+        let HalfX;
+        let HalfY;
+        let distancePer = 2;
+        if (candy.x > Laya.stage.width / 2) {
+            HalfX = candy.x - (candy.x - targetP.x) / distancePer;
+        } else {
+            HalfX = candy.x + (targetP.x - candy.x) / distancePer;
+        }
+        HalfY = candy.y - 100;
+        // 第一步飞天放大
+        Laya.Tween.to(candy, { x: HalfX, y: HalfY, scaleX: 1.3, scaleY: 1.3 }, 2000, null, Laya.Handler.create(this, function () {
+
+            // 第二步降落缩小
+            Laya.Tween.to(candy, { x: targetP.x, y: targetP.y, scaleX: 0.9, scaleY: 0.9 }, 2000, null, Laya.Handler.create(this, function () {
+                // 生成1个爆炸糖果
+                let explodeCandy = this.selfScene['MainSceneControl'].createExplodeCandy(candy.name);
+                explodeCandy.pos(candy.x, candy.y);
+                explodeCandy.scale(0.9, 0.9);
+                candy.removeSelf();
+
+                // 第三步停留，延迟给予爆炸目标
+                Laya.Tween.to(candy, {}, 500, null, Laya.Handler.create(this, function () {
+                    explodeCandy['Candy_Explode'].explodeTarget = explodeTarget;
+                }, []), 0);
+            }, []), 0);
         }, []), 0);
+
+        // 糖果的影子处理
+        let shadow = candy.getChildByName('shadow') as Laya.Image;
+        // 拉开距离并缩小
+        Laya.Tween.to(shadow, { x: -20, y: 100, scaleX: 0.8, scaleY: 0.8, }, 2000, null, Laya.Handler.create(this, function () {
+            // 第二部回归
+            Laya.Tween.to(shadow, { x: 0, y: 0, scaleX: 1, scaleY: 1 }, 2000, null, Laya.Handler.create(this, function () {
+            }), 0);
+        }), 0);
     }
 
     /**移动*/

@@ -50,9 +50,11 @@ export default class Suspend extends Laya.Script {
                 this.selfScene['MainSceneControl'].suspend = true;
                 propertyShow.alpha = 1;
                 // Laya.stage.renderingEnabled = true;
+                Laya.timer.pause();
             } else {
                 this.selfScene['MainSceneControl'].suspend = false;
                 propertyShow.alpha = 0;
+                Laya.timer.resume();
                 // Laya.stage.renderingEnabled = false;
             }
         }
