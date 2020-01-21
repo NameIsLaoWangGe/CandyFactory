@@ -5,8 +5,6 @@ export default class Suspend extends Laya.Script {
     private selfScene: Laya.Scene;
     /**场景脚本组件*/
     private mainSceneControl;
-    /**是否处于暂停状态*/
-    private suspend: boolean;
     /**主角父节点*/
     private roleParent: Laya.Sprite;
     /**敌人父节点*/
@@ -21,7 +19,6 @@ export default class Suspend extends Laya.Script {
 
     /**初始化必要属性*/
     init(): void {
-        this.suspend = false;
         this.self = this.owner as Laya.Sprite;
         this.selfScene = this.self.scene as Laya.Scene;
         this.roleParent = this.selfScene['MainSceneControl'].roleParent;
@@ -42,20 +39,21 @@ export default class Suspend extends Laya.Script {
      * 并且分数增加*/
     down(event): void {
         let suspend = this.selfScene['MainSceneControl'].suspend;
+        if (!suspend) {
+            this.selfScene['MainSceneControl'].suspend = true;
+            // Laya.timer.pause();
+        } else {
+            this.selfScene['MainSceneControl'].suspend = false;
+            // Laya.timer.resume();
+        }
         // 打开和关闭敌人的属性
         for (let i = 0; i < this.enemyParent._children.length; i++) {
             let enemy = this.enemyParent._children[i] as Laya.Sprite;
             let propertyShow = enemy.getChildByName('propertyShow') as Laya.Sprite;
             if (!suspend) {
-                this.selfScene['MainSceneControl'].suspend = true;
                 propertyShow.alpha = 1;
-                // Laya.stage.renderingEnabled = true;
-                Laya.timer.pause();
             } else {
-                this.selfScene['MainSceneControl'].suspend = false;
                 propertyShow.alpha = 0;
-                Laya.timer.resume();
-                // Laya.stage.renderingEnabled = false;
             }
         }
         // 主角的属性
@@ -84,9 +82,6 @@ export default class Suspend extends Laya.Script {
     }
     /**暂停状态显示所有属性框，非暂停状态不显示属性框*/
     suspendedState(): void {
-        if (this.suspend) {
-
-        }
     }
     onDisable(): void {
     }

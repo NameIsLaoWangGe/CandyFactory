@@ -331,6 +331,7 @@ export default class MainSceneControl extends Laya.Script {
         let url_03 = 'candy/糖果/蓝色糖果.png';
         let url_04 = 'candy/糖果/绿色糖果.png';
         let pic = (candy.getChildByName('pic') as Laya.Image);
+        // 创建消失变换特效
         this.explodeAni(this.owner, candy.x, candy.y, 'disappear', 8, 1000);
         switch (candy.name.substring(0, 11)) {
             case 'yellowCandy':

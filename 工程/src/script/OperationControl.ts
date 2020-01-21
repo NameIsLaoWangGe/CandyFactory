@@ -381,22 +381,23 @@ export default class OperationButton extends Laya.Script {
         // 糖果本身
         let HalfX;
         let HalfY;
-        let distancePer = 2;
+        let distancePer = 3;
         if (candy.x > Laya.stage.width / 2) {
             HalfX = candy.x - (candy.x - targetP.x) / distancePer;
         } else {
             HalfX = candy.x + (targetP.x - candy.x) / distancePer;
         }
-        HalfY = candy.y - 100;
+        HalfY = candy.y - 150;
         // 第一步飞天放大
-        Laya.Tween.to(candy, { x: HalfX, y: HalfY, scaleX: 1.3, scaleY: 1.3 }, 2000, null, Laya.Handler.create(this, function () {
+        Laya.Tween.to(candy, { x: HalfX, y: HalfY, scaleX: 1.2, scaleY: 1.2 }, 300, null, Laya.Handler.create(this, function () {
 
             // 第二步降落缩小
-            Laya.Tween.to(candy, { x: targetP.x, y: targetP.y, scaleX: 0.9, scaleY: 0.9 }, 2000, null, Laya.Handler.create(this, function () {
+            Laya.Tween.to(candy, { x: targetP.x, y: targetP.y, scaleX: 0.9, scaleY: 0.9 }, 500, null, Laya.Handler.create(this, function () {
                 // 生成1个爆炸糖果
                 let explodeCandy = this.selfScene['MainSceneControl'].createExplodeCandy(candy.name);
                 explodeCandy.pos(candy.x, candy.y);
                 explodeCandy.scale(0.9, 0.9);
+                this.selfScene['MainSceneControl'].explodeAni(this.selfScene, explodeCandy.x, explodeCandy.y, 'disappear', 8, 1000);
                 candy.removeSelf();
 
                 // 第三步停留，延迟给予爆炸目标
@@ -409,9 +410,9 @@ export default class OperationButton extends Laya.Script {
         // 糖果的影子处理
         let shadow = candy.getChildByName('shadow') as Laya.Image;
         // 拉开距离并缩小
-        Laya.Tween.to(shadow, { x: -20, y: 100, scaleX: 0.8, scaleY: 0.8, }, 2000, null, Laya.Handler.create(this, function () {
+        Laya.Tween.to(shadow, { x: -20, y: 80, scaleX: 0.8, scaleY: 0.8, }, 300, null, Laya.Handler.create(this, function () {
             // 第二部回归
-            Laya.Tween.to(shadow, { x: 0, y: 0, scaleX: 1, scaleY: 1 }, 2000, null, Laya.Handler.create(this, function () {
+            Laya.Tween.to(shadow, { x: 0, y: 0, scaleX: 1, scaleY: 1 }, 500, null, Laya.Handler.create(this, function () {
             }), 0);
         }), 0);
     }

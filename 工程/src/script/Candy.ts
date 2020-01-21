@@ -126,11 +126,11 @@ export default class Candy extends Laya.Script {
         targetX = this.candyTagRole.x - 50;
 
         let HalfX;
-        let distancePer = 3;
+        let distancePer = 4;
         if (this.self.x > Laya.stage.width / 2) {
-            HalfX = this.self.x - (this.self.x - targetX) / distancePer;
+            HalfX = this.self.x + (this.candyTagRole.x - this.self.x) * 4 / 5;
         } else {
-            HalfX = this.self.x + (targetX - this.self.x) / distancePer;
+            HalfX = this.self.x - (this.self.x - this.candyTagRole.x) * 4 / 5;
         }
         let HalfY = this.self.y + (this.candyTagRole.y - this.self.y) / distancePer;
         // 糖果本身
@@ -148,7 +148,7 @@ export default class Candy extends Laya.Script {
         // 糖果的影子处理
         let shadow = this.self.getChildByName('shadow') as Laya.Image;
         // 拉开距离并缩小
-        Laya.Tween.to(shadow, { x: - 30, y: 100, scaleX: 0.8, scaleY: 0.8, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
+        Laya.Tween.to(shadow, { x: - 20, y: 100, scaleX: 0.8, scaleY: 0.8, }, timePar * 3 / 4, null, Laya.Handler.create(this, function () {
             // 第二部回归
             Laya.Tween.to(shadow, { x: -10, y: 60, scaleX: 0.7, scaleY: 0.7 }, timePar, null, Laya.Handler.create(this, function () {
             }), 0);
@@ -238,7 +238,6 @@ export default class Candy extends Laya.Script {
     }
 
     onUpdate(): void {
-
     }
 
     onDisable(): void {
